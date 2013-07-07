@@ -7,8 +7,19 @@ and open the template in the editor.
     <head>
         <title></title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script type="text/javascript" src="js/libs/jquery-2.0.3.min.js"></script>
+        <script type="text/javascript" src="js/framework/classes/error.js"></script>
+        <script type="text/javascript" src="js/framework/classes/toolkit.js"></script>
+        <script type="text/javascript" src="js/framework/classes/configuration.js"></script>
     </head>
     <body>
         <div>TODO write content</div>
+        <script>
+            try {
+                var cfg = new Configuration("js/framework/fwconfig.xml");
+            } catch(e) {
+                console.log(e.getStack());
+            }
+        </script>
     </body>
 </html>

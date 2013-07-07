@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:noNamespaceSchemaLocation="../../data/models/errors.xsd" >
+    
+    <error id="0">
+        <message>Unknow error</message>
+    </error>  
+      
+</catalog>

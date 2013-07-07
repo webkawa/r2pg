@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<!-- JS Framework : Global configuration -->
+<xs:schema version="1.0"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified">
+    
+    <!-- General tools -->
+    <!-- ************* -->
+    
+    <xs:simpleType name="string">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <!-- Complex components -->
+    <!-- ****************** -->
+    
+    <xs:simpleType name="type">
+        <xs:restriction base="string">
+            <xs:enumeration value="string" />
+            <xs:enumeration value="numeric" />
+            <xs:enumeration value="boolean" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="key">
+        <xs:simpleContent>
+            <xs:extension base="string">
+                <xs:attribute name="id" 
+                              type="string"
+                              use="required" />
+                <xs:attribute name="type"
+                              type="type"
+                              default="string" />
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="group">
+        <xs:sequence>
+            <xs:element name="key"
+                        type="key"
+                        maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="id"
+                      type="string"
+                      use="required" />
+    </xs:complexType>
+    
+    <!-- Main component -->
+    <!-- ************** -->
+    
+    <xs:element name="configuration">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="group"
+                            type="group"
+                            maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+
+</xs:schema>

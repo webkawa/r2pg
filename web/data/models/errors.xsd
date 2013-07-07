@@ -16,38 +16,44 @@
     <!-- Complex components -->
     <!-- ****************** -->
     
-    <xs:complexType name="key">
+    <xs:complexType name="parameter">
         <xs:simpleContent>
             <xs:extension base="string">
-                <xs:attribute name="id" 
+                <xs:attribute name="id"
                               type="string"
                               use="required" />
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
-    <xs:complexType name="group">
+    <xs:complexType name="error">
         <xs:sequence>
-            <xs:element name="key"
-                        type="key"
+            <xs:element name="message"
+                        type="string" />
+            <xs:element name="param"
+                        type="parameter"
+                        minOccurs="0"
                         maxOccurs="unbounded" />
         </xs:sequence>
         <xs:attribute name="id"
-                      type="string"
+                      type="xs:decimal" 
                       use="required" />
+        <xs:attribute name="critical"
+                      type="xs:boolean"
+                      default="false" />
     </xs:complexType>
     
     <!-- Main component -->
     <!-- ************** -->
     
-    <xs:element name="configuration">
+    <xs:element name="catalog">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="group"
-                            type="group"
+                <xs:element name="error"
+                            type="error"
+                            minOccurs="0"
                             maxOccurs="unbounded" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
-    
 
 </xs:schema>
