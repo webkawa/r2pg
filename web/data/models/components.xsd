@@ -1,0 +1,252 @@
+<?xml version="1.0"?>
+<xs:schema version="1.0" 
+           xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+           elementFormDefault="qualified">
+
+    <!-- General tools -->
+    <!-- ************* -->
+    <xs:simpleType name="string">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <!-- Complex components -->
+    <!-- ****************** -->
+    
+    <!-- CSS components -->
+    <xs:complexType name="css">
+        <xs:attribute name="name"
+                      use="required"
+                      type="string" />   
+    </xs:complexType>
+    <xs:complexType name="style">
+        <xs:sequence>
+            <xs:element name="property"
+                        type="css" />
+        </xs:sequence>
+    </xs:complexType>
+    
+    <!-- Selectors -->
+    <xs:complexType name="selector">
+        <xs:simpleContent>
+            <xs:extension base="string">
+                <xs:attribute name="id" 
+                              type="string" />
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="target">
+        <xs:simpleContent>
+            <xs:extension base="string">
+                <xs:attribute name="refresh"
+                              type="xs:boolean" 
+                              default="false" />
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="selectors">
+        <xs:sequence>
+            <xs:element name="selector"
+                        type="selector"
+                        maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+    
+    <!-- Animation -->
+    <xs:simpleType name="easing">
+        <xs:restriction base="string">
+            <xs:enumeration value="linear" />
+            <xs:enumeration value="swing" />
+            <xs:enumeration value="easeInQuad" />
+            <xs:enumeration value="easeOutQuad" />
+            <xs:enumeration value="easeInOutQuad" />
+            <xs:enumeration value="easeInCubic" />
+            <xs:enumeration value="easeOutCubic" />
+            <xs:enumeration value="easeInOutCubic" />
+            <xs:enumeration value="easeInQuart" />
+            <xs:enumeration value="easeOutQuart" />
+            <xs:enumeration value="easeInOutQuart" />
+            <xs:enumeration value="easeInQuint" />
+            <xs:enumeration value="easeOutQuint" />
+            <xs:enumeration value="easeInOutQuint" />
+            <xs:enumeration value="easeInSine" />
+            <xs:enumeration value="easeOutSine" />
+            <xs:enumeration value="easeInOutSine" />
+            <xs:enumeration value="easeInExpo" />
+            <xs:enumeration value="easeOutExpo" />
+            <xs:enumeration value="easeInOutExpo" />
+            <xs:enumeration value="easeInCirc" />
+            <xs:enumeration value="easeOutCirc" />
+            <xs:enumeration value="easeInOutCirc" />
+            <xs:enumeration value="easeInElastic" />
+            <xs:enumeration value="easeOutElastic" />
+            <xs:enumeration value="easeInOutElastic" />
+            <xs:enumeration value="easeInBack" />
+            <xs:enumeration value="easeOutBack" />
+            <xs:enumeration value="easeInOutBack" />
+            <xs:enumeration value="easeInBounce" />
+            <xs:enumeration value="easeOutBounce" />
+            <xs:enumeration value="easeInOutBounce" />
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:complexType name="move">
+        <xs:all>
+            <xs:element name="property"
+                        type="string" />
+            <xs:element name="from"
+                        type="string"
+                        minOccurs="0" />
+            <xs:element name="to"
+                        type="string" />
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="animation">
+        <xs:sequence>
+            <xs:element name="speed"
+                        type="xs:decimal" />
+            <xs:element name="easing"
+                        type="easing" />
+            <xs:element name="move"
+                        type="move"
+                        maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+    
+    <!-- Function calls -->
+    <xs:complexType name="call">
+        <xs:sequence>
+            <xs:element name="name" 
+                        type="string" />
+            <xs:element name="parameter"
+                        type="string"
+                        minOccurs="0"
+                        maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+    
+    <!-- Sequence -->
+    <xs:complexType name="sequence">
+        <xs:sequence>
+            <xs:element name="target" 
+                        type="target"
+                        maxOccurs="unbounded" />
+            <xs:element name="precall"
+                        type="call"
+                        minOccurs="0" />
+            <xs:element name="animation" 
+                        type="animation" />
+            <xs:element name="postcall" 
+                        type="call"
+                        minOccurs="0" />
+            <xs:element name="queue"
+                        type="sequence"
+                        minOccurs="0"
+                        maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+    
+    <!-- Loader -->
+    <xs:complexType name="loader">
+        <xs:sequence>
+            <xs:element name="dom"
+                        type="string" />
+            <xs:element name="action"
+                        type="sequence"
+                        maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+    
+    <!-- Trigger -->
+    <xs:simpleType name="binder">
+        <xs:restriction base="string">
+            <xs:enumeration value="click" />
+            <xs:enumeration value="mouseup" />
+            <xs:enumeration value="mousedown" />
+            <xs:enumeration value="mouseover" />
+            <xs:enumeration value="mouseout" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="trigger">
+        <xs:sequence>
+            <xs:element name="target"
+                        type="target"
+                        maxOccurs="unbounded" />
+            <xs:element name="call"
+                        type="call" />
+        </xs:sequence>
+        <xs:attribute name="bind"
+                      type="binder"
+                      use="required" />
+    </xs:complexType>
+    
+    <!-- State -->
+    <xs:complexType name="entry">
+        <xs:complexContent>
+            <xs:extension base="sequence">
+                <xs:attribute name="from"
+                              type="string"
+                              use="optional" />
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="exit">
+        <xs:complexContent>
+            <xs:extension base="sequence">
+                <xs:attribute name="to"
+                              type="string"
+                              use="optional" />
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="state">
+        <xs:sequence>
+            <xs:element name="in"
+                        type="entry"
+                        minOccurs="0" />
+            <xs:element name="out"
+                        type="exit"
+                        minOccurs="0" />
+            <xs:element name="selectors"
+                        type="selectors"
+                        minOccurs="0" />
+            <xs:element name="triggers"
+                        type="trigger"
+                        minOccurs="0" />
+        </xs:sequence>
+        <xs:attribute name="id"
+                      type="string" />
+    </xs:complexType>
+    
+    <!-- Main component -->
+    <!-- ************** -->
+    <xs:simpleType name="classes">
+        <xs:restriction base="string">
+            <xs:enumeration value="classic" />
+            <xs:enumeration value="container" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:element name="component">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="selectors"
+                            type="selectors"
+                            minOccurs="0" />
+                <xs:element name="triggers"
+                            type="trigger"
+                            minOccurs="0" />
+                <xs:element name="loader"
+                            type="loader" />
+                <xs:element name="state" 
+                            type="state" 
+                            maxOccurs="unbounded" />
+            </xs:sequence>
+            <xs:attribute name="name"
+                          type="string" />
+            <xs:attribute name="type"
+                          type="classes"
+                          default="classic" />
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
