@@ -3,12 +3,26 @@
  * parameters check.                                                            */
 var Toolkit = { 
     
+    /* Generates repeated string.
+     * PARAMETERS : 
+     *  > value         Value to repeat.
+     *  > size          Number of iterations.
+     * RETURBS : repeated string.                                               */
+    repeatedString : function(value, size) {
+        var result = "";
+        for (var i = 0; i < size; i++) {
+            result += value;
+        }
+        return result;
+    },
+    
     /* Adds leading chars to a string.
-     * Parameters
-     *   > value        Base value
-     *   > fulllength   Full length of value with leading chars
-     *   > char         Leading char
-     * Returns : value with leading chars.                                      */
+     * PARAMETERS :
+     *  > value         Base value.
+     *  > fulllength    Full length of value with leading chars.
+     *  > char          Leading char.
+     * RETURNS : 
+     *  Value with leading chars.                                               */
     leadingChars : function(value, fulllength, char) {
         var valuelength = value.toString().length;
         var result = '';
@@ -20,11 +34,12 @@ var Toolkit = {
     },
     
     /* Adds following chars to a string.
-     * Parameters
-     *   > value        Base value
-     *   > fulllength   Full length of value with following chars
-     *   > char         Following char
-     * Returns : value with following chars.                                    */
+     * PARAMETERS :
+     *  > value         Base value.
+     *  > fulllength    Full length of value with following chars.
+     *  > char          Following char.
+     * RETURNS :
+     *  Value with following chars.                                             */
     followingChars : function(value, fulllength, char) {
         var valuelength = value.toString().length;
         var result = value;
@@ -35,10 +50,11 @@ var Toolkit = {
     },
     
     /* Converts and returns a date to an appropriate string format.
-     * Parameters :
-     *   > date         Date to convert
-     *   > format       Expected format (allows : exacthour, en - default)
-     * Returns : correctly formated date.                                       */
+     * PARAMETERS:
+     *  > date          Date to convert.
+     *  > format        Expected format (allows : exacthour, en - default).
+     * RETURNS : 
+     *  Correctly formated date.                                                */
     formatDate : function(date, format) {
         if (typeof(format) === "undefined") {
             format = 'en';

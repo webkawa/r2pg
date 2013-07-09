@@ -50,10 +50,12 @@
             <xs:sequence>
                 <xs:element name="error"
                             type="error"
-                            minOccurs="0"
                             maxOccurs="unbounded" />
             </xs:sequence>
         </xs:complexType>
+        <xs:attribute name="name"
+                      type="string"
+                      default="default" />
     </xs:element>
 
 </xs:schema>

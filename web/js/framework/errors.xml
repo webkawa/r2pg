@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Framework native errors -->
 <catalog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:noNamespaceSchemaLocation="../../data/models/errors.xsd" >
+         xsi:noNamespaceSchemaLocation="../../data/models/errors.xsd" 
+         name="fw" >
     
     <error id="0">
-        <message>Unknow error</message>
+        <message>Unknow framework error</message>
     </error>  
       
 </catalog>
