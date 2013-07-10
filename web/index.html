@@ -9,14 +9,29 @@ and open the template in the editor.
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <script type="text/javascript" src="js/libs/jquery-2.0.3.min.js"></script>
         <script type="text/javascript" src="js/framework/classes/error.js"></script>
+        <script type="text/javascript" src="js/framework/classes/errormanager.js"></script>
         <script type="text/javascript" src="js/framework/classes/toolkit.js"></script>
-        <script type="text/javascript" src="js/framework/classes/configuration.js"></script>
     </head>
     <body>
         <div>TODO write content</div>
         <script>
-            var test = {"a": "A", "b": "B"};
-            console.log(test["a"]);
+            $(document).ready(function() {
+                try {
+                    ErrorManager.addCatalog("data/errors/core.xml");
+                    ErrorManager.addCatalog("data/errors/configuration.xml");
+                    
+                    var p = {test: "aaaa"};
+                    
+                    var e = new Error("cfg", 44);
+                    var e1 = new Error("cfg", 1, p, e);
+                    var e2 = new Error("cfg", 1, p, e1);
+                    
+                    throw e2;
+                    
+                } catch (e) {
+                    ErrorManager.process(e);
+                }
+            });
         </script>
     </body>
 </html>

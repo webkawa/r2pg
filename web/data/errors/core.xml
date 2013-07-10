@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Framework native errors -->
+<catalog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="../../data/models/errors.xsd" 
+         name="core" >
+    
+    <error id="0">
+        <message>Unknow core error</message>
+    </error>
+    
+    <error id="1" critical="true">
+        <message>Undefined error catched</message>
+        <param id="cause">Cause</param>
+        <param id="context">Catalog</param>
+        <param id="id">ID</param>
+    </error>
+    
+    <error id="2">
+        <message>Invalid error catched</message>
+        <param id="message">Message</param>
+    </error>
+    
+    <error id="3">
+        <message>Invalid error catalog URL, load fails</message>
+        <param id="url">URL</param>
+        <param id="info">Error</param>
+    </error>
+      
+</catalog>

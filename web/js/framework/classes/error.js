@@ -8,11 +8,11 @@
 function Error(context, code, params, cause) {
     
     if (typeof(context) !== "string" || typeof(code) !== "number") {
-        context = "fw";
+        context = "core";
         code = 0;
         params = null;
         cause = null;
-    }
+    };
     
     /* Error context */
     this.context = context; 
@@ -23,7 +23,7 @@ function Error(context, code, params, cause) {
     /* Error code */
     this.code = code;
     this.getCode = function() {
-        return this.getCode();
+        return this.code;
     };
     
     /* Error params */
@@ -36,5 +36,25 @@ function Error(context, code, params, cause) {
     this.cause = cause;
     this.getCause = function() {
         return this.cause;
+    };
+    
+    /* Error ID.
+     * RETURNS : error full ID.                                                 */
+    this.getId = function() {
+        return Toolkit.leadingChars(this.code, 4, "0") + "@" + this.context.toUpperCase();
+    };
+    
+    /* Error causes hierarchy length.
+     * PARAMETERS : N/A
+     * RETURNS :
+     *  Hierarchy size.                                                         */
+    this.getCauseLength = function() {
+        var i = 0;
+        var buff = this.getCause();
+        while (typeof(buff) !== "undefined") {
+            i++;
+            buff = buff.getCause();
+        }
+        return i;
     };
 }

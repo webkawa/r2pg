@@ -2,10 +2,15 @@
 <!-- Framework native errors -->
 <catalog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="../../data/models/errors.xsd" 
-         name="fw" >
+         name="cfg" >
     
     <error id="0">
-        <message>Unknow framework error</message>
-    </error>  
+        <message>Unknow configuration error</message>
+    </error>
+    
+    <error id="1">
+        <message>Fooo</message>
+        <param id="test">Testetst</param>
+    </error>
       
 </catalog>

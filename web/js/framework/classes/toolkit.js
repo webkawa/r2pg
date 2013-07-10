@@ -8,7 +8,7 @@ var Toolkit = {
      *  > value         Value to repeat.
      *  > size          Number of iterations.
      * RETURBS : repeated string.                                               */
-    repeatedString : function(value, size) {
+    repeatedString : function(size, value) {
         var result = "";
         for (var i = 0; i < size; i++) {
             result += value;
