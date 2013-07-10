@@ -9,7 +9,13 @@
     
     <xs:simpleType name="string">
         <xs:restriction base="xs:string">
-            <xs:minLength value="1"/>
+            <xs:minLength value="1" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="id">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1" />
+            <xs:maxLength value="6" />
         </xs:restriction>
     </xs:simpleType>
     
@@ -22,6 +28,9 @@
                 <xs:attribute name="id"
                               type="string"
                               use="required" />
+                <xs:attribute name="required"
+                              type="xs:boolean"
+                              default="false" />
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
@@ -34,7 +43,7 @@
                         minOccurs="0"
                         maxOccurs="unbounded" />
         </xs:sequence>
-        <xs:attribute name="id"
+        <xs:attribute name="code"
                       type="xs:decimal" 
                       use="required" />
         <xs:attribute name="critical"
@@ -54,7 +63,7 @@
             </xs:sequence>
         </xs:complexType>
         <xs:attribute name="name"
-                      type="string"
+                      type="id"
                       default="default" />
     </xs:element>
 

@@ -41,7 +41,9 @@ function Error(context, code, params, cause) {
     /* Error ID.
      * RETURNS : error full ID.                                                 */
     this.getId = function() {
-        return Toolkit.leadingChars(this.code, 4, "0") + "@" + this.context.toUpperCase();
+        return  Toolkit.leadingChars(this.code, 4, "0") + 
+                "@" + 
+                Toolkit.followingChars(this.context.toUpperCase(), 8, ".");
     };
     
     /* Error causes hierarchy length.

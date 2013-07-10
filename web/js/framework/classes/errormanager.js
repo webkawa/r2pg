@@ -42,12 +42,19 @@ var ErrorManager = {
      *  > error             Throwable error.
      * RETURNS : N/A                                                            */
     process: function(error) {
-        // Base security
+        var display = true; 
+
+        // Native errors check
         if (!(error instanceof Error)) {
-            ErrorManager.process(new Error("core", 2, {message: error.message}));
+            var p = {
+                name: error.name,
+                message: error.message
+            };
+            ErrorManager.process(new Error("core", 2, p));
+            display = false;
         }
         
-        // While security
+        // While check
         if (error.getCauseLength() > 10) {
             throw "Error manager interruption. Please check error ID 1@core is defined";
         }
@@ -62,8 +69,9 @@ var ErrorManager = {
                 context: error.getContext()
             };
             ErrorManager.process(new Error("core", 1, p));
+            display = false;
         }
-        var entry = $(catalog).find('catalog > error[id="' + error.getCode() + '"]');
+        var entry = $(catalog).find('catalog > error[code="' + error.getCode() + '"]');
         if ($(entry).length !== 1) {
             var p = {
                 cause: "Unable to find unique error",
@@ -71,13 +79,28 @@ var ErrorManager = {
                 context: error.getContext()
             };
             ErrorManager.process(new Error("core", 1, p));
+            display = false;
         }
         var critical = $(entry).attr("critical");
         
+        // Parameters check
+        $(entry).children('param[required="true"]').each(function() {
+            if (typeof(error.getParams[$(this).attr("id")]) === "undefined") {
+                var p = {
+                    id: $(this).attr("id"),
+                    parameter: $(this).text()
+                };
+                ErrorManager.process(new Error("core", 4, p, error));
+                display = false;
+            }
+        });
+        
         // Processing error
-        critical === "true" ?
-            ErrorManager.processMajor(error, entry) : 
-            ErrorManager.processMinor(error, entry);
+        if (display) {
+            critical === "true" ?
+                ErrorManager.processMajor(error, entry) : 
+                ErrorManager.processMinor(error, entry);
+        }
     },
     
     /* Minor error processing.
@@ -95,7 +118,8 @@ var ErrorManager = {
      *  > entry                 Catalog entry.
      * RETURNS : N/A                                                            */
      processMajor: function(error, entry) {
-        console.log(ErrorManager.stack(error, entry, true));
+        console.log(ErrorManager.stack(error, entry, true)); 
+       // TODO : AJAX to register
      },      
     
     /* Prepares and returns an error message for console display.
@@ -120,7 +144,6 @@ var ErrorManager = {
         prefix += Toolkit.formatDate(new Date(), "exacthour");
         prefix += " ";
         prefix += error.getId();
-        prefix += " ";
         
         // Message
         critical ? 
@@ -148,12 +171,16 @@ var ErrorManager = {
             causes += "\n";
             
             // Cause prefix
-            causeprefix = Toolkit.leadingChars("Cause : " + parent.getId() + " ", prefix.length, " ");
+            causeprefix = "\n";
+            causeprefix += Toolkit.repeatedString(prefix.length, " ");
+            causeprefix += "Caused by :";
+            causeprefix += "\n";
+            causeprefix += Toolkit.leadingChars(parent.getId(), prefix.length, " ");
             
             // Cause message
             causecatalog = ErrorManager.getCatalog(parent.getContext());
             if (typeof(causecatalog) !== "undefined") {
-                causeentry = $(causecatalog).find('catalog > error[id="' + parent.getCode() + '"]');
+                causeentry = $(causecatalog).find('catalog > error[code="' + parent.getCode() + '"]');
             }
              
             if (typeof(causecatalog) === "undefined" || $(causeentry).length !== 1) {
@@ -163,6 +190,7 @@ var ErrorManager = {
             }
             
             // Cause parameters
+            causeparams = "";
             $(causeentry).children("param").each(function() {
                 causeparams  = "\n";
                 causeparams += Toolkit.repeatedString(prefix.length, " ");
