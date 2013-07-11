@@ -33,11 +33,11 @@ var CFG = {
      *  True if success, false if level too low.                                */
     add: function(variable) {
         var buff;
-        for (var i; i < CFG.lib.length; i ++) {
+        for (var i = 0; i < CFG.lib.length; i ++) {
             buff = CFG.lib[i];
             if (buff.getGroup() === variable.getGroup() && buff.getKey() === variable.getKey()) {
-                if (buff.getLevel() > variable.getLevel()) {
-                    buff = variable;
+                if (buff.getLevel() < variable.getLevel()) {
+                    CFG.lib[i] = variable;
                     return true;
                 } else {
                     return false;

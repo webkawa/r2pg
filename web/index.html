@@ -25,8 +25,9 @@ and open the template in the editor.
                     ErrorManager.addCatalog("data/errors/configuration.xml");
                     
                     CFG.load("data/configurations/production.xml");
+                    CFG.load("data/configurations/development.xml");
                     
-                    console.log(CFG.get("infos", "version"));
+                    console.log(CFG.get("tools", "dev"));
                     
                 } catch (e) {
                     ErrorManager.process(e);
