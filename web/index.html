@@ -8,26 +8,25 @@ and open the template in the editor.
         <title></title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <script type="text/javascript" src="js/libs/jquery-2.0.3.min.js"></script>
+        <script type="text/javascript" src="js/libs/stacktrace-min-0.4.js"></script>
+        <script type="text/javascript" src="js/framework/classes/toolkit.js"></script>
         <script type="text/javascript" src="js/framework/classes/error.js"></script>
         <script type="text/javascript" src="js/framework/classes/errormanager.js"></script>
-        <script type="text/javascript" src="js/framework/classes/toolkit.js"></script>
+        <script type="text/javascript" src="js/framework/classes/cfg.js"></script>
+        <script type="text/javascript" src="js/framework/classes/cfgvar.js"></script>
     </head>
     <body>
         <div>TODO write content</div>
         <script>
             $(document).ready(function() {
                 try {
+                    
                     ErrorManager.addCatalog("data/errors/core.xml");
                     ErrorManager.addCatalog("data/errors/configuration.xml");
                     
-                  
-                    var p = {};
+                    CFG.load("data/configurations/production.xml");
                     
-                    var e = new Error("cfg", 44);
-                    var e1 = new Error("cfg", 1, p, e);
-                    var e2 = new Error("cfg", 1, p, e1);
-                    
-                    throw e2;
+                    console.log(CFG.get("infos", "version"));
                     
                 } catch (e) {
                     ErrorManager.process(e);

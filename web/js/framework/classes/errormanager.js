@@ -50,56 +50,60 @@ var ErrorManager = {
                 name: error.name,
                 message: error.message
             };
-            ErrorManager.process(new Error("core", 2, p));
+            var e = new Error("core", 2, p);
+            e.setStack(error);
+            ErrorManager.process(e);
             display = false;
-        }
-        
-        // While check
-        if (error.getCauseLength() > 10) {
-            throw "Error manager interruption. Please check error ID 1@core is defined";
-        }
-        
-        // Collecting informations
-        var context = error.getContext();
-        var catalog = ErrorManager.getCatalog(context);
-        if (typeof(catalog) === "undefined") {
-            var p = {
-                cause: "Unable to find catalog",
-                id: error.getCode(),
-                context: error.getContext()
-            };
-            ErrorManager.process(new Error("core", 1, p));
-            display = false;
-        }
-        var entry = $(catalog).find('catalog > error[code="' + error.getCode() + '"]');
-        if ($(entry).length !== 1) {
-            var p = {
-                cause: "Unable to find unique error",
-                id: error.getCode(),
-                context: error.getContext()
-            };
-            ErrorManager.process(new Error("core", 1, p));
-            display = false;
-        }
-        var critical = $(entry).attr("critical");
-        
-        // Parameters check
-        $(entry).children('param[required="true"]').each(function() {
-            if (typeof(error.getParams[$(this).attr("id")]) === "undefined") {
+        } else {
+            // While check
+            if (error.getCauseLength() > 10) {
+                throw "Error manager interruption. Please check error ID 1@core is defined";
+            }
+
+            // Collecting informations
+            var context = error.getContext();
+            var catalog = ErrorManager.getCatalog(context);
+            if (typeof(catalog) === "undefined") {
                 var p = {
-                    id: $(this).attr("id"),
-                    parameter: $(this).text()
+                    cause: "Unable to find catalog",
+                    id: error.getCode(),
+                    context: error.getContext()
                 };
-                ErrorManager.process(new Error("core", 4, p, error));
+                ErrorManager.process(new Error("core", 1, p));
                 display = false;
             }
-        });
-        
-        // Processing error
-        if (display) {
-            critical === "true" ?
-                ErrorManager.processMajor(error, entry) : 
-                ErrorManager.processMinor(error, entry);
+            var entry = $(catalog).find('catalog > error[code="' + error.getCode() + '"]');
+            if ($(entry).length !== 1) {
+                var p = {
+                    cause: "Unable to find unique error",
+                    id: error.getCode(),
+                    context: error.getContext()
+                };
+                ErrorManager.process(new Error("core", 1, p));
+                display = false;
+            }
+            var critical = $(entry).attr("critical");
+
+            // Parameters check
+            $(entry).children('param[required="true"]').each(function() {
+                if (typeof(error.getParams()[$(this).attr("id")]) === "undefined") {
+                    var p = {
+                        code: error.getCode(),
+                        context: error.getContext(),
+                        id: $(this).attr("id"),
+                        parameter: $(this).text()
+                    };
+                    ErrorManager.process(new Error("core", 4, p, error));
+                    display = false;
+                }
+            });
+
+            // Processing error
+            if (display) {
+                critical === "true" ?
+                    ErrorManager.processMajor(error, entry) : 
+                    ErrorManager.processMinor(error, entry);
+            }
         }
     },
     
@@ -134,9 +138,11 @@ var ErrorManager = {
         var message = "";
         var params = "";
         var causes = "";
+        var stack = "";
         var causeprefix = "";
         var causemessage = "";
         var causeparams = "";
+        var causestack = "";
         var causecatalog, causeentry;
         var parent = null;
         
@@ -159,11 +165,17 @@ var ErrorManager = {
             params += " > ";
             params += Toolkit.followingChars($(this).text(), 24, ".");
             if (typeof(error.getParams()[$(this).attr("id")]) !== "undefined") {
-                params += error.getParams()[$(this).attr("id")];
+                params += error.getParam($(this).attr("id"));
             } else {
                 params += "?";
             }
         });
+        
+        // Stack
+        stack  = "\n";
+        stack += "\n";
+        stack += Toolkit.leadingChars("Stack:", prefix.length, " ");
+        stack += error.getStack().join('\n' + Toolkit.repeatedString(prefix.length, " "));
         
         // Causes
         parent = error.getCause();
@@ -192,25 +204,31 @@ var ErrorManager = {
             // Cause parameters
             causeparams = "";
             $(causeentry).children("param").each(function() {
-                causeparams  = "\n";
+                causeparams += "\n";
                 causeparams += Toolkit.repeatedString(prefix.length, " ");
                 causeparams += " > ";
                 causeparams += Toolkit.followingChars($(this).text(), 24, ".");
                 if (typeof(parent.getParams()[$(this).attr("id")]) !== "undefined") {
-                    causeparams += parent.getParams()[$(this).attr("id")];
+                    causeparams += parent.getParam($(this).attr("id"));
                 } else {
                     causeparams += "?";
                 }
             });
             
+            // Cause stack
+            causestack  = "\n";
+            causestack += "\n";
+            causestack += Toolkit.leadingChars("Stack:", prefix.length, " ");
+            causestack += parent.getStack().join('\n' + Toolkit.repeatedString(prefix.length, " "));
+        
             // Complete causes
-            causes += causeprefix + causemessage + causeparams;
+            causes += causeprefix + causemessage + causeparams + causestack;
             
             // Cause increase
             parent = parent.getCause();
         }
         
         // Return
-        return "\n" + prefix + message + params + causes;
+        return "\n" + prefix + message + params + stack + causes;
     }
 };

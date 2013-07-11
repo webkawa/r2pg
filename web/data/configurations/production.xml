@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:noNamespaceSchemaLocation="../../data/models/configurations.xsd" 
+               level="1" >
+    
+    <group id="tools">
+        <boolean id="dev">true</boolean>
+    </group>
+    
+    <group id="infos">
+        <string id="version">PRE-ALPHA</string>
+        <date id="realease">2013-07-10</date>
+    </group>
+    
+</configuration>

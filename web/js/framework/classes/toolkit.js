@@ -8,7 +8,7 @@ var Toolkit = {
      *  > value         Value to repeat.
      *  > size          Number of iterations.
      * RETURBS : repeated string.                                               */
-    repeatedString : function(size, value) {
+    repeatedString: function(size, value) {
         var result = "";
         for (var i = 0; i < size; i++) {
             result += value;
@@ -23,7 +23,7 @@ var Toolkit = {
      *  > char          Leading char.
      * RETURNS : 
      *  Value with leading chars.                                               */
-    leadingChars : function(value, fulllength, char) {
+    leadingChars: function(value, fulllength, char) {
         var valuelength = value.toString().length;
         var result = '';
         for (var i = 0; i < fulllength - valuelength; i++) {
@@ -40,7 +40,7 @@ var Toolkit = {
      *  > char          Following char.
      * RETURNS :
      *  Value with following chars.                                             */
-    followingChars : function(value, fulllength, char) {
+    followingChars: function(value, fulllength, char) {
         var valuelength = value.toString().length;
         var result = value;
         for (var i = 0; i < fulllength - valuelength; i++) {
@@ -55,7 +55,7 @@ var Toolkit = {
      *  > format        Expected format (allows : exacthour, en - default).
      * RETURNS : 
      *  Correctly formated date.                                                */
-    formatDate : function(date, format) {
+    formatDate: function(date, format) {
         if (typeof(format) === "undefined") {
             format = 'en';
         }
@@ -83,6 +83,37 @@ var Toolkit = {
                    '.' +
                    this.followingChars(date.getMilliseconds(), 3, '0');
         }
-    }
+    },
     
+    /* Checks if a variable is correctly initialized with pre-assigned format
+     * and throws an error if necessary.
+     * PARAMETERS :
+     *  > object        Object name.
+     *  > name          Variable name.
+     *  > value         Variable value.
+     *  > type          Expected JS type as result of typeof() function.
+     * RETURNS : N/A                                                            */
+    checkValue: function(object, name, value, type) {
+        var rtype = typeof(value);
+        if (rtype === "undefined" || rtype !== type) {
+            var p = {
+                object: object,
+                name: name,
+                value: value,
+                type: type,
+                rtype: rtype
+            };
+            throw new Error("core", 5, p);
+        }
+    },
+    
+    /* Shorten a string at selected size.
+     * PARAMETERS :
+     *  > base                      Base string.
+     *  > length                    String length.
+     * RETURNS :
+     *  Shortened string.                                                       */
+    shorten: function(base, length){
+        return base.substr(0, length) + (base.length > length ? '...' : '');
+    }
 };

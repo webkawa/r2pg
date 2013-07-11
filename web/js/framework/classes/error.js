@@ -30,12 +30,24 @@ function Error(context, code, params, cause) {
     this.params = params;
     this.getParams = function() {
         return this.params;
+    }
+    this.getParam = function(i) {
+        return Toolkit.shorten(this.params[i].toString().replace(/[\n\r]/g, ''), 96);
     };
     
     /* Error cause */
     this.cause = cause;
     this.getCause = function() {
         return this.cause;
+    };
+    
+    /* Stack */
+    this.stack = printStackTrace();
+    this.getStack = function() {
+        return this.stack;
+    };
+    this.setStack = function(e) {
+        this.stack = printStackTrace({e: e});
     };
     
     /* Error ID.
