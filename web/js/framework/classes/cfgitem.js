@@ -2,12 +2,11 @@
  *  Simple, independant configuration variable caracterized by a group, key, level
  *  and type.                                                                   */
 
-function CFGVar(group, key, level, type, value) {
-    /* Initial checking */
-    Toolkit.checkValue("CFGVar", "group", group, "string");
-    Toolkit.checkValue("CFGVar", "key", key, "string");
-    Toolkit.checkValue("CFGVar", "level", level, "number");
-    Toolkit.checkValue("CFGVar", "type", type, "string");
+function CFGItem(group, key, level, type, value) {
+    Toolkit.checkValue("CFGItem", "group", group, "string");
+    Toolkit.checkValue("CFGItem", "key", key, "string");
+    Toolkit.checkValue("CFGItem", "level", level, "number");
+    Toolkit.checkValue("CFGItem", "type", type, "string");
     
     /* Group */
     this.group = group;

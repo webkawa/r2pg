@@ -90,7 +90,7 @@ var CFG = {
                 value = $(this).text();
                 
                 // Variable creation
-                variable = new CFGVar(group, key, level, type, value);
+                variable = new CFGItem(group, key, level, type, value);
                 
                 // Add
                 if (CFG.add(variable)) {

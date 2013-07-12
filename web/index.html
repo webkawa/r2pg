@@ -12,8 +12,8 @@ and open the template in the editor.
         <script type="text/javascript" src="js/framework/classes/toolkit.js"></script>
         <script type="text/javascript" src="js/framework/classes/error.js"></script>
         <script type="text/javascript" src="js/framework/classes/errormanager.js"></script>
+        <script type="text/javascript" src="js/framework/classes/cfgitem.js"></script>
         <script type="text/javascript" src="js/framework/classes/cfg.js"></script>
-        <script type="text/javascript" src="js/framework/classes/cfgvar.js"></script>
     </head>
     <body>
         <div>TODO write content</div>
@@ -23,11 +23,12 @@ and open the template in the editor.
                     
                     ErrorManager.addCatalog("data/errors/core.xml");
                     ErrorManager.addCatalog("data/errors/configuration.xml");
+                    ErrorManager.addCatalog("data/errors/components.xml");
                     
                     CFG.load("data/configurations/production.xml");
                     CFG.load("data/configurations/development.xml");
                     
-                    console.log(CFG.get("tools", "dev"));
+                    
                     
                 } catch (e) {
                     ErrorManager.process(e);

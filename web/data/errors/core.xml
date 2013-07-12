@@ -15,7 +15,7 @@
         <param id="id">ID</param>
     </error>
     
-    <error code="2">
+    <error code="2" critical="true">
         <message>Native JS error catched</message>
         <param id="name" required="true">Name</param>
         <param id="message" required="true">Message</param>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Framework native errors -->
+<catalog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="../../data/models/errors.xsd" 
+         name="cpn" >
+    
+    <error code="0">
+        <message>Unknow component error</message>
+    </error>
+    
+    <error code="1">
+        <message>Error during method execution</message>
+        <param required="required" id="name">Method name</param>
+        <param required="required" id="context">Context</param>
+        <param id="params">Parameters</param>
+    </error>
+      
+    <error code="2">
+        <message>Method not found</message>
+        <param required="required" id="name">Method name</param>
+    </error>
+        
+</catalog>
