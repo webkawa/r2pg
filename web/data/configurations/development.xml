@@ -7,4 +7,9 @@
         <boolean id="dev">true</boolean>
     </group>
     
+    <group id="errors">
+        <boolean id="display.minor">true</boolean>
+        <boolean id="display.major">false</boolean>
+    </group>
+    
 </configuration>

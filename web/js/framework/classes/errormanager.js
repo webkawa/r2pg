@@ -9,6 +9,12 @@ var ErrorManager = {
         return ErrorManager.catalogs[name];
     },
             
+    /* Configuration paramaters */
+    cfg_displayminor: false,
+    cfg_displaymajor: false,
+    cfg_messageslength: 64,
+    cfg_parameterslength: 64,
+            
     /* Catalog adding function.
      * PARAMETERS :
      *  > url           Catalog URL.
@@ -113,7 +119,9 @@ var ErrorManager = {
      *  > entry                 Catalog entry.
      * RETURNS : N/A                                                            */
      processMinor: function(error, entry) {
-        console.log(ErrorManager.stack(error, entry, false));
+         if (ErrorManager.cfg_displayminor) {
+            console.log(ErrorManager.stack(error, entry, false)); 
+         }
      },
              
     /* Minor error processing.
@@ -122,7 +130,9 @@ var ErrorManager = {
      *  > entry                 Catalog entry.
      * RETURNS : N/A                                                            */
      processMajor: function(error, entry) {
-        console.log(ErrorManager.stack(error, entry, true)); 
+        if (ErrorManager.cfg_displaymajor) {
+            console.log(ErrorManager.stack(error, entry, true)); 
+        }
        // TODO : AJAX to register
      },      
     
@@ -163,7 +173,7 @@ var ErrorManager = {
             message += "Critical error" : message += "Standard error";
         message += "\n";
         message += messagepre;
-        message += Toolkit.cut($(entry).children("message").text(), 64).join("\n" + messagepre);
+        message += Toolkit.cut($(entry).children("message").text(), ErrorManager.cfg_messageslength).join("\n" + messagepre);
         
         // Params
         $(entry).children("param").each(function() {
@@ -175,7 +185,7 @@ var ErrorManager = {
                 paramspre = Toolkit.repeatedString(params.length - 1, " ");
             }
             if (typeof(error.getParams()[$(this).attr("id")]) !== "undefined") {
-                params += Toolkit.cut(error.getParam($(this).attr("id")), 64).join("\n" + paramspre);
+                params += Toolkit.cut(error.getParam($(this).attr("id")), ErrorManager.cfg_parameterslength).join("\n" + paramspre);
             } else {
                 params += "?";
             }
@@ -211,7 +221,7 @@ var ErrorManager = {
             if (typeof(causecatalog) === "undefined" || $(causeentry).length !== 1) {
                 causemessage = "Unknow cause error";
             } else {
-                causemessage = Toolkit.cut($(causeentry).children("message").text(), 64).join("\n" + causemessagepre);
+                causemessage = Toolkit.cut($(causeentry).children("message").text(), ErrorManager.cfg_messageslength).join("\n" + causemessagepre);
             }
             
             // Cause parameters
@@ -225,7 +235,7 @@ var ErrorManager = {
                     causeparamspre = Toolkit.repeatedString(causeparams.length - 1, " ");
                 }
                 if (typeof(parent.getParams()[$(this).attr("id")]) !== "undefined") {
-                    causeparams += Toolkit.cut(parent.getParam($(this).attr("id")), 64).join("\n" + causeparamspre);
+                    causeparams += Toolkit.cut(parent.getParam($(this).attr("id")), ErrorManager.cfg_parameterslength).join("\n" + causeparamspre);
                 } else {
                     causeparams += "?";
                 }
@@ -246,5 +256,15 @@ var ErrorManager = {
         
         // Return
         return "\n" + prefix + message + params + stack + causes;
-    }
+    },
+            
+    /* Configuration loader.
+     * PARAMETERS : N/A
+     * RETURNS : N/A                                                            */
+     configure: function() {
+         ErrorManager.cfg_displayminor = CFG.get("errors", "display.minor");
+         ErrorManager.cfg_displaymajor = CFG.get("errors", "display.major");
+         ErrorManager.cfg_messageslength = CFG.get("errors", "display.messages.length");
+         ErrorManager.cfg_parameterslength = CFG.get("errors", "display.parameters.length");
+     }
 };
