@@ -136,12 +136,14 @@ var ErrorManager = {
     stack: function(error, entry, critical) {
         var prefix = "";
         var message = "";
+        var messagepre = "";
         var params = "";
         var paramspre = "";
         var causes = "";
         var stack = "";
         var causeprefix = "";
         var causemessage = "";
+        var causemessagepre = "";
         var causeparams = "";
         var causeparamspre = "";
         var causestack = "";
@@ -154,11 +156,14 @@ var ErrorManager = {
         prefix += error.getId();
         
         // Message
+        if (messagepre === "") {
+            messagepre = Toolkit.repeatedString(prefix.length, " ");
+        }
         critical ? 
             message += "Critical error" : message += "Standard error";
         message += "\n";
-        message += Toolkit.repeatedString(prefix.length, " ");
-        message += $(entry).children("message").text();
+        message += messagepre;
+        message += Toolkit.cut($(entry).children("message").text(), 64).join("\n" + messagepre);
         
         // Params
         $(entry).children("param").each(function() {
@@ -200,10 +205,13 @@ var ErrorManager = {
                 causeentry = $(causecatalog).find('catalog > error[code="' + parent.getCode() + '"]');
             }
              
+            if (causemessagepre === "") {
+                causemessagepre = Toolkit.repeatedString(prefix.length, " ");
+            }
             if (typeof(causecatalog) === "undefined" || $(causeentry).length !== 1) {
                 causemessage = "Unknow cause error";
             } else {
-                causemessage = $(causeentry).children("message").text();
+                causemessage = Toolkit.cut($(causeentry).children("message").text(), 64).join("\n" + causemessagepre);
             }
             
             // Cause parameters

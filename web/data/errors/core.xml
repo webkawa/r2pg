@@ -5,7 +5,7 @@
          name="core" >
     
     <error code="0">
-        <message>Unknow core error</message>
+        <message>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sed tincidunt augue. Duis ornare sollicitudin sapien, a dignissim sapien adipiscing non. Ut fermentum nunc in posuere ultrices. Donec mollis molestie tellus, ut accumsan lorem porta a. Suspendisse sed felis aliquet, euismod dui ac, pulvinar ante. Mauris interdum magna eu faucibus sagittis. In pharetra ipsum a tempus semper. Etiam lectus justo, semper ac commodo in, vestibulum ut augue. Ut commodo nec quam non tincidunt. Vivamus eu faucibus magna. Vestibulum pharetra tempor justo, euismod interdum arcu dapibus vitae. Donec eros ligula, luctus eu ligula a, malesuada semper nunc. Pellentesque vitae semper urna. Nullam egestas nec risus a bibendum. Nam tincidunt sapien nec volutpat pulvinar. In id ipsum consectetur, interdum erat a, condimentum lectus</message>
     </error>
     
     <error code="1" critical="true">

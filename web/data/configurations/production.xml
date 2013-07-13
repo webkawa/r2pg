@@ -7,6 +7,10 @@
         <boolean id="dev">false</boolean>
     </group>
     
+    <group id="errors">
+        
+    </group>
+    
     <group id="infos">
         <string id="version">PRE-ALPHA</string>
         <date id="realease">2013-07-10</date>
