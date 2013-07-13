@@ -49,6 +49,42 @@ var Toolkit = {
         return result;
     },
     
+    /* Shorten a string at selected size.
+     * PARAMETERS :
+     *  > base                      Base string.
+     *  > length                    String length.
+     * RETURNS :
+     *  Shortened string.                                                       */
+    shorten: function(base, length){
+        return base.substr(0, length) + (base.length > length ? '...' : '');
+    },
+            
+    /* Cut a string at the selected size.
+     * PARAMETERS :
+     *  > value                     Base value.
+     *  > size                      Lines size.
+     * RETURNS :
+     *  Array of text lines.                                                    */
+     cut: function(value, size) {
+         var lines = [];
+         var sum = 0;
+         var pointer = 0;
+         var backup = 0;
+         
+         while (pointer !== -1) {
+             backup = pointer;
+             pointer = value.toString().indexOf(" ", pointer + 1);
+             
+             if (pointer - sum > size) {
+                 lines[lines.length] = value.toString().substring(sum, backup + 1);
+                 sum += lines[lines.length - 1].length;
+             }
+         }
+         lines[lines.length] = value.toString().substr(sum);
+         
+         return lines;
+     },
+    
     /* Converts and returns a date to an appropriate string format.
      * PARAMETERS:
      *  > date          Date to convert.
@@ -105,15 +141,5 @@ var Toolkit = {
             };
             throw new Error("core", 5, p);
         }
-    },
-    
-    /* Shorten a string at selected size.
-     * PARAMETERS :
-     *  > base                      Base string.
-     *  > length                    String length.
-     * RETURNS :
-     *  Shortened string.                                                       */
-    shorten: function(base, length){
-        return base.substr(0, length) + (base.length > length ? '...' : '');
     }
 };

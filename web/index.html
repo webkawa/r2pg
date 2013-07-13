@@ -16,22 +16,24 @@ and open the template in the editor.
         <script type="text/javascript" src="js/framework/classes/cfg.js"></script>
     </head>
     <body>
-        <div>TODO write content</div>
+        <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sed tincidunt augue. Duis ornare sollicitudin sapien, a dignissim sapien adipiscing non. Ut fermentum nunc in posuere ultrices. Donec mollis molestie tellus, ut accumsan lorem porta a. Suspendisse sed felis aliquet, euismod dui ac, pulvinar ante. Mauris interdum magna eu faucibus sagittis. In pharetra ipsum a tempus semper. Etiam lectus justo, semper ac commodo in, vestibulum ut augue. Ut commodo nec quam non tincidunt. Vivamus eu faucibus magna. Vestibulum pharetra tempor justo, euismod interdum arcu dapibus vitae. Donec eros ligula, luctus eu ligula a, malesuada semper nunc. Pellentesque vitae semper urna. Nullam egestas nec risus a bibendum. Nam tincidunt sapien nec volutpat pulvinar. In id ipsum consectetur, interdum erat a, condimentum lectus.
+
+</div>
         <script>
             $(document).ready(function() {
                 try {
                     
                     ErrorManager.addCatalog("data/errors/core.xml");
                     ErrorManager.addCatalog("data/errors/configuration.xml");
-                    ErrorManager.addCatalog("data/errors/components.xml");
+                    ErrorManager.addCatalog("data/errors/component.xml");
                     
                     CFG.load("data/configurations/production.xml");
                     CFG.load("data/configurations/development.xml");
                     
-                    
+                    console.log(Toolkit.cut($("div").text(), 32));
                     
                 } catch (e) {
-                    ErrorManager.process(e);
+                    ErrorManager.process(e); 
                 }
             });
         </script>
