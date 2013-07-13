@@ -30,9 +30,9 @@ function Error(context, code, params, cause) {
     this.params = params;
     this.getParams = function() {
         return this.params;
-    }
+    };
     this.getParam = function(i) {
-        return Toolkit.shorten(this.params[i].toString().replace(/[\n\r]/g, ''), 96);
+        return this.params[i].toString();
     };
     
     /* Error cause */

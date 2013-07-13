@@ -137,11 +137,13 @@ var ErrorManager = {
         var prefix = "";
         var message = "";
         var params = "";
+        var paramspre = "";
         var causes = "";
         var stack = "";
         var causeprefix = "";
         var causemessage = "";
         var causeparams = "";
+        var causeparamspre = "";
         var causestack = "";
         var causecatalog, causeentry;
         var parent = null;
@@ -164,8 +166,11 @@ var ErrorManager = {
             params += Toolkit.repeatedString(prefix.length, " ");
             params += " > ";
             params += Toolkit.followingChars($(this).text(), 24, ".");
+            if (paramspre === "") {
+                paramspre = Toolkit.repeatedString(params.length - 1, " ");
+            }
             if (typeof(error.getParams()[$(this).attr("id")]) !== "undefined") {
-                params += error.getParam($(this).attr("id"));
+                params += Toolkit.cut(error.getParam($(this).attr("id")), 64).join("\n" + paramspre);
             } else {
                 params += "?";
             }
@@ -208,8 +213,11 @@ var ErrorManager = {
                 causeparams += Toolkit.repeatedString(prefix.length, " ");
                 causeparams += " > ";
                 causeparams += Toolkit.followingChars($(this).text(), 24, ".");
+                if (causeparamspre === "") {
+                    causeparamspre = Toolkit.repeatedString(causeparams.length - 1, " ");
+                }
                 if (typeof(parent.getParams()[$(this).attr("id")]) !== "undefined") {
-                    causeparams += parent.getParam($(this).attr("id"));
+                    causeparams += Toolkit.cut(parent.getParam($(this).attr("id")), 64).join("\n" + causeparamspre);
                 } else {
                     causeparams += "?";
                 }

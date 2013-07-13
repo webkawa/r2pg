@@ -68,19 +68,21 @@ var Toolkit = {
      cut: function(value, size) {
          var lines = [];
          var sum = 0;
-         var pointer = 0;
-         var backup = 0;
+         var p = 0;
          
-         while (pointer !== -1) {
-             backup = pointer;
-             pointer = value.toString().indexOf(" ", pointer + 1);
-             
-             if (pointer - sum > size) {
-                 lines[lines.length] = value.toString().substring(sum, backup + 1);
-                 sum += lines[lines.length - 1].length;
+         p = size;
+         while (p < value.length) {
+             while (value.charAt(p) !== " " && value.charAt(p) !== "\n" && p > sum) {
+                 p--;
              }
+             if (p === sum) {
+                 p = sum + size;
+             }
+             lines[lines.length] = value.substr(sum, p - sum);
+             sum = p + 1;
+             p = Math.min(sum + size, value.length);
          }
-         lines[lines.length] = value.toString().substr(sum);
+         lines[lines.length] = value.substr(sum);
          
          return lines;
      },
