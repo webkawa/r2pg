@@ -10,8 +10,9 @@
     <group id="errors">
         <boolean id="display.minor">false</boolean>
         <boolean id="display.major">true</boolean>
-        <integer id="display.messages.length">96</integer>
-        <integer id="display.parameters.length">96</integer>
+        <integer id="display.length.messages">96</integer>
+        <integer id="display.length.causes">96</integer>
+        <integer id="display.length.params">24</integer>
     </group>
     
     <group id="infos">
