@@ -4,6 +4,12 @@
 
 function LogWriter(entity) {
     Toolkit.checkValue("LogWriter", "entity", entity, "object");
+    if (typeof(entity.getLogID) !== "function") {
+        var p = {
+            entity: entity
+        };
+        throw new Error("log", 1, p);
+    }
     
     /* Writing entity */
     this.entity = entity;
@@ -18,5 +24,11 @@ function LogWriter(entity) {
     };
     this.increaseCount = function() {
         this.count++;
+    };
+    
+    /* Log ID */
+    this.logID = entity.getLogID();
+    this.getLogID = function() {
+        return this.logID;
     };
 };

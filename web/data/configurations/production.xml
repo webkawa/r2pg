@@ -12,7 +12,14 @@
         <boolean id="display.major">true</boolean>
         <integer id="display.length.messages">96</integer>
         <integer id="display.length.causes">96</integer>
-        <integer id="display.length.params">24</integer>
+        <integer id="display.length.params">48</integer>
+    </group>
+    
+    <group id="logs">
+        <boolean id="display">false</boolean>
+        <integer id="display.length.prefix">24</integer>
+        <integer id="display.length.message">96</integer>
+        <integer id="display.length.directout">96</integer>
     </group>
     
     <group id="infos">

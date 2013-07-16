@@ -7,9 +7,13 @@
         <boolean id="dev">true</boolean>
     </group>
     
+    <group id="logs">
+        <boolean id="display">true</boolean>
+    </group>
+    
     <group id="errors">
         <boolean id="display.minor">true</boolean>
-        <boolean id="display.major">false</boolean>
+        <boolean id="display.major">true</boolean>
     </group>
     
 </configuration>
