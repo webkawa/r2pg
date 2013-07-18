@@ -3,7 +3,7 @@
  *  > entity                Writing entity.                                     */
 
 function LogWriter(entity) {
-    Toolkit.checkValue("LogWriter", "entity", entity, "object");
+    Toolkit.checkTypeOf("LogWriter", "entity", entity, "object");
     if (typeof(entity.getLogID) !== "function") {
         var p = {
             entity: entity

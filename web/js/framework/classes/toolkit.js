@@ -131,7 +131,7 @@ var Toolkit = {
      *  > value         Variable value.
      *  > type          Expected JS type as result of typeof() function.
      * RETURNS : N/A                                                            */
-    checkValue: function(object, name, value, type) {
+    checkTypeOf: function(object, name, value, type) {
         var rtype = typeof(value);
         if (rtype === "undefined" || rtype !== type) {
             var p = {

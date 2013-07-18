@@ -3,10 +3,10 @@
  *  and type.                                                                   */
 
 function CFGItem(group, key, level, type, value) {
-    Toolkit.checkValue("CFGItem", "group", group, "string");
-    Toolkit.checkValue("CFGItem", "key", key, "string");
-    Toolkit.checkValue("CFGItem", "level", level, "number");
-    Toolkit.checkValue("CFGItem", "type", type, "string");
+    Toolkit.checkTypeOf("CFGItem", "group", group, "string");
+    Toolkit.checkTypeOf("CFGItem", "key", key, "string");
+    Toolkit.checkTypeOf("CFGItem", "level", level, "number");
+    Toolkit.checkTypeOf("CFGItem", "type", type, "string");
     
     /* Group */
     this.group = group;

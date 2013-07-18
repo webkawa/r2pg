@@ -4,12 +4,12 @@
  * PARAMETERS :
  *  > ref                   Method reference.
  *  > name                  Method name.                                        
- *  > rw                    Rewritable method (yes if true)                     */
+ *  > rw                    Rewritable method (yes if true).                    */
 
 function Method(ref, name, rw) {
-    Toolkit.checkValue("Method", "ref", ref, "object");
-    Toolkit.checkValue("Method", "name", name, "string");
-    Toolkit.checkValue("Method", "rw", name, "boolean");
+    Toolkit.checkTypeOf("Method", "ref", ref, "function");
+    Toolkit.checkTypeOf("Method", "name", name, "string");
+    Toolkit.checkTypeOf("Method", "rw", name, "boolean");
     
     /* Reference */
     this.reference = ref;
@@ -18,7 +18,7 @@ function Method(ref, name, rw) {
     };
     
     /* Name */
-    this.name = name;
+    this.name = name.toLowerCase();
     this.getName = function() {
         return this.name;
     };

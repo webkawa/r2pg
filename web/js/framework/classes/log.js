@@ -89,13 +89,15 @@ var Log = {
             complement += Toolkit.cut(directout, cfg_clength).join("\n" + messagepre);
         }
         
-        // Print
-        console.log(prefix + message + complement);
-        
         // Fill last writer
         Log.lastwriter = writer;
         
         // Increase writer count
         writer.increaseCount();
+        
+        // Print
+        if (CFG.get("logs", "display")) {
+            console.log(prefix + message + complement);
+        }
     }
 };

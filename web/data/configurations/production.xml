@@ -22,6 +22,10 @@
         <integer id="display.length.directout">96</integer>
     </group>
     
+    <group id="components">
+        <boolean id="allow.inactive.selectors">false</boolean>
+    </group>
+    
     <group id="infos">
         <string id="version">PRE-ALPHA</string>
         <date id="realease">2013-07-10</date>
