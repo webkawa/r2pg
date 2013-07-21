@@ -23,6 +23,7 @@
     </group>
     
     <group id="components">
+        <boolean id="allow.invalid.start">false</boolean>
         <boolean id="allow.inactive.selectors">false</boolean>
     </group>
     

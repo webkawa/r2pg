@@ -35,8 +35,8 @@ function Selector(owner, name, path) {
     };
     
     /* Status */
-    this.status = true;
-    this.isActive = function() {
+    this.status = false;
+    this.getStatus = function() {
         return this.status;
     };
     this.on = function() {

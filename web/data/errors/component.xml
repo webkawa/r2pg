@@ -17,13 +17,13 @@
       
     <error code="2" critical="true">
         <message>Call to undefined method</message>
-        <param required="true" id="component">Component name</param>
+        <param required="true" id="component">Component ID</param>
         <param required="true" id="name">Method name</param>
     </error>    
     
     <error code="3" critical="true">
         <message>Try to implement an invalid method object</message>
-        <param required="true" id="component">Component name</param>
+        <param required="true" id="component">Component ID</param>
         <param required="true" id="item">Implemented item</param>
     </error>
     
@@ -42,6 +42,44 @@
     <error code="6">
         <message>Unable to find the requested selector</message>
         <param required="true" id="name">Name</param>
+    </error>
+    
+    <error code="7">
+        <message>Try to rewrite a locked method</message>
+        <param required="true" id="component">Component ID</param>
+        <param required="true" id="name">Method name</param>
+    </error>
+    
+    <error code="8">
+        <message>Try to add an already defined selector</message>
+        <param required="true" id="name">Name</param>
+    </error>
+    
+    <error code="9">
+        <message>Try to set an invalid component state</message>
+        <param required="true" id="component">Component ID</param>
+        <param required="true" id="state">State</param>
+    </error>
+    
+    <error code="10">
+        <message>Try to start an already started component</message>
+        <param required="true" id="component">Component ID</param>
+    </error>
+    
+    <error code="11">
+        <message>Call for invalid sequence target</message>
+        <param required="true" id="component">Component ID</param>
+        <param required="true" id="target">Target</param>
+    </error>
+    
+    <error code="12">
+        <message>Failed to call method</message>
+        <param required="true" id="component">Component ID</param>
+        <param required="true" id="name">Method</param>
+    </error>
+    
+    <error code="13">
+        <message>Animation failed</message>
     </error>
     
 </catalog>
