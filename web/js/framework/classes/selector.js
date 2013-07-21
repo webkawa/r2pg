@@ -3,10 +3,12 @@
  * PARAMETERS :
  *  > owner                 Owner component.
  *  > name                  Selector name.
- *  > path                  Selector path.                                      */
+ *  > path                  Selector path.                                      
+ *  > state                 Parent state (null if component).                   */
 
-function Selector(owner, name, path) {
+function Selector(owner, name, path, state) {
     Toolkit.checkTypeOf("Selector", "owner", owner, "object");
+    Toolkit.checkClassOf("Selector", "owner", owner, Component);
     Toolkit.checkTypeOf("Selector", "name", name, "string");
     Toolkit.checkTypeOf("Selector", "path", path, "string");
     
@@ -32,6 +34,12 @@ function Selector(owner, name, path) {
     this.nodes = null;
     this.getNodes = function() {
         return this.nodes;
+    };
+    
+    /* Parent state */
+    this.state = state;
+    this.getState = function() {
+        return this.state;
     };
     
     /* Status */

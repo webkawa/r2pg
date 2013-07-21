@@ -7,6 +7,7 @@
 
 function Component(container, descriptor, methods) {
     Toolkit.checkTypeOf("Component", "container", container, "object");
+    Toolkit.checkClassOf("Component", "container", container, jQuery);
     Toolkit.checkTypeOf("Component", "descriptor", descriptor, "string");
     Toolkit.checkTypeOf("Component", "methods", methods, "array");
     
@@ -78,11 +79,14 @@ function Component(container, descriptor, methods) {
         }
         return false;
     };
-    this.getSelector = function(name) {
+    this.getSelector = function(name, refresh) {
         var cfg_ais = CFG.get("components", "allow.inactive.selectors");
         for (var i = 0; i < this.selectors.length; i++) {
             if (this.selectors[i].getName() === name) {
                 if (this.selectors[i].isActive() || cfg_ais) {
+                    if (refresh) {
+                        this.selectors[i].refresh();
+                    }
                     return this.selectors[i];
                 } else {
                     var p = {
@@ -130,7 +134,7 @@ function Component(container, descriptor, methods) {
     };
     
     /* DOM re-writer.
-     * Empties and re-writes container DOM content.
+     * Empties and re-writes container DOM.
      * PARAMETERS :
      *  data                    DOM data.
      * RETURN : N/A                                                             */
@@ -138,6 +142,50 @@ function Component(container, descriptor, methods) {
         $(this.container).empty();
         $(this.container).append(data);
     }
+    
+    /* Triggers refresher.
+     * Unbind, then re-bind all triggers for the selected state.
+     * PARAMETERS : N/A
+     * RETURNS : N/A                                                            */
+    this.retrigger = function() {
+        var nodes = $([]);
+        var ctx = this;
+        var targets;
+        var bind;
+        
+        $(this.container).find().unbind();
+        
+        $(nodes).add($(this.data).find('component > trigger'));
+        $(nodes).add($(this.data).find('component > state[id="' + this.state + '"] > trigger'));
+        
+        $(nodes).each(function() {
+            // Parsing
+            targets = $([]);
+            $(this).children("target").each(function() {
+                $(targets).add(ctx.getSelector($(this).text(), $(this).attr("refresh") === "true").getNodes());
+            });
+            bind = $(this).attr("bind");
+            
+            // Binding
+            $(targets).bind(bind, ctx.call($(this).children("call")));
+        });
+    };
+    
+    /* Selector refresher.
+     * Checks all selectors for activation/desactivation.
+     * PARAMETERS : N/A
+     * RETURNS : N/A                                                            */
+    this.reselect = function() {
+        var buff;
+        for (var i = 0; i < this.selectors.length; i++) {
+            buff = this.selectors[i];
+            if (buff.getState() === this.state || typeof(buff.getState()) === "undefined") {
+                buff.on();
+            } else {
+                buff.off();
+            }
+        }
+    };
     
     /* Call a pre-saved animation.
      * PARAMETERS :
@@ -190,17 +238,19 @@ function Component(container, descriptor, methods) {
         $(targets).css(from);
         
         // Execution
+        var ctx = this;
         $(targets).animate(to, {
             duration: $(animation).children("speed").text(),
             easing: $(animation).children("easing").text(),
             fail: function() {
                 throw new Error("cpn", 13);
             }, done: function() {
+                // Standard postbacks
                 $(postback.methods).each(function() {
-                    this.call(this);
+                    ctx.call(this);
                 });
                 $(postback.sequences).each(function() {
-                    this.execute(this);
+                    ctx.execute(this);
                 });
             }
         });
@@ -229,16 +279,14 @@ function Component(container, descriptor, methods) {
         }
         
         // Loading targets
+        var ctx = this;
         $(sequence).children("target").each(function() {
             try {
-                buff = this.getSelector($(this).text());
-                if ($(this).attr("refresh") === "true") {
-                    buff.refresh();
-                }
+                buff = this.getSelector($(this).text(), $(this).attr("refresh") === "true");
                 $(targets).add(buff.getNodes());
             } catch (e) {
                 var p = {
-                    component: this.getID(),
+                    component: ctx.getID(),
                     target: $(this).text()
                 };
                 throw new Error("cpn", 11, p, e);
@@ -274,13 +322,83 @@ function Component(container, descriptor, methods) {
             this.rewrite($(this.data).find("component > loader > dom").text());
             
             // Launching start actions
+            var ctx = this;
             $(this.data).find("component > loader > action").each(function() {
-                this.execute(this);
+                ctx.execute(this);
             });
+            
+            // Migrating to initial state
+            this.go($(this.data).find("component > loader > to").text());
         }
     };
     
-    
+    /* Manages transition from current state to another state.
+     * PARAMETERS :
+     *  to                      Destination state.
+     * RETURN : N/A                                                             */
+    this.go = function(to) {
+        var ctx = this;
+        var node_origin = $(this.data).find('component > state[id="' + this.state + "']");
+        var node_dest   = $(this.data).find('component > state[id="' + to + '"]');
+        var seq_exit;
+        var seq_entry;
+        
+        try {
+            // Checking destination
+            if ($(node_dest).length !== 1) {
+                var p = {
+                    destination: to
+                };
+                throw new Error("cpn", 15, p);
+            }
+            
+            // Loading exit/entry sequences
+            if ($(node_origin).children('out[to="' + to + '"]').length === 1) {
+                seq_exit = $(node_origin).children('out[to="' + to + '"]');
+            } else {
+                if ($(node_origin).children('out:not([to])').length === 1) {
+                    seq_exit = $(node_origin).children('out:not([to])');
+                }
+            }
+            if ($(node_dest).children('in[from="' + this.state + '"]').length === 1) {
+                seq_entry = $(node_dest).children('in[from="' + this.state + '"]');
+            } else {
+                if ($(node_dest).children('in:not([from])').length === 1) {
+                    seq_entry = $(node_dest).children('in:not([from])');
+                }
+            }
+            
+            // Unloading triggers
+            $(this.container).find().unbind();
+            
+            // Executing exit sequence
+            if (typeof(seq_exit) !== "undefined") {
+                this.execute(seq_exit);
+            }
+            $(this.container).find().promise("fx", function() {     
+                // Switching state
+                ctx.setState(to);
+                    
+                // Executing entry sequence
+                if (typeof(seq_entry) !== "undefined") {
+                    ctx.execute(seq_entry);
+                }
+                $(this.container).find().promise("fx", function() {    
+                    // Revalidating selectors
+                    ctx.reselect();
+                    
+                    // Reloading triggers
+                    ctx.retrigger();
+                });
+            });
+        } catch (e) {
+            var p = {
+                component: this.getID()
+            };
+            throw new Error("cpn", 14, p, e);
+        }
+    };
+        
     /* Initialize */
     Log.print(this, "Initializing new component\n---------------------------");
     Log.print(this, "Loading descriptor");
@@ -316,19 +434,26 @@ function Component(container, descriptor, methods) {
     }
     
     Log.print(this, "Loading selectors");
+    var ctx = this;
     $(this.data).find("selector").each(function() {
         var buff;
         if (this.isSelector($(this).attr("id"))) {
             var p = {
                 name: $(this).attr("id")
             };
+            throw new Error("cpn", 8, p);
         } else {
             buff = new Selector(
-                this, 
+                ctx, 
                 $(this).attr("id"),
-                $(this).text()
+                $(this).text(),
+                $(this).parents("state").attr("id")
             );
             this.selectors[this.selectors.length] = buff;
         }
     });
+    
+    Log.print(this, "Reselect/retrigger");
+    this.reselect();
+    this.retrigger();
 };

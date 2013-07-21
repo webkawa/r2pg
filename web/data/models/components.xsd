@@ -157,6 +157,8 @@
             <xs:element name="action"
                         type="sequence"
                         maxOccurs="unbounded" />
+            <xs:element name="to"
+                        type="string" />
         </xs:sequence>
     </xs:complexType>
     
@@ -213,7 +215,7 @@
             <xs:element name="selectors"
                         type="selectors"
                         minOccurs="0" />
-            <xs:element name="triggers"
+            <xs:element name="trigger"
                         type="trigger"
                         minOccurs="0" />
         </xs:sequence>
@@ -235,7 +237,7 @@
                 <xs:element name="selectors"
                             type="selectors"
                             minOccurs="0" />
-                <xs:element name="triggers"
+                <xs:element name="trigger"
                             type="trigger"
                             minOccurs="0" />
                 <xs:element name="loader"

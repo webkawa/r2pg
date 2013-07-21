@@ -123,7 +123,7 @@ var Toolkit = {
         }
     },
     
-    /* Checks if a variable is correctly initialized with pre-assigned format
+    /* Checks if a variable is correctly initialized with a pre-assigned format
      * and throws an error if necessary.
      * PARAMETERS :
      *  > object        Object name.
@@ -142,6 +142,25 @@ var Toolkit = {
                 rtype: rtype
             };
             throw new Error("core", 5, p);
+        }
+    },
+    
+    /* Checks if a variable is correctly initialized with a pre-assigned class
+     * and throws an error if necessary.
+     * PARAMETERS :
+     *  > object        Object name.
+     *  > name          Variable name.
+     *  > value         Variable value.
+     *  > proto         Class prototype.                                        */
+    checkClassOf: function(object, name, value, proto) {
+        if (!(value instanceof proto)) {
+            var p = {
+                object: object,
+                name: name,
+                value: value,
+                proto: proto
+            };
+            throw new Error("core", 6, p);
         }
     }
 };

@@ -36,12 +36,20 @@
     </error>
     
     <error code="5">
-        <message>Invalid initialization parameter</message>
+        <message>Invalid initialization parameter type</message>
         <param required="true" id="object">Object</param>
         <param required="true" id="name">Variable</param>
         <param id="value">Received value</param>
         <param id="type">Expected type</param>
         <param id="rtype">Detected type</param>
     </error>
-    
+
+    <error code="6">
+        <message>Invalid initialization parameter class</message>
+        <param required="true" id="object">Object</param>
+        <param required="true" id="name">Variable</param>
+        <param name="value">Received value</param>
+        <param name="proto">Expected class</param>
+    </error>
+            
 </catalog>
