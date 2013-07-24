@@ -156,6 +156,7 @@
                         type="string" />
             <xs:element name="action"
                         type="sequence"
+                        minOccurs="0"
                         maxOccurs="unbounded" />
             <xs:element name="to"
                         type="string" />

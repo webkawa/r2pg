@@ -2,14 +2,12 @@
  * Independant, semi-auto managed front-office component.
  * PARAMETERS :
  *  > container             Containing node.
- *  > descriptor            URL of description file.
- *  > methods               Array of methods to implement.                      */
+ *  > descriptor            URL of description file.                            */
 
-function Component(container, descriptor, methods) {
+function Component(container, descriptor) {
     Toolkit.checkTypeOf("Component", "container", container, "object");
     Toolkit.checkClassOf("Component", "container", container, jQuery);
     Toolkit.checkTypeOf("Component", "descriptor", descriptor, "string");
-    Toolkit.checkTypeOf("Component", "methods", methods, "array");
     
     /* Container */
     this.container = container;
@@ -27,6 +25,9 @@ function Component(container, descriptor, methods) {
     this.model = null;
     this.getModelName = function() {
         return $(this.model).find("component").attr("name");
+    };
+    this.getModelType = function() {
+        return $(this.model).find("component").attr("type");
     };
     
     /* Methods */
@@ -52,6 +53,13 @@ function Component(container, descriptor, methods) {
         throw new Error("cpn", 2, p);
     };
     this.saveMethod = function(method) {
+        if (!(method instanceof Method)) {    
+            var p = {
+                component: this.getID(),
+                item: methods[i]
+            };
+            throw new Error("cpn", 3, p);
+        }
         for (var i = 0; i < this.methods.length; i++) {
             if (this.methods[i].getName() === method.getName()) {
                 if (this.methods[i].isRewritable()) {
@@ -73,7 +81,7 @@ function Component(container, descriptor, methods) {
     this.selectors = [];
     this.isSelector = function(name) {
         for (var i = 0; i < this.selectors.length; i++) {
-            if (this.selectors[i].getName() === name && this.selectors[i].isActive()) {
+            if (this.selectors[i].getName() === name && this.selectors[i].getStatus()) {
                 return true;
             }
         }
@@ -83,7 +91,7 @@ function Component(container, descriptor, methods) {
         var cfg_ais = CFG.get("components", "allow.inactive.selectors");
         for (var i = 0; i < this.selectors.length; i++) {
             if (this.selectors[i].getName() === name) {
-                if (this.selectors[i].isActive() || cfg_ais) {
+                if (this.selectors[i].getStatus() || cfg_ais) {
                     if (refresh) {
                         this.selectors[i].refresh();
                     }
@@ -104,12 +112,12 @@ function Component(container, descriptor, methods) {
     };
     
     /* Current state */
-    this.state = null;
+    this.state;
     this.getState = function() {
         return this.state;
     };
     this.setState = function(state) {
-        if ($(this.data).find('state[id="' + state + '"]')) {
+        if ($(this.model).find('state[id="' + state + '"]')) {
             this.state = state;
         } else {
             var p = {
@@ -120,17 +128,13 @@ function Component(container, descriptor, methods) {
         }
     };
     
-    /* Generates and returns an unique ID for the component based on the index.
-     * PARAMETERS : N/A
-     * RETURNS :
-     *  Component unique ID.                                                    */
+    /* ID */
+    this.id = Register.add(this);
     this.getID = function() {
-        /* TODO */
-        return 'MyID';
+        return this.id;
     };
     this.getLogID = function() {
-        // TODO
-        return "MyID";
+        return 'Component ' + this.getModelName() + '#' + this.id;
     };
     
     /* DOM re-writer.
@@ -155,14 +159,14 @@ function Component(container, descriptor, methods) {
         
         $(this.container).find().unbind();
         
-        $(nodes).add($(this.data).find('component > trigger'));
-        $(nodes).add($(this.data).find('component > state[id="' + this.state + '"] > trigger'));
-        
+        nodes = $(nodes).add($(this.model).find('component > trigger'));
+        nodes = $(nodes).add($(this.model).find('component > state[id="' + this.state + '"] > trigger'));
+
         $(nodes).each(function() {
             // Parsing
             targets = $([]);
             $(this).children("target").each(function() {
-                $(targets).add(ctx.getSelector($(this).text(), $(this).attr("refresh") === "true").getNodes());
+                targets = $(targets).add(ctx.getSelector($(this).text(), $(this).attr("refresh") === "true").getNodes());
             });
             bind = $(this).attr("bind");
             
@@ -283,7 +287,7 @@ function Component(container, descriptor, methods) {
         $(sequence).children("target").each(function() {
             try {
                 buff = this.getSelector($(this).text(), $(this).attr("refresh") === "true");
-                $(targets).add(buff.getNodes());
+                targets = $(targets).add(buff.getNodes());
             } catch (e) {
                 var p = {
                     component: ctx.getID(),
@@ -319,16 +323,20 @@ function Component(container, descriptor, methods) {
             }
         } else {
             // Writing initial DOM
-            this.rewrite($(this.data).find("component > loader > dom").text());
+            this.rewrite($(this.model).find("component > loader > dom").text());
             
             // Launching start actions
             var ctx = this;
-            $(this.data).find("component > loader > action").each(function() {
+            $(this.model).find("component > loader > action").each(function() {
                 ctx.execute(this);
             });
             
             // Migrating to initial state
-            this.go($(this.data).find("component > loader > to").text());
+            this.go($(this.model).find("component > loader > to").text());
+            
+            // Reselect / Retrigger
+            this.reselect();
+            this.retrigger();
         }
     };
     
@@ -338,8 +346,11 @@ function Component(container, descriptor, methods) {
      * RETURN : N/A                                                             */
     this.go = function(to) {
         var ctx = this;
-        var node_origin = $(this.data).find('component > state[id="' + this.state + "']");
-        var node_dest   = $(this.data).find('component > state[id="' + to + '"]');
+        var node_origin;
+        if (typeof(this.state) !== "undefined") {
+            node_origin = $(this.model).find('component > state[id="' + this.state + "']");
+        }
+        var node_dest = $(this.model).find('component > state[id="' + to + '"]');
         var seq_exit;
         var seq_entry;
         
@@ -353,11 +364,13 @@ function Component(container, descriptor, methods) {
             }
             
             // Loading exit/entry sequences
-            if ($(node_origin).children('out[to="' + to + '"]').length === 1) {
-                seq_exit = $(node_origin).children('out[to="' + to + '"]');
-            } else {
-                if ($(node_origin).children('out:not([to])').length === 1) {
-                    seq_exit = $(node_origin).children('out:not([to])');
+            if (typeof(node_origin) !== "undefined") {
+                if ($(node_origin).children('out[to="' + to + '"]').length === 1) {
+                    seq_exit = $(node_origin).children('out[to="' + to + '"]');
+                } else {
+                    if ($(node_origin).children('out:not([to])').length === 1) {
+                        seq_exit = $(node_origin).children('out:not([to])');
+                    }
                 }
             }
             if ($(node_dest).children('in[from="' + this.state + '"]').length === 1) {
@@ -400,8 +413,9 @@ function Component(container, descriptor, methods) {
     };
         
     /* Initialize */
-    Log.print(this, "Initializing new component\n---------------------------");
+    Log.print(this, "Initializing new component");
     Log.print(this, "Loading descriptor");
+    var ajbuff;
     jQuery.ajax({
         type: "GET",
         url: this.descriptor,
@@ -417,27 +431,15 @@ function Component(container, descriptor, methods) {
         };
         throw new Error("cpn", 4, p);
     }).success(function(data) {
-        this.model = data;
+        ajbuff = data;
     });
-    
-    Log.print(this, "Referencing methods");
-    for (var i = 0; i < methods.length; i++) {
-        if (methods[i] instanceof Method) {
-            this.saveMethod(methods[i]);
-        } else {
-            var p = {
-                component: this.getID(),
-                item: methods[i]
-            };
-            throw new Error("cpn", 3, p);
-        }
-    }
+    this.model = ajbuff;
     
     Log.print(this, "Loading selectors");
     var ctx = this;
-    $(this.data).find("selector").each(function() {
+    $(this.model).find("selector").each(function() {
         var buff;
-        if (this.isSelector($(this).attr("id"))) {
+        if (ctx.isSelector($(this).attr("id"))) {
             var p = {
                 name: $(this).attr("id")
             };
@@ -449,11 +451,7 @@ function Component(container, descriptor, methods) {
                 $(this).text(),
                 $(this).parents("state").attr("id")
             );
-            this.selectors[this.selectors.length] = buff;
+            ctx.selectors[ctx.selectors.length] = buff;
         }
     });
-    
-    Log.print(this, "Reselect/retrigger");
-    this.reselect();
-    this.retrigger();
 };

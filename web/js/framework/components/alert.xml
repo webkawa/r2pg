@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Framework native errors -->
+<component xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="../../../data/models/components.xsd"
+         type="classic" 
+         name="alert" >
+    
+    <selectors>
+        <selector id="window">div.window</selector>
+        <selector id="message">div.window > div.message</selector>
+        <selector id="button">div.window > div.button</selector>
+    </selectors>
+    <loader>
+        <dom>
+            <![CDATA[
+                <div class="window">
+                    <div class="message">Message</div>
+                    <div class="button">Button</div>
+                </div>
+            ]]>
+        </dom>
+        <to>open</to>
+    </loader>
+    <state id="open">
+        <trigger bind="click">
+            <target>button</target>
+            <call>
+                <name>close</name>
+            </call>
+        </trigger>
+    </state>
+</component>

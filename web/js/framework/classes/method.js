@@ -9,7 +9,7 @@
 function Method(ref, name, rw) {
     Toolkit.checkTypeOf("Method", "ref", ref, "function");
     Toolkit.checkTypeOf("Method", "name", name, "string");
-    Toolkit.checkTypeOf("Method", "rw", name, "boolean");
+    Toolkit.checkTypeOf("Method", "rw", rw, "boolean");
     
     /* Reference */
     this.reference = ref;
