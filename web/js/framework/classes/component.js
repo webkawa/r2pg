@@ -110,6 +110,12 @@ function Component(container, descriptor) {
         };
         throw new Error("cpn", 6, p);
     };
+    this.quickSelect = function(name, refresh) {
+        if (typeof(refresh) === "undefined") {
+            refresh = false;
+        }
+        return this.getSelector(name, refresh).getNodes();
+    }
     
     /* Current state */
     this.state;
@@ -288,7 +294,7 @@ function Component(container, descriptor) {
         var ctx = this;
         $(sequence).children("target").each(function() {
             try {
-                buff = this.getSelector($(this).text(), $(this).attr("refresh") === "true");
+                buff = ctx.getSelector($(this).text(), $(this).attr("refresh") === "true");
                 targets = $(targets).add(buff.getNodes());
             } catch (e) {
                 var p = {
@@ -345,22 +351,17 @@ function Component(container, descriptor) {
     this.go = function(to) {
         var ctx = this;
         var node_origin;
+        var node_dest;
         if (typeof(this.state) !== "undefined") {
-            node_origin = $(this.model).find('component > state[id="' + this.state + "']");
+            node_origin = $(this.model).find('component > state[id="' + this.state + '"]');
         }
-        var node_dest = $(this.model).find('component > state[id="' + to + '"]');
+        if (typeof(to) !== "undefined") {
+            node_dest = $(this.model).find('component > state[id="' + to + '"]');
+        }
         var seq_exit;
         var seq_entry;
         
         try {
-            // Checking destination
-            if ($(node_dest).length !== 1) {
-                var p = {
-                    destination: to
-                };
-                throw new Error("cpn", 15, p);
-            }
-            
             // Loading exit/entry sequences
             if (typeof(node_origin) !== "undefined") {
                 if ($(node_origin).children('out[to="' + to + '"]').length === 1) {
@@ -371,11 +372,13 @@ function Component(container, descriptor) {
                     }
                 }
             }
-            if ($(node_dest).children('in[from="' + this.state + '"]').length === 1) {
-                seq_entry = $(node_dest).children('in[from="' + this.state + '"]');
-            } else {
-                if ($(node_dest).children('in:not([from])').length === 1) {
-                    seq_entry = $(node_dest).children('in:not([from])');
+            if (typeof(node_dest) !== "undefined") {
+                if ($(node_dest).children('in[from="' + this.state + '"]').length === 1) {
+                    seq_entry = $(node_dest).children('in[from="' + this.state + '"]');
+                } else {
+                    if ($(node_dest).children('in:not([from])').length === 1) {
+                        seq_entry = $(node_dest).children('in:not([from])');
+                    }
                 }
             }
             
@@ -452,4 +455,7 @@ function Component(container, descriptor) {
             ctx.selectors[ctx.selectors.length] = buff;
         }
     });
+    
+    Log.print(this, "Saving default methods");
+    this.saveMethod(new Method(this.go, "go", this, false));
 };

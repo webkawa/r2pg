@@ -43,7 +43,7 @@ function Method(ref, name, context, rw) {
      *  Implemented function result.                                            */
     this.call = function(params) {
         try {
-            this.getReference().apply(this.context, params);
+            return this.getReference().apply(this.context, params);
         } catch (e) {
             var p = {
                 name: this.name,
