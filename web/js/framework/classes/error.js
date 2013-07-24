@@ -52,7 +52,7 @@ function Error(context, code, params, cause) {
     
     /* Error ID.
      * RETURNS : error full ID.                                                 */
-    this.getId = function() {
+    this.getID = function() {
         return  Toolkit.leadingChars(this.code, 4, "0") + 
                 "@" + 
                 Toolkit.followingChars(this.context.toUpperCase(), 8, ".");
@@ -65,7 +65,7 @@ function Error(context, code, params, cause) {
     this.getCauseLength = function() {
         var i = 0;
         var buff = this.getCause();
-        while (typeof(buff) !== "undefined") {
+        while (buff instanceof Error) {
             i++;
             buff = buff.getCause();
         }

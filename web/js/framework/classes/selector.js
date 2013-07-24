@@ -60,7 +60,7 @@ function Selector(owner, name, path, state) {
      * RETURNS :
      *  New nodes list.                                                          */
     this.refresh = function() {
-        this.nodes = $(this.owner).find(this.path);
+        this.nodes = $(this.owner.getContainer()).find(this.path);
         return this.nodes;
     };
 };

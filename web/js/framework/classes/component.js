@@ -41,7 +41,7 @@ function Component(container, descriptor) {
         return false;
     };
     this.getMethod = function(name) {
-        for (var i = 0; i < this.length; i++) {
+        for (var i = 0; i < this.methods.length; i++) {
             if (this.methods[i].getName() === name) {
                 return this.methods[i];
             }
@@ -145,7 +145,7 @@ function Component(container, descriptor) {
     this.rewrite = function(data) {
         $(this.container).empty();
         $(this.container).append(data);
-    }
+    };
     
     /* Triggers refresher.
      * Unbind, then re-bind all triggers for the selected state.
@@ -171,7 +171,9 @@ function Component(container, descriptor) {
             bind = $(this).attr("bind");
             
             // Binding
-            $(targets).bind(bind, ctx.call($(this).children("call")));
+            $(this).children("call").each(function() {
+                $(targets).on(bind, $.proxy(ctx.call, this, ctx));
+            });
         });
     };
     
@@ -185,6 +187,7 @@ function Component(container, descriptor) {
             buff = this.selectors[i];
             if (buff.getState() === this.state || typeof(buff.getState()) === "undefined") {
                 buff.on();
+                buff.refresh();
             } else {
                 buff.off();
             }
@@ -193,24 +196,23 @@ function Component(container, descriptor) {
     
     /* Call a pre-saved animation.
      * PARAMETERS :
-     *  node                    Method node.
+     *  context                     Binding context.
      * RETURN :
      *  Method result.                                                          */
-    this.call = function(node) {
-        var name = $(node).children("name").text();
+    this.call = function(context) {
+        var name = $(this).children("name").text();
         var params = [];
-        $(node).children("parameter").each(function() {
+        $(this).children("parameter").each(function() {
             params[params.length] = $(this).text();
         });
         
         try {
-            return this.getMethod(name).call(this, params);
+            return context.getMethod(name).call(params);
         } catch (e) {
             var p = {
-                component: this.getID(),
                 name: name
             };
-            throw new Error("cpn", 12, p, e);
+            ErrorManager.process(new Error("cpn", 12, p, e));
         }
     };
     
@@ -333,10 +335,6 @@ function Component(container, descriptor) {
             
             // Migrating to initial state
             this.go($(this.model).find("component > loader > to").text());
-            
-            // Reselect / Retrigger
-            this.reselect();
-            this.retrigger();
         }
     };
     
@@ -388,7 +386,7 @@ function Component(container, descriptor) {
             if (typeof(seq_exit) !== "undefined") {
                 this.execute(seq_exit);
             }
-            $(this.container).find().promise("fx", function() {     
+            $(this.container).find("*").promise().done(function() {     
                 // Switching state
                 ctx.setState(to);
                     
@@ -396,7 +394,7 @@ function Component(container, descriptor) {
                 if (typeof(seq_entry) !== "undefined") {
                     ctx.execute(seq_entry);
                 }
-                $(this.container).find().promise("fx", function() {    
+                $(this.container).find("*").promise().done(function() {    
                     // Revalidating selectors
                     ctx.reselect();
                     

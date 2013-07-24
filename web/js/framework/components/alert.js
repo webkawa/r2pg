@@ -5,10 +5,9 @@ function AlertCPN(container, message, button) {
     var cpn = new Component(container, "js/framework/components/alert.xml");
     
     var cpn_close = function() {
-        console.log("lol");
-        this.getSelector("message", false).append("test");
+        this.getSelector("message", false).getNodes().append("test");
     };
-    cpn.saveMethod(new Method(cpn_close, "close", false));
+    cpn.saveMethod(new Method(cpn_close, "close", cpn, false));
     
     return cpn;
 };

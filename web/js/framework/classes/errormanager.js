@@ -161,7 +161,7 @@ var ErrorManager = {
         // Prefix
         prefix += Toolkit.formatDate(new Date(), "exacthour");
         prefix += " ";
-        prefix += error.getId();
+        prefix += error.getID();
         
         // Message
         if (messagepre === "") {
@@ -197,7 +197,15 @@ var ErrorManager = {
         
         // Causes
         parent = error.getCause();
-        while (parent instanceof Error) {
+        while (typeof(parent) !== "undefined") {
+            if (!(parent instanceof Error)) {
+                var p = {
+                    name: parent.name,
+                    message: parent.message
+                };
+                parent = new Error("core", 2, p);
+            }
+            
             causes += "\n";
             
             // Cause prefix
@@ -205,7 +213,7 @@ var ErrorManager = {
             causeprefix += Toolkit.repeatedString(prefix.length, " ");
             causeprefix += "Caused by :";
             causeprefix += "\n";
-            causeprefix += Toolkit.leadingChars(parent.getId(), prefix.length, " ");
+            causeprefix += Toolkit.leadingChars(parent.getID(), prefix.length, " ");
             
             // Cause message
             causecatalog = ErrorManager.getCatalog(parent.getContext());

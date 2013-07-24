@@ -62,8 +62,8 @@
     </error>
     <error code="12">
         <message>Failed to call method</message>
-        <param required="true" id="component">Component ID</param>
         <param required="true" id="name">Method</param>
+        <param id="component">Component ID</param>
     </error>
     <error code="13">
         <message>Animation failed</message>

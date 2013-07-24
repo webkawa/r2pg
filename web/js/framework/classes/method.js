@@ -6,7 +6,7 @@
  *  > name                  Method name.                                        
  *  > rw                    Rewritable method (yes if true).                    */
 
-function Method(ref, name, rw) {
+function Method(ref, name, context, rw) {
     Toolkit.checkTypeOf("Method", "ref", ref, "function");
     Toolkit.checkTypeOf("Method", "name", name, "string");
     Toolkit.checkTypeOf("Method", "rw", rw, "boolean");
@@ -23,6 +23,12 @@ function Method(ref, name, rw) {
         return this.name;
     };
     
+    /* Context */
+    this.context = context;
+    this.getContext = function() {
+        return this.context;
+    };
+    
     /* Rewritable */
     this.rw = rw;
     this.isRewritable = function() {
@@ -35,13 +41,13 @@ function Method(ref, name, rw) {
      *  > params                Parameters as array.
      * RETURNS :
      *  Implemented function result.                                            */
-    this.call = function(context, params) {
+    this.call = function(params) {
         try {
-            this.getReference().apply(context, params);
+            this.getReference().apply(this.context, params);
         } catch (e) {
             var p = {
                 name: this.name,
-                context: context,
+                context: this.context,
                 params: params
             };
             throw new Error("cpn", 1, p, e);
