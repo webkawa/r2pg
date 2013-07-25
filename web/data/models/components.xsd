@@ -115,6 +115,9 @@
                         type="xs:decimal" />
             <xs:element name="easing"
                         type="easing" />
+            <xs:element name="progress"
+                        type="call"
+                        minOccurs="0" />
             <xs:element name="move"
                         type="move"
                         maxOccurs="unbounded" />
@@ -124,13 +127,13 @@
     <!-- Function calls -->
     <xs:complexType name="call">
         <xs:sequence>
-            <xs:element name="name" 
-                        type="string" />
             <xs:element name="parameter"
                         type="string"
                         minOccurs="0"
                         maxOccurs="unbounded" />
         </xs:sequence>
+        <xs:attribute name="call"
+                      type="string" />
     </xs:complexType>
     
     <!-- Sequence -->
@@ -139,14 +142,16 @@
             <xs:element name="target" 
                         type="target"
                         maxOccurs="unbounded" />
-            <xs:element name="precall"
+            <xs:element name="pre"
                         type="call"
-                        minOccurs="0" />
+                        minOccurs="0"
+                        maxOccurs="unbounded" />
             <xs:element name="animation" 
                         type="animation" />
-            <xs:element name="postcall" 
+            <xs:element name="post" 
                         type="call"
-                        minOccurs="0" />
+                        minOccurs="0"
+                        maxOccurs="unbounded" />
             <xs:element name="queue"
                         type="sequence"
                         minOccurs="0"
@@ -183,7 +188,7 @@
             <xs:element name="target"
                         type="target"
                         maxOccurs="unbounded" />
-            <xs:element name="call"
+            <xs:element name="action"
                         type="call" />
         </xs:sequence>
         <xs:attribute name="bind"

@@ -24,21 +24,18 @@
     <state id="Open">
         <trigger bind="click">
             <target>button</target>
-            <call>
-                <name>go</name>
-            </call>
+            <action call="go" />
         </trigger>
         <trigger bind="mouseover">
             <target>message</target>
-            <call>
-                <name>append</name>
-            </call>
+            <action call="append" />
         </trigger>
         <in>
             <target>window</target>
             <animation>
                 <speed>2000</speed>
                 <easing>swing</easing>
+                <progress call="plop" />
                 <move>
                     <property>opacity</property>
                     <from>0</from>
@@ -57,9 +54,7 @@
                     <to>0</to>
                 </move>
             </animation>
-            <postcall>
-                <name>clean</name>
-            </postcall>
+            <post call="clean" />
         </out>
     </state>
 </component>

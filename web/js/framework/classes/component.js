@@ -207,7 +207,7 @@ function Component(container, descriptor) {
             bind = $(this).attr("bind");
             
             // Binding
-            $(this).children("call").each(function() {
+            $(this).children("action").each(function() {
                 $(targets).on(bind, $.proxy(ctx.call, this, ctx));
             });
         });
@@ -236,7 +236,7 @@ function Component(container, descriptor) {
      * RETURN :
      *  Method result.                                                          */
     this.call = function(context) {
-        var name = $(this).children("name").text();
+        var name = $(this).attr("call");
         var params = [];
         $(this).children("parameter").each(function() {
             params[params.length] = $(this).text();
@@ -263,6 +263,7 @@ function Component(container, descriptor) {
         var from = {};
         var to = {};
         var b1, b2;
+        var ctx = this;
         
         // Initialization
         $(animation).children("move").each(function() {
@@ -279,8 +280,7 @@ function Component(container, descriptor) {
         $(targets).css(from);
         
         // Execution
-        var ctx = this;
-        $(targets).animate(to, {
+        var params = {
             duration: parseInt($(animation).children("speed").text()),
             easing: $(animation).children("easing").text(),
             fail: function() {
@@ -294,7 +294,13 @@ function Component(container, descriptor) {
                     ctx.execute(this);
                 });
             }
-        });
+        };
+        if ($(animation).children("progress").length === 1) {
+            params.progress = function() {
+                ctx.call.apply($(animation).children("progress"), [ctx]);
+            };
+        };
+        $(targets).animate(to, params);
     };
     
     /* Executes a pre-saved sequence.
@@ -315,7 +321,7 @@ function Component(container, descriptor) {
         var buff;
         
         // Executing pre-call
-        $(sequence).children("precall").each(function() {
+        $(sequence).children("pre").each(function() {
             ctx.call.apply(this, [ctx]);
         });
         
@@ -335,7 +341,7 @@ function Component(container, descriptor) {
         
         // Loading animation, postback and queue
         animation = $(sequence).find("animation");
-        postback.methods = $(sequence).find("postcall");
+        postback.methods = $(sequence).find("post");
         postback.sequences = $(sequence).find("queue");
         
         // Launching

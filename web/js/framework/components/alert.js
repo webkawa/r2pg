@@ -9,5 +9,10 @@ function AlertCPN(container, message, button) {
     };
     cpn.saveMethod(new Method(cpn_append, "append", cpn, false));
     
+    var cpn_plop = function() {
+        Log.print(this, "plop");
+    };
+    cpn.saveMethod(new Method(cpn_plop, "plop", cpn, true));
+    
     return cpn;
 };
