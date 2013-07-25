@@ -133,6 +133,36 @@ function Component(container, descriptor) {
             throw new Error("cpn", 9, p);
         }
     };
+    this.setStateClass = function(from, to) {
+        var buff;
+        var keyfrom = CFG.get("components", "css.prefix.from");
+        var keyto = CFG.get("components", "css.prefix.to");
+        var keyat = CFG.get("components", "css.prefix.at");
+        var tofrom = typeof(from);
+        var toto = typeof(to);
+        var ctx = this;
+        
+        // Pre-clean
+        $(this.model).find("state").each(function() {
+            buff = keyfrom + $(this).attr("id") + " " +
+                     keyto + $(this).attr("id") + " " +
+                     keyat + $(this).attr("id");
+            $(ctx.container).removeClass(buff);
+        });
+        
+        // Adding classes
+        if (tofrom === "undefined" && toto === "undefined") {
+            return;
+        } else if (from === to) {
+            $(this.container).addClass(keyat + from);
+        } else if (toto === "undefined") {
+            $(this.container).addClass(keyfrom + from);
+        } else if (tofrom === "undefined") {
+            $(this.container).addClass(keyto + to);
+        } else {
+            $(this.container).addClass(keyfrom + from + " " + keyto + to);
+        }
+    };
     
     /* ID */
     this.id = Register.add(this);
@@ -163,7 +193,7 @@ function Component(container, descriptor) {
         var targets;
         var bind;
         
-        $(this.container).find().unbind();
+        $(this.container).find("*").unbind();
         
         nodes = $(nodes).add($(this.model).find('component > trigger'));
         nodes = $(nodes).add($(this.model).find('component > state[id="' + this.state + '"] > trigger'));
@@ -230,8 +260,8 @@ function Component(container, descriptor) {
      *  postback.sequences      Postback sequences nodes as list.
      * RETURNS : N/A                                                            */
     this.animate = function(animation, targets, postback) {
-        var from = [];
-        var to = [];
+        var from = {};
+        var to = {};
         var b1, b2;
         
         // Initialization
@@ -239,10 +269,9 @@ function Component(container, descriptor) {
             b1 = $(this).children("property").text();
             
             b2 = $(this).children("from");
-            if (b2.length > 0) {
+            if ($(b2).length > 0) {
                 from[b1] = $(b2).text();
             }
-            
             to[b1] = $(this).children("to").text();
         });
         
@@ -252,14 +281,14 @@ function Component(container, descriptor) {
         // Execution
         var ctx = this;
         $(targets).animate(to, {
-            duration: $(animation).children("speed").text(),
+            duration: parseInt($(animation).children("speed").text()),
             easing: $(animation).children("easing").text(),
             fail: function() {
                 throw new Error("cpn", 13);
             }, done: function() {
                 // Standard postbacks
                 $(postback.methods).each(function() {
-                    ctx.call(this);
+                    ctx.call.apply(this, [ctx]);
                 });
                 $(postback.sequences).each(function() {
                     ctx.execute(this);
@@ -276,6 +305,7 @@ function Component(container, descriptor) {
         Log.print(this, "Executes sequence");
         
         // Use vars
+        var ctx = this;
         var targets = $([]);
         var animation;
         var postback = {
@@ -285,13 +315,11 @@ function Component(container, descriptor) {
         var buff;
         
         // Executing pre-call
-        buff = $(sequence).children("precall");
-        if (buff.length > 0) {
-            this.call(buff);
-        }
+        $(sequence).children("precall").each(function() {
+            ctx.call.apply(this, [ctx]);
+        });
         
         // Loading targets
-        var ctx = this;
         $(sequence).children("target").each(function() {
             try {
                 buff = ctx.getSelector($(this).text(), $(this).attr("refresh") === "true");
@@ -339,6 +367,9 @@ function Component(container, descriptor) {
                 ctx.execute(this);
             });
             
+            // Loading global selectors
+            this.reselect();
+            
             // Migrating to initial state
             this.go($(this.model).find("component > loader > to").text());
         }
@@ -349,6 +380,14 @@ function Component(container, descriptor) {
      *  to                      Destination state.
      * RETURN : N/A                                                             */
     this.go = function(to) {
+        if (typeof(this.state) === "undefined" && typeof(to) === "undefined") {
+            var p = {
+                component: this.getID()
+            };
+            throw new Error("cpn", 15, p);
+        }
+        
+        // Used variables
         var ctx = this;
         var node_origin;
         var node_dest;
@@ -362,6 +401,9 @@ function Component(container, descriptor) {
         var seq_entry;
         
         try {
+            // Setting classes
+            this.setStateClass(this.state, to);
+            
             // Loading exit/entry sequences
             if (typeof(node_origin) !== "undefined") {
                 if ($(node_origin).children('out[to="' + to + '"]').length === 1) {
@@ -383,7 +425,7 @@ function Component(container, descriptor) {
             }
             
             // Unloading triggers
-            $(this.container).find().unbind();
+            $(this.container).find("*").unbind();
             
             // Executing exit sequence
             if (typeof(seq_exit) !== "undefined") {
@@ -397,12 +439,15 @@ function Component(container, descriptor) {
                 if (typeof(seq_entry) !== "undefined") {
                     ctx.execute(seq_entry);
                 }
-                $(this.container).find("*").promise().done(function() {    
+                $(ctx.container).find("*").promise().done(function() {    
                     // Revalidating selectors
                     ctx.reselect();
                     
                     // Reloading triggers
                     ctx.retrigger();
+                    
+                    // Setting classes
+                    ctx.setStateClass(ctx.state, to);
                 });
             });
         } catch (e) {
@@ -411,6 +456,20 @@ function Component(container, descriptor) {
             };
             throw new Error("cpn", 14, p, e);
         }
+    };
+        
+    /* Component de-allocation.
+     * PARAMETERS : N/A
+     * RETURNS : N/A                                                            */
+    this.clean = function() {
+        // Removing DOM
+        this.setStateClass();
+        $(this.container).empty();
+        
+        // Cleaning references (TO IMPROVE)
+        this.methods = [];
+        this.selectors = [];
+        Register.remove(this.getID());
     };
         
     /* Initialize */
@@ -458,4 +517,5 @@ function Component(container, descriptor) {
     
     Log.print(this, "Saving default methods");
     this.saveMethod(new Method(this.go, "go", this, false));
+    this.saveMethod(new Method(this.clean, "clean", this, false));
 };

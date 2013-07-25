@@ -23,6 +23,9 @@
     </group>
     
     <group id="components">
+        <string id="css.prefix.to">to</string>
+        <string id="css.prefix.from">from</string>
+        <string id="css.prefix.at">at</string>
         <boolean id="allow.invalid.start">false</boolean>
         <boolean id="allow.inactive.selectors">false</boolean>
     </group>

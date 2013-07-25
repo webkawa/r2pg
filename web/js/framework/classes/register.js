@@ -40,5 +40,13 @@ var Register = {
              }
          }
          return Register.idx[id];
+     },
+
+     /* Removes a component by his ID.
+      * PARAMETERS :
+      *  id                 Component ID.
+      * RETURNS : N/A                                                           */
+     remove: function(id) {
+         delete this.idx[id];
      }
 };

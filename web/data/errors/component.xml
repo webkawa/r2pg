@@ -73,7 +73,8 @@
         <param required="true" id="component">Component ID</param>
     </error>
     <error code="15">
-        <!-- Free -->
+        <message>Invalid transition, neither origin or destination are defined</message>
+        <param required="true" id="component">Component ID</param>
     </error>
     <error code="16">
         <message>Invalid component ID</message>

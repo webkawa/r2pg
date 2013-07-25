@@ -19,15 +19,33 @@
                 </div>
             ]]>
         </dom>
-        <to>open</to>
+        <to>Open</to>
     </loader>
-    <state id="open">
+    <state id="Open">
         <trigger bind="click">
             <target>button</target>
             <call>
                 <name>go</name>
             </call>
         </trigger>
+        <trigger bind="mouseover">
+            <target>message</target>
+            <call>
+                <name>append</name>
+            </call>
+        </trigger>
+        <in>
+            <target>window</target>
+            <animation>
+                <speed>2000</speed>
+                <easing>swing</easing>
+                <move>
+                    <property>opacity</property>
+                    <from>0</from>
+                    <to>1</to>
+                </move>
+            </animation>
+        </in>
         <out>
             <target>window</target>
             <animation>
@@ -35,10 +53,13 @@
                 <easing>swing</easing>
                 <move>
                     <property>opacity</property>
-                    <from>1</from>
+                    <from>1</from> 
                     <to>0</to>
                 </move>
             </animation>
+            <postcall>
+                <name>clean</name>
+            </postcall>
         </out>
     </state>
 </component>

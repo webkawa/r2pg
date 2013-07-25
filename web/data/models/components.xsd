@@ -12,6 +12,11 @@
             <xs:minLength value="1"/>
         </xs:restriction>
     </xs:simpleType>
+    <xs:simpleType name="upperfstring">
+        <xs:restriction base="string">
+            <xs:pattern value="[A-Z]{1}[a-z0-9]*" />
+        </xs:restriction>
+    </xs:simpleType>
     
     <!-- Complex components -->
     <!-- ****************** -->
@@ -207,21 +212,22 @@
     </xs:complexType>
     <xs:complexType name="state">
         <xs:sequence>
+            <xs:element name="selectors"
+                        type="selectors"
+                        minOccurs="0" />
+            <xs:element name="trigger"
+                        type="trigger"
+                        minOccurs="0"
+                        maxOccurs="unbounded" />
             <xs:element name="in"
                         type="entry"
                         minOccurs="0" />
             <xs:element name="out"
                         type="exit"
                         minOccurs="0" />
-            <xs:element name="selectors"
-                        type="selectors"
-                        minOccurs="0" />
-            <xs:element name="trigger"
-                        type="trigger"
-                        minOccurs="0" />
         </xs:sequence>
         <xs:attribute name="id"
-                      type="string" />
+                      type="upperfstring" />
     </xs:complexType>
     
     <!-- Main component -->

@@ -4,10 +4,10 @@
 function AlertCPN(container, message, button) {
     var cpn = new Component(container, "js/framework/components/alert.xml");
     
-    var cpn_close = function() {
+    var cpn_append = function() {
         this.quickSelect("message").append("test");
     };
-    cpn.saveMethod(new Method(cpn_close, "close", cpn, false));
+    cpn.saveMethod(new Method(cpn_append, "append", cpn, false));
     
     return cpn;
 };
