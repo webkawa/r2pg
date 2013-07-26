@@ -7,6 +7,7 @@
     
     <selectors>
         <selector id="window">div.window</selector>
+        <selector id="title">div.window > div.title</selector>
         <selector id="message">div.window > div.message</selector>
         <selector id="button">div.window > div.button</selector>
     </selectors>
@@ -14,8 +15,9 @@
         <dom>
             <![CDATA[
                 <div class="window">
-                    <div class="message">Message</div>
-                    <div class="button">Button</div>
+                    <div class="title"></div>
+                    <div class="message"></div>
+                    <div class="button"></div>
                 </div>
             ]]>
         </dom>
@@ -26,16 +28,13 @@
             <target>button</target>
             <action call="go" />
         </trigger>
-        <trigger bind="mouseover">
-            <target>message</target>
-            <action call="append" />
-        </trigger>
         <in>
             <target>window</target>
+            <pre call="init" />
+            <pre call="focus" />
             <animation>
-                <speed>2000</speed>
+                <speed>1200</speed>
                 <easing>swing</easing>
-                <progress call="plop" />
                 <move>
                     <property>opacity</property>
                     <from>0</from>
@@ -46,7 +45,7 @@
         <out>
             <target>window</target>
             <animation>
-                <speed>1000</speed>
+                <speed>1200</speed>
                 <easing>swing</easing>
                 <move>
                     <property>opacity</property>
@@ -54,7 +53,6 @@
                     <to>0</to>
                 </move>
             </animation>
-            <post call="clean" />
         </out>
     </state>
 </component>

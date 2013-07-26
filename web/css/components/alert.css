@@ -1,0 +1,12 @@
+/* Alert component */
+
+div.alert {
+    position: relative;
+    height: 500px;
+}
+div.alert div.window {
+    width: 40%;
+    margin: auto;
+    border: 1px solid black;
+    background: #aaa;
+}

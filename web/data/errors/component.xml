@@ -81,5 +81,10 @@
         <param required="true" id="id">ID</param>
         <param id="error">Error</param>
     </error>
+    <error code="17">
+        <message>Component container CSS position must be relative</message>
+        <param required="true" id="id">Component ID</param>
+        <param id="position">CSS Position</param>
+    </error>
     
 </catalog>

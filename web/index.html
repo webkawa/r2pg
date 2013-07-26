@@ -18,17 +18,7 @@
         <script type="text/javascript" src="js/framework/classes/register.js"></script>
         <script type="text/javascript" src="js/framework/classes/logwriter.js"></script>
         <script type="text/javascript" src="js/framework/components/alert.js"></script>
-        <style>
-            .toOpen {
-                background: blue;
-            }
-            .atOpen {
-                background: red;
-            }
-            .fromOpen {
-                background: yellow;
-            }
-        </style>
+        <link rel="stylesheet" type="text/css" href="css/components/alert.css" /> 
     </head>
     <body>
         <div></div>
@@ -44,7 +34,7 @@
                     CFG.load("data/configurations/production.xml");
                     CFG.load("data/configurations/development.xml");
                     
-                    var x = new AlertCPN($("div"), "a", "b");
+                    var x = new AlertCPN($("div"), "error", "My error message", "My button !", "Title");
                     x.start();
                 } catch (e) {
                     ErrorManager.process(e); 

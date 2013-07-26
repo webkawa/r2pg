@@ -446,14 +446,19 @@ function Component(container, descriptor) {
                     ctx.execute(seq_entry);
                 }
                 $(ctx.container).find("*").promise().done(function() {    
-                    // Revalidating selectors
-                    ctx.reselect();
-                    
-                    // Reloading triggers
-                    ctx.retrigger();
-                    
-                    // Setting classes
-                    ctx.setStateClass(ctx.state, to);
+                    if (typeof(to) === "undefined") {
+                        // Closing component
+                        ctx.clean();
+                    } else {
+                        // Revalidating selectors
+                        ctx.reselect();
+
+                        // Reloading triggers
+                        ctx.retrigger();
+
+                        // Setting classes
+                        ctx.setStateClass(ctx.state, to);
+                    }
                 });
             });
         } catch (e) {
@@ -468,8 +473,11 @@ function Component(container, descriptor) {
      * PARAMETERS : N/A
      * RETURNS : N/A                                                            */
     this.clean = function() {
+        Log.print(this, "Cleaning component");
+        
         // Removing DOM
         this.setStateClass();
+        $(this.container).removeClass(this.getModelName());
         $(this.container).empty();
         
         // Cleaning references (TO IMPROVE)
@@ -501,6 +509,9 @@ function Component(container, descriptor) {
     });
     this.model = ajbuff;
     
+    Log.print(this, "Tagging container");
+    $(this.container).addClass(this.getModelName());
+    
     Log.print(this, "Loading selectors");
     var ctx = this;
     $(this.model).find("selector").each(function() {
@@ -523,5 +534,4 @@ function Component(container, descriptor) {
     
     Log.print(this, "Saving default methods");
     this.saveMethod(new Method(this.go, "go", this, false));
-    this.saveMethod(new Method(this.clean, "clean", this, false));
 };
