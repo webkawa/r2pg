@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Framework native errors -->
+<catalog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="../../data/models/errors.xsd" 
+         name="wf" >
+    
+    <error code="0">
+        <message>Unknow workflow error</message>
+    </error>
+            
+</catalog>

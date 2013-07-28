@@ -33,7 +33,7 @@
             <pre call="init" />
             <pre call="focus" />
             <animation>
-                <speed>1200</speed>
+                <speed>500</speed>
                 <easing>swing</easing>
                 <move>
                     <property>opacity</property>
@@ -45,7 +45,7 @@
         <out>
             <target>window</target>
             <animation>
-                <speed>1200</speed>
+                <speed>500</speed>
                 <easing>swing</easing>
                 <move>
                     <property>opacity</property>

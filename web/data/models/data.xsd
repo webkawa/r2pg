@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<!-- JS Framework : Data sources -->
+<xs:schema version="1.0" 
+           xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+           elementFormDefault="qualified">
+
+    <!-- General tools -->
+    <!-- ************* -->
+    
+    <xs:simpleType name="string">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="upperfstring">
+        <xs:restriction base="string">
+            <xs:pattern value="[A-Z]{1}[a-z0-9]*" />
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <!-- Complex components -->
+    <!-- ****************** -->
+    
+    <xs:complexType name="parameter">
+        <xs:simpleContent>
+            <xs:extension base="string">
+                <xs:attribute name="name"
+                              type="string"
+                              use="required" />
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="error">
+        <xs:sequence>
+            <xs:element name="parameter"
+                        type="parameter"
+                        maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="id"
+                      type="xs:decimal"
+                      use="required" />
+    </xs:complexType>
+    
+    <!-- Main component -->
+    <!-- ************** -->
+    <xs:element name="data">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="error"
+                            type="error"
+                            minOccurs="0"
+                            maxOccurs="1" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

@@ -254,6 +254,9 @@
                             minOccurs="0" />
                 <xs:element name="loader"
                             type="loader" />
+                <xs:element name="waiter"
+                            type="string"
+                            maxOccurs="1" />
                 <xs:element name="state" 
                             type="state" 
                             maxOccurs="unbounded" />
