@@ -29,6 +29,9 @@ function Component(container, descriptor) {
     this.getModelType = function() {
         return $(this.model).find("component").attr("type");
     };
+    this.getModelWaiter = function() {
+        return $(this.model).find("component > waiter").text();
+    };
     
     /* Methods */
     this.methods = [];
@@ -53,13 +56,10 @@ function Component(container, descriptor) {
         throw new Error("cpn", 2, p);
     };
     this.saveMethod = function(method) {
-        if (!(method instanceof Method)) {    
-            var p = {
-                component: this.getID(),
-                item: methods[i]
-            };
-            throw new Error("cpn", 3, p);
-        }
+        Toolkit.checkTypeOf("Component.saveMethod", "method", method, "Object");
+        Toolkit.checkClassOf("Component.saveMethod", "method", method, Method);
+        
+        method.setContext(this);
         for (var i = 0; i < this.methods.length; i++) {
             if (this.methods[i].getName() === method.getName()) {
                 if (this.methods[i].isRewritable()) {
@@ -117,6 +117,46 @@ function Component(container, descriptor) {
         return this.getSelector(name, refresh).getNodes();
     }
     
+    /* Data sources */
+    this.sources = [];
+    this.isSource = function(name) {
+        for (var i = 0; i < this.sources.length; i++) {
+            if (this.sources[i].getName() === name) {
+                return true;
+            }
+        }
+        return false;
+    };
+    this.getSource = function(name) {
+        for (var i = 0; i < this.sources.length; i++) {
+            if (this.sources[i].getName() === name) {
+                return this.sources[i];
+            }
+        }
+        var p = {
+            component: this.getID(),
+            name: name
+        };
+        throw new Error("cpn", 19, p);
+    };
+    this.saveSource = function(source) {
+        Toolkit.checkTypeOf("Component.saveSource", "source", source, "Object");
+        Toolkit.checkClassOf("Component.saveSource", "source", source, Source);
+        
+        if (this.isSource(source.getName())) {
+            var p = {
+                component: this.getID(),
+                name: source.getName()
+            };
+            throw new Error("cpn", 3, p);
+        }
+        source.setContext(this);
+        this.sources[this.sources.length] = source;
+    };
+    this.quickSource = function(name) {
+        return this.getSource(name).getData();
+    };
+    
     /* Current state */
     this.state;
     this.getState = function() {
@@ -164,6 +204,16 @@ function Component(container, descriptor) {
         }
     };
     
+    /* Current status 
+     *  0 > Ready
+     *  1 > Switching out
+     *  2 > Switching in
+     *  9 > Cleaned                                                             */
+    this.status = 0;
+    this.getStatus = function() {
+        return this.status;
+    };
+    
     /* ID */
     this.id = Register.add(this);
     this.getID = function() {
@@ -171,6 +221,16 @@ function Component(container, descriptor) {
     };
     this.getLogID = function() {
         return 'Component ' + this.getModelName() + '#' + this.id;
+    };
+    
+    /* Attributes register.
+     * Adds a new attribute to component for specific use.
+     * PARAMETERS :
+     *  name                    Variable name.
+     *  value                   Variable default value.
+     * RETURNS : N/A                                                            */
+    this.register = function(name, value) {
+        this[name] = value;
     };
     
     /* DOM re-writer.
@@ -386,9 +446,17 @@ function Component(container, descriptor) {
      *  to                      Destination state.
      * RETURN : N/A                                                             */
     this.go = function(to) {
+        if (this.status !== 0) {
+            var p = {
+                component: this.getID(),
+                error: "Component not ready"
+            };
+            throw new Error("cpn", 15, p);
+        }
         if (typeof(this.state) === "undefined" && typeof(to) === "undefined") {
             var p = {
-                component: this.getID()
+                component: this.getID(),
+                error: "Neither origin or destination defined"
             };
             throw new Error("cpn", 15, p);
         }
@@ -405,7 +473,6 @@ function Component(container, descriptor) {
         }
         var seq_exit;
         var seq_entry;
-        
         try {
             // Setting classes
             this.setStateClass(this.state, to);
@@ -434,6 +501,7 @@ function Component(container, descriptor) {
             $(this.container).find("*").unbind();
             
             // Executing exit sequence
+            this.status = 1;
             if (typeof(seq_exit) !== "undefined") {
                 this.execute(seq_exit);
             }
@@ -442,10 +510,12 @@ function Component(container, descriptor) {
                 ctx.setState(to);
                     
                 // Executing entry sequence
+                this.status = 2;
                 if (typeof(seq_entry) !== "undefined") {
                     ctx.execute(seq_entry);
                 }
                 $(ctx.container).find("*").promise().done(function() {    
+                    this.status = 0;
                     if (typeof(to) === "undefined") {
                         // Closing component
                         ctx.clean();
@@ -489,8 +559,8 @@ function Component(container, descriptor) {
     /* Initialize */
     Log.print(this, "Initializing new component");
     Log.print(this, "Loading descriptor");
-    var ajbuff;
     jQuery.ajax({
+        context: this,
         type: "GET",
         url: this.descriptor,
         data: null,
@@ -505,9 +575,8 @@ function Component(container, descriptor) {
         };
         throw new Error("cpn", 4, p);
     }).success(function(data) {
-        ajbuff = data;
+        this.model = data;
     });
-    this.model = ajbuff;
     
     Log.print(this, "Tagging container");
     $(this.container).addClass(this.getModelName());
@@ -533,5 +602,5 @@ function Component(container, descriptor) {
     });
     
     Log.print(this, "Saving default methods");
-    this.saveMethod(new Method(this.go, "go", this, false));
+    this.saveMethod(new Method(this.go, "go", false));
 };

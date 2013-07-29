@@ -17,6 +17,12 @@
             <xs:pattern value="[A-Z]{1}[a-z0-9]*" />
         </xs:restriction>
     </xs:simpleType>
+    <xs:simpleType name="type">
+        <xs:restriction base="string">
+            <xs:enumeration value="key" />
+            <xs:enumeration value="value" />
+        </xs:restriction>
+    </xs:simpleType>
     
     <!-- Complex components -->
     <!-- ****************** -->
@@ -41,6 +47,41 @@
                       use="required" />
     </xs:complexType>
     
+    <xs:complexType name="column">
+        <xs:simpleContent>
+            <xs:extension base="type">
+                <xs:attribute name="alias"
+                              type="string"
+                              use="required" />
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="descriptor">
+        <xs:sequence>
+            <xs:element name="column"
+                        type="column"
+                        minOccurs="1"
+                        maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="alias"
+                      type="string"
+                      use="required" />
+    </xs:complexType>
+    
+    <xs:complexType name="set">
+        <xs:sequence>
+            <xs:element name="item"
+                        type="xs:string"
+                        minOccurs="1"
+                        maxOccurs="unbounded" />
+            <xs:element name="set"
+                        type="set"
+                        minOccurs="0"
+                        maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+    
+    
     <!-- Main component -->
     <!-- ************** -->
     <xs:element name="data">
@@ -50,6 +91,14 @@
                             type="error"
                             minOccurs="0"
                             maxOccurs="1" />
+                <xs:element name="model"
+                            type="descriptor"
+                            minOccurs="1"
+                            maxOccurs="unbounded" />
+                <xs:element name="set"
+                            type="set"
+                            minOccurs="1"
+                            maxOccurs="unbounded" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>

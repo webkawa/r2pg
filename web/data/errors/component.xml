@@ -97,10 +97,16 @@
         <param required="true" id="component">Component ID</param>
         <param required="true" id="name">Source name</param>
     </error>
-    <error code="20">
-        <message>Data source error</message>
+    <error code="20" critical="true">
+        <message>Data source native error</message>
         <param required="true" id="component">Component ID</param>
         <param required="true" id="source">Source name</param>
+    </error>
+    <error code="21">
+        <message>Try to access invalid alias from data source</message>
+        <param required="true" id="component">Component ID</param>
+        <param required="true" id="name">Source name</param>
+        <param required="true" id="alias">Alias</param>
     </error>
     
 </catalog>

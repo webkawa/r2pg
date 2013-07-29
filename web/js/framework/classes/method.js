@@ -6,7 +6,7 @@
  *  > name                  Method name.                                        
  *  > rw                    Rewritable method (yes if true).                    */
 
-function Method(ref, name, context, rw) {
+function Method(ref, name, rw) {
     Toolkit.checkTypeOf("Method", "ref", ref, "function");
     Toolkit.checkTypeOf("Method", "name", name, "string");
     Toolkit.checkTypeOf("Method", "rw", rw, "boolean");
@@ -27,6 +27,12 @@ function Method(ref, name, context, rw) {
     this.context = context;
     this.getContext = function() {
         return this.context;
+    };
+    this.setContext = function(context) {
+        Toolkit.checkTypeOf("Method.setContext", "context", context, "Object");
+        Toolkit.checkClassOf("Method.setContext", "context", context, Component);
+        
+        this.context = context;
     };
     
     /* Rewritable */

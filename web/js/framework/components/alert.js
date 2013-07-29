@@ -34,7 +34,7 @@ function AlertCPN(container, type, message, button, title) {
             $(this.quickSelect("title")).text(title);
         }
     };
-    cpn.saveMethod(new Method(cpn_init, "init", cpn, false));
+    cpn.saveMethod(new Method(cpn_init, "init", false));
     
     /* Focus popin window.
      * PARAMETERS : N/A
@@ -46,7 +46,7 @@ function AlertCPN(container, type, message, button, title) {
         
         $(this.quickSelect("window")).css("margin-top", windowMT + "px");
     };
-    cpn.saveMethod(new Method(cpn_focus, "focus", cpn, true));
+    cpn.saveMethod(new Method(cpn_focus, "focus", true));
     
     return cpn;
 };
