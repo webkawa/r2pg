@@ -5,11 +5,12 @@
  *  url                         Data source URL.
  *  params                      Data source parameters as object.               */
 
-function Source(name, url, params) {
-    Toolkit.checkTypeOf("Source", "name", name, "String");
-    Toolkit.checkTypeOf("Source", "url", url, "String");
+function Source(name, callback, url, params) {
+    Toolkit.checkTypeOf("Source", "name", name, "string");
+    Toolkit.checkTypeOf("Source", "callback", callback, "string");
+    Toolkit.checkTypeOf("Source", "url", url, "string");
     if (typeof(params) !== "undefined") {
-        Toolkit.checkTypeOf("Source", "params", params, "Object");
+        Toolkit.checkTypeOf("Source", "params", params, "object");
     } else {
         params = {};
     }
@@ -18,6 +19,12 @@ function Source(name, url, params) {
     this.name = name;
     this.getName = function() {
         return this.name;
+    };
+    
+    /* Callback */
+    this.callback = callback;
+    this.getCallback = function() {
+        return this.callback;
     };
     
     /* URL */
@@ -55,7 +62,7 @@ function Source(name, url, params) {
         return this.context;
     };
     this.setContext = function(context) {
-        Toolkit.checkTypeOf("Source.setContext", "context", context, "Object");
+        Toolkit.checkTypeOf("Source.setContext", "context", context, "object");
         Toolkit.checkClassOf("Source.setContext", "context", context, Component);
         
         this.context = context;
@@ -132,11 +139,11 @@ function Source(name, url, params) {
         
         // Proceding
         $(this.getContext().getContainer()).find("*").promise().done(function() {
-            Log.print(ctx, "Accessing data at URL " + ctx.getUrl());
+            Log.print(ctx.getContext(), "Accessing data at URL " + ctx.getUrl());
             jQuery.ajax({
                 context: ctx,
                 type: "POST",
-                url: this.url,
+                url: ctx.getUrl(),
                 data: this.params,
                 dataType: "xml",
                 cache: false,
@@ -151,6 +158,9 @@ function Source(name, url, params) {
             }).success(function(data) {
                 // Copying data
                 this.data = data;
+                
+                // Executing callback
+                this.getContext().getMethod(this.callback).call();
                 
                 // Launching return animation
                 if (typeof(state) !== "undefined") {

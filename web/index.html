@@ -14,10 +14,12 @@
         <script type="text/javascript" src="js/framework/classes/logwriter.js"></script>
         <script type="text/javascript" src="js/framework/classes/method.js"></script>
         <script type="text/javascript" src="js/framework/classes/selector.js"></script>
+        <script type="text/javascript" src="js/framework/classes/source.js"></script>
         <script type="text/javascript" src="js/framework/classes/component.js"></script>
         <script type="text/javascript" src="js/framework/classes/register.js"></script>
         <script type="text/javascript" src="js/framework/classes/logwriter.js"></script>
         <script type="text/javascript" src="js/framework/components/sample-alert.js"></script>
+        <script type="text/javascript" src="js/framework/components/sample-list.js"></script>
         <link rel="stylesheet" type="text/css" href="css/components/sample-alert.css" /> 
     </head>
     <body>
@@ -34,7 +36,9 @@
                     CFG.load("data/configurations/production.xml");
                     CFG.load("data/configurations/development.xml");
                     
-                    var x = new AlertCPN($("div"), "error", "My error message", "My button !", "Title");
+                    //var x = new AlertCPN($("div"), "error", "My error message", "My button !", "Title");
+                    //x.start();
+                    var x = new SampleListCPN($("div"));
                     x.start();
                 } catch (e) {
                     ErrorManager.process(e); 

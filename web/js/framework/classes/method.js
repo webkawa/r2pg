@@ -24,12 +24,12 @@ function Method(ref, name, rw) {
     };
     
     /* Context */
-    this.context = context;
+    this.context = null;
     this.getContext = function() {
         return this.context;
     };
     this.setContext = function(context) {
-        Toolkit.checkTypeOf("Method.setContext", "context", context, "Object");
+        Toolkit.checkTypeOf("Method.setContext", "context", context, "object");
         Toolkit.checkClassOf("Method.setContext", "context", context, Component);
         
         this.context = context;

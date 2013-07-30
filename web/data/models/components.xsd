@@ -141,13 +141,15 @@
         <xs:sequence>
             <xs:element name="target" 
                         type="target"
+                        minOccurs="0"
                         maxOccurs="unbounded" />
             <xs:element name="pre"
                         type="call"
                         minOccurs="0"
                         maxOccurs="unbounded" />
             <xs:element name="animation" 
-                        type="animation" />
+                        type="animation"
+                        minOccurs="0" />
             <xs:element name="post" 
                         type="call"
                         minOccurs="0"
@@ -165,7 +167,7 @@
             <xs:element name="dom"
                         type="string" />
             <xs:element name="action"
-                        type="sequence"
+                        type="call"
                         minOccurs="0"
                         maxOccurs="unbounded" />
             <xs:element name="to"
@@ -256,7 +258,7 @@
                             type="loader" />
                 <xs:element name="waiter"
                             type="string"
-                            maxOccurs="1" />
+                            minOccurs="0" />
                 <xs:element name="state" 
                             type="state" 
                             maxOccurs="unbounded" />

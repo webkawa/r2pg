@@ -63,4 +63,24 @@ function Selector(owner, name, path, state) {
         this.nodes = $(this.owner.getContainer()).find(this.path);
         return this.nodes;
     };
+    
+    /* Delayed removal tagger.
+     * Put a tag on selected nodes for delayed suppression (avoid removed-promise
+     * bug).
+     * PARAMETERS : N/A
+     * RETURNS : N/A                                                            */
+    this.remove = function() {
+        var tag = CFG.get("components", "css.class.removal");
+        
+        if (this.getOwner().getStatus() < 1) {
+            var p = {
+                component: this.getOwner().getID(),
+                status: this.getOwner().getStatus()
+            };
+            throw new Error("cpn", 21, p);
+        } else {
+            this.refresh();
+            $(this.nodes).addClass(tag);
+        }
+    };
 };

@@ -56,7 +56,7 @@ function Component(container, descriptor) {
         throw new Error("cpn", 2, p);
     };
     this.saveMethod = function(method) {
-        Toolkit.checkTypeOf("Component.saveMethod", "method", method, "Object");
+        Toolkit.checkTypeOf("Component.saveMethod", "method", method, "object");
         Toolkit.checkClassOf("Component.saveMethod", "method", method, Method);
         
         method.setContext(this);
@@ -115,7 +115,7 @@ function Component(container, descriptor) {
             refresh = false;
         }
         return this.getSelector(name, refresh).getNodes();
-    }
+    };
     
     /* Data sources */
     this.sources = [];
@@ -135,12 +135,12 @@ function Component(container, descriptor) {
         }
         var p = {
             component: this.getID(),
-            name: name
+            source: name
         };
         throw new Error("cpn", 19, p);
     };
     this.saveSource = function(source) {
-        Toolkit.checkTypeOf("Component.saveSource", "source", source, "Object");
+        Toolkit.checkTypeOf("Component.saveSource", "source", source, "object");
         Toolkit.checkClassOf("Component.saveSource", "source", source, Source);
         
         if (this.isSource(source.getName())) {
@@ -152,6 +152,9 @@ function Component(container, descriptor) {
         }
         source.setContext(this);
         this.sources[this.sources.length] = source;
+    };
+    this.accessSource = function(name) {
+        this.getSource(name).access();
     };
     this.quickSource = function(name) {
         return this.getSource(name).getData();
@@ -212,6 +215,9 @@ function Component(container, descriptor) {
     this.status = 0;
     this.getStatus = function() {
         return this.status;
+    };
+    this.setStatus = function(status) {
+        this.status = status;
     };
     
     /* ID */
@@ -430,7 +436,7 @@ function Component(container, descriptor) {
             // Launching start actions
             var ctx = this;
             $(this.model).find("component > loader > action").each(function() {
-                ctx.execute(this);
+                ctx.call.apply(this, [ctx]);
             });
             
             // Loading global selectors
@@ -473,6 +479,7 @@ function Component(container, descriptor) {
         }
         var seq_exit;
         var seq_entry;
+        var drt = CFG.get("components", "css.class.removal");
         try {
             // Setting classes
             this.setStateClass(this.state, to);
@@ -505,24 +512,30 @@ function Component(container, descriptor) {
             if (typeof(seq_exit) !== "undefined") {
                 this.execute(seq_exit);
             }
-            $(this.container).find("*").promise().done(function() {     
+            $(this.container).find("*").promise().done(function() {
+                // Executes delayed removal
+                $(ctx.getContainer()).find("." + drt).remove();
+                
                 // Switching state
                 ctx.setState(to);
+                       
+                // Revalidating selectors
+                ctx.reselect();
                     
                 // Executing entry sequence
-                this.status = 2;
+                ctx.setStatus(2);
                 if (typeof(seq_entry) !== "undefined") {
                     ctx.execute(seq_entry);
                 }
-                $(ctx.container).find("*").promise().done(function() {    
-                    this.status = 0;
+                $(ctx.container).find("*").promise().done(function() {
+                    ctx.setStatus(0);
                     if (typeof(to) === "undefined") {
                         // Closing component
                         ctx.clean();
-                    } else {
-                        // Revalidating selectors
-                        ctx.reselect();
-
+                    } else {    
+                        // Executes delayed removal
+                        $(ctx.getContainer()).find("." + drt).remove();
+                    
                         // Reloading triggers
                         ctx.retrigger();
 
@@ -603,4 +616,5 @@ function Component(container, descriptor) {
     
     Log.print(this, "Saving default methods");
     this.saveMethod(new Method(this.go, "go", false));
+    this.saveMethod(new Method(this.accessSource, "access", false));
 };
