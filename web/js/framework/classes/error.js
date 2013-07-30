@@ -5,6 +5,7 @@
  *  > code          Error code.
  *  > params        Error parameters.
  *  > cause         Error cause.                                                */
+
 function Error(context, code, params, cause) {
     
     if (typeof(context) !== "string" || typeof(code) !== "number") {

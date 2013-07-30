@@ -93,11 +93,11 @@
                             maxOccurs="1" />
                 <xs:element name="model"
                             type="descriptor"
-                            minOccurs="1"
+                            minOccurs="0"
                             maxOccurs="unbounded" />
                 <xs:element name="set"
                             type="set"
-                            minOccurs="1"
+                            minOccurs="0"
                             maxOccurs="unbounded" />
             </xs:sequence>
         </xs:complexType>

@@ -211,8 +211,9 @@ function Component(container, descriptor) {
      *  0 > Ready
      *  1 > Switching out
      *  2 > Switching in
+     *  3 > Starting
      *  9 > Cleaned                                                             */
-    this.status = 0;
+    this.status = 3;
     this.getStatus = function() {
         return this.status;
     };
@@ -406,9 +407,9 @@ function Component(container, descriptor) {
         });
         
         // Loading animation, postback and queue
-        animation = $(sequence).find("animation");
-        postback.methods = $(sequence).find("post");
-        postback.sequences = $(sequence).find("queue");
+        animation = $(sequence).children("animation");
+        postback.methods = $(sequence).children("post");
+        postback.sequences = $(sequence).children("queue");
         
         // Launching
         this.animate(animation, targets, postback);
@@ -443,6 +444,7 @@ function Component(container, descriptor) {
             this.reselect();
             
             // Migrating to initial state
+            this.setStatus(0);
             this.go($(this.model).find("component > loader > to").text());
         }
     };

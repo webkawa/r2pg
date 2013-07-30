@@ -228,10 +228,12 @@
                         maxOccurs="unbounded" />
             <xs:element name="in"
                         type="entry"
-                        minOccurs="0" />
+                        minOccurs="0"
+                        maxOccurs="unbounded" />
             <xs:element name="out"
                         type="exit"
-                        minOccurs="0" />
+                        minOccurs="0" 
+                        maxOccurs="unbounded" />
         </xs:sequence>
         <xs:attribute name="id"
                       type="upperfstring" />

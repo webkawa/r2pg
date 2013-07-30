@@ -120,7 +120,8 @@ function Source(name, callback, url, params) {
      *  alias               Item alias.
      * RETURNS :
      *  Item collection.                                                        */
-    this.getItemByAlias = function(alias) {
+    this.getItemByAlias = function(alias) 
+    {
         return this.getItemByID($(this.data).find('model > column[alias="' + alias + '"]').attr("id"));
     };
     
@@ -129,10 +130,20 @@ function Source(name, callback, url, params) {
      * RETURNS : N/A                                                            */
     this.access = function() {
         var state;
+        var status = this.getContext().getStatus();
         var ctx = this;
         
+        // Checking current status
+        if (status === 3) {
+            var p = {
+                component: this.getContext().getID(),
+                source: this.getName()
+            };
+            throw new Error("cpn", 22, p);
+        };
+        
         // Switching to waiter
-        if (typeof(this.waiter) !== "undefined") {
+        if (typeof(this.waiter) !== "undefined" && status === 0) {
             state = this.getContext().getState();
             this.getContext().go(this.waiter);
         }
@@ -156,52 +167,58 @@ function Source(name, callback, url, params) {
                 };
                 throw new Error("cpn", 18, p);
             }).success(function(data) {
-                // Copying data
-                this.data = data;
-                
-                // Executing callback
-                this.getContext().getMethod(this.callback).call();
-                
-                // Launching return animation
-                if (typeof(state) !== "undefined") {
-                    this.getContext().go(state);
-                }
-                
-                // Checking for native error
-                $(this.data).find("data > error").each(function() {
-                    var id = $(this).attr("id");
-                    var p = {};
-                    $(this).find("paramater").each(function() {
-                        p[$(this).attr("name")] = $(this).text();
+                try {
+                    // Copying data
+                    this.data = data;
+
+                    // Launching return animation
+                    if (typeof(state) !== "undefined") {
+                        this.getContext().go(state);
+                    }
+
+                    // Checking for native error
+                    $(this.data).find("data > error").each(function() {
+                        var id = $(this).attr("id");
+                        var p = {};
+                        $(this).children("parameter").each(function() {
+                            p[$(this).attr("name")] = $(this).text();
+                        });
+                        var e = new Error("wf", parseInt(id), p);
+
+                        p = {
+                            component: ctx.getContext().getID(),
+                            source: ctx.getName()
+                        };
+                        throw new Error("cpn", 20, p, e);
                     });
-                    var e = new Error("wf", id, p);
-                    
-                    p = {
-                        component: ctx.getContext().getID(),
-                        source: ctx.getName()
-                    };
-                    throw new Error("cpn", 20, p, e);
-                });
-                
-                // Linking 
-                var id = 1;
-                var buff = $(this.data).find("data:first");
-                $(this.data).find("column").each(function() {
-                    // Selecting set
-                    buff = $(buff).children("set");
-                    
-                    // Linking set
-                    $(this).attr("id", id);
-                    $(buff).attr("map", id);
-                    id++;
-                    
-                    // Linking items
-                    $(this).children("column").each(function(position) {
+
+                    // Linking 
+                    var id = 1;
+                    var buff = $(this.data).find("data:first");
+                    $(this.data).find("model").each(function() {
+                        // Selecting set
+                        buff = $(buff).children("set");
+
+                        // Linking set
                         $(this).attr("id", id);
-                        $(buff).chilren("item:eq(" + position + ")").attr("map", id);
+                        $(buff).attr("map", id);
                         id++;
+
+                        // Linking items
+                        $(this).children("column").each(function(position) {
+                            $(this).attr("id", id);
+                            $(buff).find("set > item:eq(" + position + ")").attr("map", id);
+                            id++;
+                        });
                     });
-                });
+
+                    // Executing callback
+                    this.getContext().getMethod(this.callback).call();
+                    
+                    return;
+                } catch (e) {
+                    ErrorManager.process(e);
+                }
             });
         });
     };

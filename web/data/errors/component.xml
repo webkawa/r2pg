@@ -107,5 +107,10 @@
         <param required="true" id="component">Component ID</param>
         <param required="true" id="status">Component status</param>
     </error>
+    <error code="22">
+        <message>Try to access data source while starting</message>
+        <param required="true" id="component">Component ID</param>
+        <param required="true" id="source">Source name</param>
+    </error>
     
 </catalog>
