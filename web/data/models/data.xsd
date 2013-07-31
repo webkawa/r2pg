@@ -70,11 +70,11 @@
     
     <xs:complexType name="set">
         <xs:sequence>
-            <xs:element name="item"
+            <xs:element name="i"
                         type="xs:string"
                         minOccurs="1"
                         maxOccurs="unbounded" />
-            <xs:element name="set"
+            <xs:element name="s"
                         type="set"
                         minOccurs="0"
                         maxOccurs="unbounded" />
@@ -95,7 +95,7 @@
                             type="descriptor"
                             minOccurs="0"
                             maxOccurs="unbounded" />
-                <xs:element name="set"
+                <xs:element name="s"
                             type="set"
                             minOccurs="0"
                             maxOccurs="unbounded" />

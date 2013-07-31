@@ -77,7 +77,7 @@ function Source(name, callback, url, params) {
      * RETURNS :
      *  Set collection.                                                         */
     this.getSetByID = function(id) {
-        return $(this.data).find('set[map="' + id + '"]');
+        return $(this.data).find('s[map="' + id + '"]');
     };
     
     /* Alias-based set getter.
@@ -100,7 +100,7 @@ function Source(name, callback, url, params) {
         
         var base = this.getSetByAlias(alias);
         $(this.data).find('model[alias="' + alias + '"] > column:contains("key")').each(function(position) {
-            base = $(base).filter(':has(item[map="' + $(this).attr("id") + '"]:contains("' + keys[position] + '")');
+            base = $(base).filter(':has(i[map="' + $(this).attr("id") + '"]:contains("' + keys[position] + '")');
         });
         
         return base;
@@ -112,7 +112,7 @@ function Source(name, callback, url, params) {
      * RETURNS :
      *  Item collection.                                                        */
     this.getItemByID = function(id) {
-        return $(this.data).find('item[map="' + id + '"]');
+        return $(this.data).find('i[map="' + id + '"]');
     };
     
     /* Alias-based item getter.
@@ -197,7 +197,7 @@ function Source(name, callback, url, params) {
                     var buff = $(this.data).find("data:first");
                     $(this.data).find("model").each(function() {
                         // Selecting set
-                        buff = $(buff).children("set");
+                        buff = $(buff).children("s");
 
                         // Linking set
                         $(this).attr("id", id);
@@ -207,7 +207,7 @@ function Source(name, callback, url, params) {
                         // Linking items
                         $(this).children("column").each(function(position) {
                             $(this).attr("id", id);
-                            $(buff).find("set > item:eq(" + position + ")").attr("map", id);
+                            $(buff).find("s > i:eq(" + position + ")").attr("map", id);
                             id++;
                         });
                     });
