@@ -112,5 +112,10 @@
         <param required="true" id="component">Component ID</param>
         <param required="true" id="source">Source name</param>
     </error>
+    <error code="23">
+        <message>Catch error during delayed method call</message>
+        <param required="true" id="component">Component ID</param>
+        <param required="true" id="method">Method name</param>
+    </error>
     
 </catalog>

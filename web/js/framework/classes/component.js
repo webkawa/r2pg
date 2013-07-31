@@ -230,6 +230,18 @@ function Component(container, descriptor) {
         return 'Component ' + this.getModelName() + '#' + this.id;
     };
     
+    /* Delayed tasks */
+    this.dt = [];
+    this.addDelayedTask = function(id) {
+        this.dt[this.dt.length] = id;
+    };
+    this.clearDelayedTasks = function() {
+        for (var i = 0; i < this.dt.length; i++) {
+            clearTimeout(this.dt[i]);
+        }
+        this.dt = [];
+    };
+    
     /* Attributes register.
      * Adds a new attribute to component for specific use.
      * PARAMETERS :
@@ -297,20 +309,41 @@ function Component(container, descriptor) {
         }
     };
     
-    /* Call a pre-saved animation.
+    /* Call a pre-saved method.
      * PARAMETERS :
      *  context                     Binding context.
      * RETURN :
-     *  Method result.                                                          */
+     *  Method result or 0 if delayed.                                          */
     this.call = function(context) {
         var name = $(this).attr("call");
         var params = [];
         $(this).children("parameter").each(function() {
             params[params.length] = $(this).text();
         });
+        var delay = 0;
+        if ($(this).is("[delay]")) {
+            delay = parseInt($(this).attr("delay"));
+        }
         
         try {
-            return context.getMethod(name).call(params);
+            if (delay === 0) {
+                return context.getMethod(name).call(params);
+            } else {
+                var t = setTimeout(function() {
+                    try {
+                        context.getMethod(name).call(params);
+                    } catch (e) {
+                        var p = {
+                            component: context.getID(),
+                            method: name
+                        };
+                        ErrorManager.process(new Error("cpn", 23, p, e));
+                    }
+                }, delay);
+                context.addDelayedTask(t);
+                
+                return 0;
+            }
         } catch (e) {
             var p = {
                 name: name
@@ -375,7 +408,11 @@ function Component(container, descriptor) {
      *  sequence                Descripting sequence node.
      * RETURNS : N/A                                                            */
     this.execute = function(sequence) {
-        Log.print(this, "Executes sequence");
+        var lt;
+        if ($(sequence).is("in"))               lt = "in";
+        else if ($(sequence).is("out"))         lt = "out";
+        else                                    lt = "queue";
+        this.log("Executes sequence [" + lt + "]/[" + this.getState() + "]");
         
         // Use vars
         var ctx = this;
@@ -420,7 +457,7 @@ function Component(container, descriptor) {
      * RETURNS :
      *  True if starting was successfull, false else.                           */
     this.start = function() {
-        Log.print(this, "Starting component");
+        this.log("Starting component");
         if (typeof(this.state) !== "undefined") {
             if (CFG.get("components", "allow.invalid.start")) {
                 return false;
@@ -482,25 +519,29 @@ function Component(container, descriptor) {
         var seq_exit;
         var seq_entry;
         var drt = CFG.get("components", "css.class.removal");
+        
         try {
+            // Cleaning delayed tasks
+            this.clearDelayedTasks();
+            
             // Setting classes
             this.setStateClass(this.state, to);
             
             // Loading exit/entry sequences
             if (typeof(node_origin) !== "undefined") {
-                if ($(node_origin).children('out[to="' + to + '"]').length === 1) {
+                if ($(node_origin).children('out[to="' + to + '"]').length > 0) {
                     seq_exit = $(node_origin).children('out[to="' + to + '"]');
                 } else {
-                    if ($(node_origin).children('out:not([to])').length === 1) {
+                    if ($(node_origin).children('out:not([to])').length > 0) {
                         seq_exit = $(node_origin).children('out:not([to])');
                     }
                 }
             }
             if (typeof(node_dest) !== "undefined") {
-                if ($(node_dest).children('in[from="' + this.state + '"]').length === 1) {
+                if ($(node_dest).children('in[from="' + this.state + '"]').length > 0) {
                     seq_entry = $(node_dest).children('in[from="' + this.state + '"]');
                 } else {
-                    if ($(node_dest).children('in:not([from])').length === 1) {
+                    if ($(node_dest).children('in:not([from])').length > 0) {
                         seq_entry = $(node_dest).children('in:not([from])');
                     }
                 }
@@ -512,7 +553,9 @@ function Component(container, descriptor) {
             // Executing exit sequence
             this.status = 1;
             if (typeof(seq_exit) !== "undefined") {
-                this.execute(seq_exit);
+                $(seq_exit).each(function() {
+                    ctx.execute(this); 
+                });
             }
             $(this.container).find("*").promise().done(function() {
                 // Executes delayed removal
@@ -527,7 +570,9 @@ function Component(container, descriptor) {
                 // Executing entry sequence
                 ctx.setStatus(2);
                 if (typeof(seq_entry) !== "undefined") {
-                    ctx.execute(seq_entry);
+                    $(seq_entry).each(function() {
+                        ctx.execute(this);
+                    });
                 }
                 $(ctx.container).find("*").promise().done(function() {
                     ctx.setStatus(0);
@@ -558,7 +603,7 @@ function Component(container, descriptor) {
      * PARAMETERS : N/A
      * RETURNS : N/A                                                            */
     this.clean = function() {
-        Log.print(this, "Cleaning component");
+        this.log("Cleaning component");
         
         // Removing DOM
         this.setStateClass();
@@ -570,10 +615,15 @@ function Component(container, descriptor) {
         this.selectors = [];
         Register.remove(this.getID());
     };
+    
+    /* Quick log */
+    this.log = function(message, add) {
+        Log.print(this, message, add);
+    };
         
     /* Initialize */
-    Log.print(this, "Initializing new component");
-    Log.print(this, "Loading descriptor");
+    this.log("Initializing new component");
+    this.log("Loading descriptor");
     jQuery.ajax({
         context: this,
         type: "GET",
@@ -593,10 +643,10 @@ function Component(container, descriptor) {
         this.model = data;
     });
     
-    Log.print(this, "Tagging container");
+    this.log("Tagging container");
     $(this.container).addClass(this.getModelName());
     
-    Log.print(this, "Loading selectors");
+    this.log("Loading selectors");
     var ctx = this;
     $(this.model).find("selector").each(function() {
         var buff;
@@ -616,7 +666,8 @@ function Component(container, descriptor) {
         }
     });
     
-    Log.print(this, "Saving default methods");
+    this.log("Saving default methods");
     this.saveMethod(new Method(this.go, "go", false));
     this.saveMethod(new Method(this.accessSource, "access", false));
+    this.saveMethod(new Method(this.log, "log", true));
 };

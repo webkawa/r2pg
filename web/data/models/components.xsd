@@ -133,7 +133,10 @@
                         maxOccurs="unbounded" />
         </xs:sequence>
         <xs:attribute name="call"
-                      type="string" />
+                      type="string" 
+                      use="required" />
+        <xs:attribute name="delay"
+                      type="xs:decimal" />
     </xs:complexType>
     
     <!-- Sequence -->

@@ -150,7 +150,7 @@ function Source(name, callback, url, params) {
         
         // Proceding
         $(this.getContext().getContainer()).find("*").promise().done(function() {
-            Log.print(ctx.getContext(), "Accessing data at URL " + ctx.getUrl());
+            ctx.getContext().log("Accessing data at URL " + ctx.getUrl());
             jQuery.ajax({
                 context: ctx,
                 type: "POST",
