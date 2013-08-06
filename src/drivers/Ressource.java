@@ -11,12 +11,12 @@ import java.util.Calendar;
 import java.util.HashMap;
 
 /**
- *  Procedure.
+ *  Ressource.
  *  Stored SQL procedure, implementing setup/cache mechanism and supporting
  *  database connection.
  *      @author kawa
  */
-public class Procedure extends HashMap<String[],Set> implements DriverITF {
+public class Ressource extends HashMap<String[],Set> implements DriverITF {
     /**
      *  Life : no.
      */
@@ -72,12 +72,12 @@ public class Procedure extends HashMap<String[],Set> implements DriverITF {
     private long life;
     
     /**
-     *  Procedure constructor.
+     *  Ressource constructor.
      *  Constructs procedure from name, parameters and life duration.
-     *      @param name     Procedure name.
+     *      @param name     Ressource name.
      *      @param params   Parameters (as array).
      */
-    public Procedure(String name, Parameter[] params, long life) {
+    public Ressource(String name, Parameter[] params, long life) {
         super();
         
         this.name = name;
@@ -128,7 +128,7 @@ public class Procedure extends HashMap<String[],Set> implements DriverITF {
         }
         
         try {
-            // Procedure setup
+            // Ressource setup
             for (int i = 0; i < this.model.size(); i++) {
                 // Parameter check
                 if (this.model.get(i).isMandatory() && args[i] == null) {
@@ -153,7 +153,7 @@ public class Procedure extends HashMap<String[],Set> implements DriverITF {
                 }
             }
             
-            // Procedure execution
+            // Ressource execution
             Set ns = new Set(this.connector.executeQuery());
             
             // Comparing to cache
@@ -192,19 +192,19 @@ public class Procedure extends HashMap<String[],Set> implements DriverITF {
     }
     
     /**
-     *  @return Procedure name.
+     *  @return Ressource name.
      */
     protected String getName()  {
         return this.name;
     }
     /**
-     *  @return Procedure pool.
+     *  @return Ressource pool.
      */
     protected Pool getPool() {
         return this.pool;
     }
     /**
-     *  @return Procedure prepared statement query.
+     *  @return Ressource prepared statement query.
      */
     protected String getStatementQuery() {
         String st = "CALL " + this.name + "(";
@@ -232,5 +232,13 @@ public class Procedure extends HashMap<String[],Set> implements DriverITF {
         } catch (SQLException e) {
             throw new DriverException(this, "Unable to get response from connector.", e);
         }
+    }
+    
+    /**
+     *  Defines connection pool.
+     *      @param pool Connection pool.
+     */
+    protected void setPool(Pool pool) {
+        this.pool = pool;
     }
 }
