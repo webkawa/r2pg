@@ -97,7 +97,87 @@ public class Set extends HashMap<Integer,String[]> implements DriverITF {
      *  Extracts output flow.
      *  Generates an XML output flow based on set content.
      */
-    protected void generate() {
+    protected void generate() throws DriverException {
+        int buff = 0;
+        Alias bfa;
+        
+        this.image  = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+        this.image += "<data xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"../models/data.xsd\" >";
+        
+        // Headers
+        for (int i = 0; i < this.structure.size(); i++) {
+            bfa = this.structure.get(i);
+            if (bfa.getStage() != buff) {
+                buff = bfa.getStage();
+                if (i != 0) {
+                    this.image += "</model>";
+                }
+                this.image += "<model alias=\"" + bfa.getLevel() + "\">";
+            }
+            this.image += "<column alias=\"" + bfa.getName() + "\">";
+            if (bfa.isKey()) {
+                this.image += "key";
+            } else {
+                this.image += "value";
+            }
+            this.image += "</column>";
+        }
+        this.image += "</model>";
+        
+        // Guide
+        int[] guide = new int[super.size()];
+        int ssize = this.structure.size();
+        int mstage = this.structure.get(ssize).getStage();
+        guide[0] = 1;
+        
+        for (int i = 2; i <= super.size(); i++) {
+            guide[i - 1] = mstage;
+            
+            for (int j = 0; j < ssize && j != -1; j++) {
+                if (super.get(i)[j].equals(super.get(i - 1)[j])) {
+                    guide[i - 1] = this.structure.get(j).getStage();
+                    j = -1;
+                }
+            }
+        }
+        
+        int[] starts = new int[mstage];
+        
+        // Starts
+        starts[0] = 0;
+        for (int i = 2; i <= mstage; i++) {
+            for (int j = starts[i - 2]; j < this.structure.size() && j != -1; j++) {
+                if (this.structure.get(i).getStage() == i) {
+                    starts[i - 1] = j;
+                    j = -1;
+                }
+            }
+        }
+        
+        // Body
+        buff = 1;
+        for (int i = 0; i < super.size(); i++) {
+            this.image += "<s>";
+            for (int j = starts[buff - 1]; j != -1; j++) {
+                this.image += "<i>";
+                this.image += super.get(i + 1)[j];
+                this.image += "</i>";
+                if (j == ssize) {
+                    if (i + 1 == super.size()) {
+                        for (int k = mstage; k > 0; k--)                this.image += "</s>";
+                    } else {
+                        for (int k = mstage; k > guide[i + 1]; k--)     this.image += "</s>";
+                        buff = guide[i + 1];
+                    }
+                    j = -1;
+                } else if (this.structure.get(j).getStage() > buff) {
+                    this.image += "<s>";
+                    buff++;
+                }
+            }
+        }
+        
+        this.image += "</data>";
     }
     
     /**

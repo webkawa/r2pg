@@ -139,6 +139,12 @@ public class Pool extends HashMap<String,Ressource> implements DriverITF {
         return this.db_password;
     }
     /**
+     *  @return Database name.
+     */
+    protected String getDBName() {
+        return this.db_name;
+    }
+    /**
      *  @return true if pool is currently connected, false else.
      */
     public boolean isConnected() {
