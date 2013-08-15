@@ -1,6 +1,7 @@
 package drivers;
 
 import exceptions.DriverException;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -43,7 +44,7 @@ public class Set extends HashMap<Integer,String[]> implements DriverITF {
             // Filling structure
             ResultSetMetaData rsmd = rs.getMetaData();
             for (int i = 0; i < rsmd.getColumnCount(); i++) {
-                this.structure.add(new Alias(this, rsmd.getColumnLabel(i)));
+                this.structure.add(new Alias(this, rsmd.getColumnLabel(i + 1)));
             }
             Collections.sort(this.structure);
             
@@ -101,10 +102,8 @@ public class Set extends HashMap<Integer,String[]> implements DriverITF {
         int buff = 0;
         Alias bfa;
         
-        this.image  = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-        this.image += "<data xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"../models/data.xsd\" >";
-        
         // Headers
+        this.image = "";
         for (int i = 0; i < this.structure.size(); i++) {
             bfa = this.structure.get(i);
             if (bfa.getStage() != buff) {
@@ -176,8 +175,6 @@ public class Set extends HashMap<Integer,String[]> implements DriverITF {
                 }
             }
         }
-        
-        this.image += "</data>";
     }
     
     /**
@@ -205,5 +202,13 @@ public class Set extends HashMap<Integer,String[]> implements DriverITF {
      */
     protected boolean hasExpired(long time) {
         return this.refresh < Calendar.getInstance().getTimeInMillis() - time;
+    }
+    
+    /**
+     *  @return Driver name.
+     */
+    @Override
+    public String getDriverName() {
+        return "Set";
     }
 }

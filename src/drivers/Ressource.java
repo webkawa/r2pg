@@ -1,13 +1,12 @@
 package drivers;
 
 import exceptions.DriverException;
-import java.sql.PreparedStatement;
+import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.HashMap;
 
 /**
@@ -65,7 +64,7 @@ public class Ressource extends HashMap<String[],Set> implements DriverITF {
     /**
      *  Connector.
      */
-    private PreparedStatement connector;
+    private CallableStatement connector;
     /**
      *  Life duration.
      */
@@ -102,11 +101,8 @@ public class Ressource extends HashMap<String[],Set> implements DriverITF {
      */
     protected void prepare() throws DriverException {
         String query = this.getStatementQuery();
-        if (!this.isConnected()) {
-            throw new DriverException(this, "Try to prepare connector without defined pool.");
-        }
         try {
-            this.connector = this.pool.getConnection().prepareStatement(query);
+            this.connector = this.pool.getConnection().prepareCall(query);
         } catch (SQLException e) {
             throw new DriverException(this, "Unable to create connector.", e);
         }
@@ -118,13 +114,15 @@ public class Ressource extends HashMap<String[],Set> implements DriverITF {
      *      @param args Arguments as array.
      *      @return     XML image.
      */
-    protected String submit(String[] args) throws DriverException {
+    public String submit(String[] args) throws DriverException {
         // Initial checking
-        if (!this.isPrepared()) {
-            this.prepare();
-        }
         if (args.length != this.model.size()) {
             throw new DriverException(this, "Invalid number of arguments submited.");
+        }
+        
+        // Preparing
+        if (!this.isPrepared()) {
+            this.prepare();
         }
         
         try {
@@ -154,7 +152,9 @@ public class Ressource extends HashMap<String[],Set> implements DriverITF {
             }
             
             // Ressource execution
-            Set ns = new Set(this.connector.executeQuery());
+            ResultSet rs = this.connector.executeQuery();
+            Set ns = new Set(rs);
+            rs.close();
             
             // Comparing to cache
             boolean save = false;
@@ -196,6 +196,12 @@ public class Ressource extends HashMap<String[],Set> implements DriverITF {
      */
     protected String getName()  {
         return this.name;
+    }
+    /**
+     *  @return Model size.
+     */
+    public int getModelSize() {
+        return this.model.size();
     }
     /**
      *  @return Ressource pool.
@@ -240,5 +246,13 @@ public class Ressource extends HashMap<String[],Set> implements DriverITF {
      */
     protected void setPool(Pool pool) {
         this.pool = pool;
+    }
+    
+    /**
+     *  @return Driver name.
+     */
+    @Override
+    public String getDriverName() {
+        return "Ressource[" + this.name + "][" + this.pool + "]";
     }
 }

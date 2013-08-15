@@ -6,8 +6,6 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *  Ressource pool.
@@ -72,10 +70,17 @@ public class Pool extends HashMap<String,Ressource> implements DriverITF {
         this.db_login = login;
         this.db_password = password;
         this.db_name = name;
-        this.connection_url = "jdbc:mysql://" + address + ":" + port + "/" + name + "?user=" + login + "&password=" + password;
+        this.connection_url = "jdbc:mysql://" + address + 
+                                ":" + port + 
+                                "/" + name + 
+                                "?user=" + login + 
+                                "&password=" + password +
+                                "&retainStatementAfterResultSetClose=true" +
+                                "&connectTimeout=5000" +
+                                "&socketTimeout=4000"; 
         
         try {
-            DriverManager.registerDriver((Driver) Class.forName("com.mysql.jbdc.Driver").newInstance());
+            DriverManager.registerDriver((Driver) Class.forName("com.mysql.jdbc.Driver").newInstance());
         } catch (SQLException|ClassNotFoundException|InstantiationException|IllegalAccessException e) {
             throw new DriverException(this, "Unable to load driver.", e);
         }
@@ -183,5 +188,12 @@ public class Pool extends HashMap<String,Ressource> implements DriverITF {
             ressource.setPool(this);
             return super.put(key, ressource);
         }
+    }
+    /**
+     *  @return Driver name.
+     */
+    @Override
+    public String getDriverName() {
+        return "Pool[" + this.connection_url + "]";
     }
 }

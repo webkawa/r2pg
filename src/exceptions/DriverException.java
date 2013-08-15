@@ -1,43 +1,44 @@
 package exceptions;
 
 import drivers.DriverITF;
-import drivers.Pipe;
 
 /**
- * Driver exception.
- * Error caused by the data driver or one subcomponent.
- *  @author kawa
+ *  Driver exception.
+ *  System error caused by a data-driving component.
+ *      @author kawa
  */
 public class DriverException extends Exception {
     /**
-     *  Responsible driver component.
+     *  Error sender.
      */
-    private DriverITF component;
-    
+    private DriverITF thrower;
     
     /**
-     * Constructs the driver exception.
-     *  @param component Responsible driver component.
-     *  @param message   Error message.
+     *  Driver exception constructor.
+     *  Constructs a simple driver exception.
+     *      @param thrower  Throwing component.
+     *      @param message  Error message.
      */
-    public DriverException(DriverITF component, String message) {
-        this(component, message, null);
-    };
+    public DriverException(DriverITF thrower, String message) {
+        super(message);
+        this.thrower = thrower;
+    }
     /**
-     * Constructs the driver exception.
-     *  @param component Responsible driver component.
-     *  @param message   Error message.
-     *  @param cause     Error cause.
+     *  Driver exception constructor.
+     *  Constructs a driver exception based on a cause.
+     *      @param thrower  Throwing component.
+     *      @param message  Error message.
+     *      @param cause    Cause exception.
      */
-    public DriverException(DriverITF component, String message, Exception cause) {
+    public DriverException(DriverITF thrower, String message, Throwable cause) {
         super(message, cause);
-        this.component = component;
+        this.thrower = thrower;
     };
 
     /**
-     *  @return Responsible driver component.
+     *  @return Thrower data-driving component.
      */
-    public DriverITF getComponent() {
-        return this.component;
-    };
+    public DriverITF getThrower() {
+        return this.thrower;
+    }
 }

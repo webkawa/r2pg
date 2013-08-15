@@ -46,10 +46,10 @@ public class Alias implements DriverITF, Comparable<Alias> {
      *      @param token    SQL token.
      */
     public Alias(Set owner, String token) throws DriverException {
-        if (!Pattern.matches("[A-Z][A-Za-z0-9]*_[A-Z][A-Za-z0-9]*[\b_KEY\b]?", token)) {
+        this.owner = owner;
+        if (!Pattern.matches("[A-Z][A-Za-z0-9]*_[A-Z][A-Za-z0-9]*(_KEY)?", token)) {
             throw new DriverException(this, "Invalid token [" + token + "]");
         }
-        this.owner = owner;
         this.token = token;
         this.name = token.substring(token.indexOf("_")).replace("_KEY", "");
         this.level = token.substring(0, token.indexOf("_"));
@@ -184,5 +184,12 @@ public class Alias implements DriverITF, Comparable<Alias> {
         } catch (DriverException e) { } finally {
             return 0;
         }
+    }
+    /**
+     *  @return Driver name.
+     */
+    @Override
+    public String getDriverName() {
+        return "Alias[" + this.owner.getDriverName() + "][" + this.name + "]";
     }
 }
