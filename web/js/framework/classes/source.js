@@ -201,13 +201,19 @@ function Source(name, callback, url, params) {
 
                         // Linking set
                         $(this).attr("id", id);
-                        $(buff).attr("map", id);
+                        $(buff).attr({
+                            map: id,
+                            class: $(this).attr("alias")
+                        });
                         id++;
 
                         // Linking items
                         $(this).children("column").each(function(position) {
                             $(this).attr("id", id);
-                            $(buff).find("s > i:eq(" + position + ")").attr("map", id);
+                            $(buff).find("s > i:eq(" + position + ")").attr({
+                                map: id,
+                                class: $(this).attr("alias")
+                            });
                             id++;
                         });
                     });
