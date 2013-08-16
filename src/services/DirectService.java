@@ -46,7 +46,7 @@ public class DirectService extends Service {
                 }
                 param[i - 1] = new Parameter(type, mandatory);
             }
-            Ressource r = new Ressource(proc, param, Ressource.LIFE_NO);
+            Ressource r = new Ressource(proc, param, Ressource.LIFE_SHORT);
             
             super.pool.put("base", r);
             this.base = r;

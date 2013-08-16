@@ -41,7 +41,7 @@ public abstract class Service extends HttpServlet implements DriverITF {
     /**
      *  Pools name.
      */
-    private static final String[] DATASOURCES_NAMES = {"main", "logs"};
+    private static final String[] DATASOURCES_NAMES = {"MainPool"};
     
     /**
      *  Ready status.
@@ -110,7 +110,6 @@ public abstract class Service extends HttpServlet implements DriverITF {
      */
     @Override
     public void init(ServletConfig cfg) {
-        
         try {
             if (!Service.STARTED) {
                 Service.CONFIGURATION = new Properties();
@@ -125,7 +124,7 @@ public abstract class Service extends HttpServlet implements DriverITF {
                 Service.STARTED = true;
             }
             this.ressources = new HashMap<>();
-            this.pool = Service.DATASOURCES.get("main");
+            this.pool = Service.DATASOURCES.get("MainPool");
             this.ready = true;
         
             this.start(cfg);
@@ -194,16 +193,7 @@ public abstract class Service extends HttpServlet implements DriverITF {
      *      @param name Data-source name.
      */
     private void loadDataSource(String name) throws DriverException {
-        // Loading variables
-        String prefix =     "database." + name + ".";
-        String address =    Service.CONFIGURATION.getProperty(prefix + "address");
-        int port =          Integer.parseInt(Service.CONFIGURATION.getProperty(prefix + "port"));
-        String login =      Service.CONFIGURATION.getProperty(prefix + "login");
-        String password =   Service.CONFIGURATION.getProperty(prefix + "password");
-        String dbname =     Service.CONFIGURATION.getProperty(prefix + "name");
-        
-        // Initializing pool
-        Service.DATASOURCES.put(name, new Pool(address, port, login, password, dbname));
+        Service.DATASOURCES.put(name, new Pool(name));
     }
     
     /**

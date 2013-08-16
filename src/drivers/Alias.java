@@ -51,22 +51,18 @@ public class Alias implements DriverITF, Comparable<Alias> {
             throw new DriverException(this, "Invalid token [" + token + "]");
         }
         this.token = token;
-        this.name = token.substring(token.indexOf("_")).replace("_KEY", "");
+        this.name = token.substring(token.indexOf("_") + 1).replace("_KEY", "");
         this.level = token.substring(0, token.indexOf("_"));
         this.stage = -1;
         this.key = token.substring(token.length() - 4).equals("_KEY");
         
         // Level finder
-        int x = 0, y = 1;
+        int x = this.owner.getMaximumStage() + 1;
         ArrayList<Alias> structure = this.owner.getStructure();
         for (int i = 0; i < structure.size(); i++) {
             if (structure.get(i).getLevel().equals(this.level)) {
                 x = structure.get(i).getStage();
             }
-        }
-        if (x == 0) {
-            x = y;
-            y++;
         }
         this.stage = x;
     }

@@ -2,10 +2,10 @@ package drivers;
 
 import exceptions.DriverException;
 import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
 
 /**
  *  Ressource pool.
@@ -15,74 +15,33 @@ import java.util.HashMap;
  */
 public class Pool extends HashMap<String,Ressource> implements DriverITF {
     /**
-     *  Test timeout.
+     *  Ping timeout.
      */
-    public static final int TIMEOUT = 100;
+    private static final int TIMEOUT = 100;
     
     /**
-     *  Database address.
+     *  Pool data source.
      */
-    private String db_address;
-    /**
-     *  Database port.
-     */
-    private int db_port;
-    /**
-     *  Database login.
-     */
-    private String db_login;
-    /**
-     *  Database password.
-     */
-    private String db_password;
-    /**
-     *  Database name.
-     */
-    private String db_name;
-    /**
-     *  Connection URL.
-     */
-    private String connection_url;
+    private DataSource ds;
     /**
      *  Connection access.
      */
-    private Connection connection_pipe;
-    /**
-     *  Connection daemon.
-     */
-    private PoolDaemon connection_daemon;
+    private Connection connection;
     
     /**
      *  Pool constructs.
-     *  Constructs the ressource pool from a set of authentification
-     *  informations used to access the hosting SQL database.
-     *      @param address  DB access.
-     *      @param port     DB port.
-     *      @param login    DB login.
-     *      @param password DB password.
-     *      @param name     DB name.
+     *  Constructs the pool based on a standard Glassfish JDBC pool.
+     *      @param name Pool name.
      */
-    public Pool(String address, int port, String login, String password, String name) throws DriverException {
+    public Pool(String name) throws DriverException {
         super();
         
-        this.db_address = address;
-        this.db_port = port;
-        this.db_login = login;
-        this.db_password = password;
-        this.db_name = name;
-        this.connection_url = "jdbc:mysql://" + address + 
-                                ":" + port + 
-                                "/" + name + 
-                                "?user=" + login + 
-                                "&password=" + password +
-                                "&retainStatementAfterResultSetClose=true" +
-                                "&connectTimeout=5000" +
-                                "&socketTimeout=4000"; 
-        
         try {
-            DriverManager.registerDriver((Driver) Class.forName("com.mysql.jdbc.Driver").newInstance());
-        } catch (SQLException|ClassNotFoundException|InstantiationException|IllegalAccessException e) {
-            throw new DriverException(this, "Unable to load driver.", e);
+            InitialContext ctx = new InitialContext();
+            System.out.print(ctx.getNameInNamespace());
+            this.ds = (DataSource) ctx.lookup(name);
+        } catch (Exception e) {
+            throw new DriverException(this, "Error while initializing pool", e);
         }
     }
     
@@ -92,13 +51,8 @@ public class Pool extends HashMap<String,Ressource> implements DriverITF {
      *  pool construction.
      */
     protected void connect() throws DriverException {
-        if (this.connection_daemon != null) {
-            this.connection_daemon.interrupt();
-        }
         try {
-            this.connection_pipe = DriverManager.getConnection(this.connection_url);
-            this.connection_daemon = new PoolDaemon(this, 600000);
-            this.connection_daemon.start();
+            this.connection = this.ds.getConnection();
         } catch (SQLException e) {
             throw new DriverException(this, "Unable to connect database.", e);
         }
@@ -110,54 +64,22 @@ public class Pool extends HashMap<String,Ressource> implements DriverITF {
     void close() {
         if (this.isConnected()) {
             try {
-                this.connection_daemon.interrupt();
-                this.connection_pipe.close();
+                this.connection.close();
             } catch (SQLException e) { } finally {
-                this.connection_daemon = null;
-                this.connection_pipe = null;
+                this.connection = null;
             }
         }
     }
-    
-    /**
-     *  @return Database address.
-     */
-    protected String getDBAddress() {
-        return this.db_address;
-    }
-    /**
-     *  @return Database port.
-     */
-    protected int getDBPort() {
-        return this.db_port;
-    }
-    /**
-     *  @return Database login.
-     */
-    protected String getDBLogin() {
-        return this.db_login;
-    }
-    /**
-     *  @return Database password.
-     */
-    protected String getDBPassword() {
-        return this.db_password;
-    }
-    /**
-     *  @return Database name.
-     */
-    protected String getDBName() {
-        return this.db_name;
-    }
+  
     /**
      *  @return true if pool is currently connected, false else.
      */
     public boolean isConnected() {
-        if (this.connection_pipe == null) {
+        if (this.connection == null) {
             return false;
         } else {
             try {
-                return this.connection_pipe.isValid(Pool.TIMEOUT);
+                return this.connection.isValid(Pool.TIMEOUT);
             } catch (SQLException e) {
                 return false;
             }
@@ -170,7 +92,7 @@ public class Pool extends HashMap<String,Ressource> implements DriverITF {
         if (!this.isConnected()) {
             this.connect();
         }
-        return this.connection_pipe;
+        return this.connection;
     }
     
     /**
@@ -194,6 +116,6 @@ public class Pool extends HashMap<String,Ressource> implements DriverITF {
      */
     @Override
     public String getDriverName() {
-        return "Pool[" + this.connection_url + "]";
+        return "Pool[" + this.connection + "]";
     }
 }

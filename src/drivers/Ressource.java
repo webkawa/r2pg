@@ -157,7 +157,7 @@ public class Ressource extends HashMap<String[],Set> implements DriverITF {
             rs.close();
             
             // Comparing to cache
-            boolean save = false;
+            boolean save = true;
             if (super.containsKey(args)) {
                 Set os = super.get(args);
                 if (os.hasExpired(this.life)) {

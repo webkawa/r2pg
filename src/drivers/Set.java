@@ -1,7 +1,6 @@
 package drivers;
 
 import exceptions.DriverException;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -49,20 +48,20 @@ public class Set extends HashMap<Integer,String[]> implements DriverITF {
             Collections.sort(this.structure);
             
             // Filling data
-            String[] buff = new String[this.structure.size() + 1];
             while (rs.next()) {
+                String[] buff = new String[this.structure.size()];
                 for (int i = 0; i < buff.length; i++) {
-                    buff[i] = rs.getString(i);
+                    buff[i] = rs.getString(i + 1);
                 }
                 super.put(rs.getRow(), buff);
             }
         } catch (SQLException e) {
             throw new DriverException(this, "Unable to construct data set.", e);
-        }
+        } 
     }
     
     /**
-     *  Set challenger.
+     *  Set challenger. 
      *  Challenges current setup with another.
      *      @param set  Challenged set.
      *      @return     true if the two sets are equals, false else.
@@ -99,6 +98,7 @@ public class Set extends HashMap<Integer,String[]> implements DriverITF {
      *  Generates an XML output flow based on set content.
      */
     protected void generate() throws DriverException {
+        System.out.print("Q");
         int buff = 0;
         Alias bfa;
         
@@ -123,32 +123,29 @@ public class Set extends HashMap<Integer,String[]> implements DriverITF {
         }
         this.image += "</model>";
         
-        // Guide
         int[] guide = new int[super.size()];
         int ssize = this.structure.size();
-        int mstage = this.structure.get(ssize).getStage();
-        guide[0] = 1;
+        int mstage = this.getMaximumStage();
+        int[] starts = new int[mstage];
         
+        // Guide
+        guide[0] = 1;
         for (int i = 2; i <= super.size(); i++) {
-            guide[i - 1] = mstage;
-            
             for (int j = 0; j < ssize && j != -1; j++) {
-                if (super.get(i)[j].equals(super.get(i - 1)[j])) {
+                if (!super.get(i)[j].equals(super.get(i - 1)[j])) {
                     guide[i - 1] = this.structure.get(j).getStage();
-                    j = -1;
+                    j = -2;
                 }
             }
         }
-        
-        int[] starts = new int[mstage];
         
         // Starts
         starts[0] = 0;
         for (int i = 2; i <= mstage; i++) {
             for (int j = starts[i - 2]; j < this.structure.size() && j != -1; j++) {
-                if (this.structure.get(i).getStage() == i) {
+                if (this.structure.get(j).getStage() == i) {
                     starts[i - 1] = j;
-                    j = -1;
+                    j = -2;
                 }
             }
         }
@@ -161,15 +158,15 @@ public class Set extends HashMap<Integer,String[]> implements DriverITF {
                 this.image += "<i>";
                 this.image += super.get(i + 1)[j];
                 this.image += "</i>";
-                if (j == ssize) {
+                if (j == ssize - 1) {
                     if (i + 1 == super.size()) {
                         for (int k = mstage; k > 0; k--)                this.image += "</s>";
                     } else {
-                        for (int k = mstage; k > guide[i + 1]; k--)     this.image += "</s>";
+                        for (int k = mstage; k >= guide[i + 1]; k--)     this.image += "</s>";
                         buff = guide[i + 1];
                     }
-                    j = -1;
-                } else if (this.structure.get(j).getStage() > buff) {
+                    j = -2;
+                } else if (this.structure.get(j + 1).getStage() > buff) {
                     this.image += "<s>";
                     buff++;
                 }
@@ -202,6 +199,18 @@ public class Set extends HashMap<Integer,String[]> implements DriverITF {
      */
     protected boolean hasExpired(long time) {
         return this.refresh < Calendar.getInstance().getTimeInMillis() - time;
+    }
+    /**
+     *  @return Maximum level stage in current structure.
+     */
+    protected int getMaximumStage() throws DriverException {
+        int x = 0;
+        for (int i = 0; i < this.structure.size(); i++) {
+            if (this.structure.get(i).getStage() > x) {
+                x = this.structure.get(i).getStage();
+            }
+        }
+        return x;
     }
     
     /**
