@@ -15,7 +15,7 @@ import java.util.HashMap;
  *  database connection.
  *      @author kawa
  */
-public class Ressource extends HashMap<String[],Set> implements DriverITF {
+public class Ressource extends HashMap<Integer,Set> implements DriverITF {
     /**
      *  Life : no.
      */
@@ -126,6 +126,9 @@ public class Ressource extends HashMap<String[],Set> implements DriverITF {
         }
         
         try {
+            // Generating key
+            int hc = Arrays.hashCode(args);
+            
             // Ressource setup
             for (int i = 0; i < this.model.size(); i++) {
                 // Parameter check
@@ -158,21 +161,23 @@ public class Ressource extends HashMap<String[],Set> implements DriverITF {
             
             // Comparing to cache
             boolean save = true;
-            if (super.containsKey(args)) {
-                Set os = super.get(args);
+            if (super.containsKey(hc)) {
+                Set os = super.get(hc);
                 if (os.hasExpired(this.life)) {
-                    save = !ns.challenge(os);
+                    save = !os.challenge(ns);
+                } else {
+                    save = false;
                 }
             }
             
             // Saving changes if necessary
             if (save) {
                 ns.generate();
-                super.put(args, ns);
+                super.put(hc, ns);
             }
             
             // Returning
-            return super.get(args).getImage();
+            return super.get(hc).getImage();
         } catch (SQLException e) {
             throw new DriverException(this, "Error while submiting setup.", e);
         }

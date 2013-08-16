@@ -46,11 +46,11 @@ public class DirectService extends Service {
                 }
                 param[i - 1] = new Parameter(type, mandatory);
             }
-            Ressource r = new Ressource(proc, param, Ressource.LIFE_SHORT);
+            Ressource r = new Ressource(proc, param, Ressource.LIFE_SHORTEST);
             
             super.pool.put("base", r);
             this.base = r;
-        } catch (Exception e) {
+        } catch (Exception e) { 
             super.manage(new DriverException(this, "Error on direct service start"));
         }
     }

@@ -38,6 +38,7 @@ public class Set extends HashMap<Integer,String[]> implements DriverITF {
     public Set(ResultSet rs) throws DriverException {
         super();
         this.structure = new ArrayList<>();
+        this.refresh = Calendar.getInstance().getTimeInMillis();
         
         try {
             // Filling structure
@@ -98,7 +99,6 @@ public class Set extends HashMap<Integer,String[]> implements DriverITF {
      *  Generates an XML output flow based on set content.
      */
     protected void generate() throws DriverException {
-        System.out.print("Q");
         int buff = 0;
         Alias bfa;
         

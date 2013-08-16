@@ -38,7 +38,6 @@ public class Pool extends HashMap<String,Ressource> implements DriverITF {
         
         try {
             InitialContext ctx = new InitialContext();
-            System.out.print(ctx.getNameInNamespace());
             this.ds = (DataSource) ctx.lookup(name);
         } catch (Exception e) {
             throw new DriverException(this, "Error while initializing pool", e);
