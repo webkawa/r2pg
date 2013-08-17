@@ -129,6 +129,8 @@ function Source(name, callback, url, params) {
      * PARAMETERS : N/A
      * RETURNS : N/A                                                            */
     this.access = function() {
+        var error;
+        var errorl;
         var state;
         var status = this.getContext().getStatus();
         var ctx = this;
@@ -177,20 +179,22 @@ function Source(name, callback, url, params) {
                     }
 
                     // Checking for native error
-                    $(this.data).find("data > error").each(function() {
-                        var id = $(this).attr("id");
+                    errorl = $(this.data).find("data > error").length;
+                    for (var i = 0; i < errorl; i++) {
+                        var id = $(this.data).find("data > error:eq(" + (errorl - i - 1) + ")").attr("id");
                         var p = {};
-                        $(this).children("parameter").each(function() {
+                        $(this.data).find("data > error:eq(" + (errorl - i - 1) + ") > parameter").each(function() {
                             p[$(this).attr("name")] = $(this).text();
                         });
-                        var e = new Error("wf", parseInt(id), p);
-
+                        error = new Error("wf", parseInt(id), p, error);
+                    }
+                    if ($(this.data).find("data > error").length > 0) {
                         p = {
                             component: ctx.getContext().getID(),
                             source: ctx.getName()
                         };
-                        throw new Error("cpn", 20, p, e);
-                    });
+                        throw new Error("cpn", 20, p, error);
+                    }
 
                     // Linking 
                     var id = 1;

@@ -1,6 +1,7 @@
 package drivers;
 
 import exceptions.DriverException;
+import exceptions.WorkflowException;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -114,7 +115,7 @@ public class Ressource extends HashMap<Integer,Set> implements DriverITF {
      *      @param args Arguments as array.
      *      @return     XML image.
      */
-    public String submit(String[] args) throws DriverException {
+    public String submit(String[] args) throws DriverException, WorkflowException {
         // Initial checking
         if (args.length != this.model.size()) {
             throw new DriverException(this, "Invalid number of arguments submited.");
@@ -156,6 +157,10 @@ public class Ressource extends HashMap<Integer,Set> implements DriverITF {
             
             // Ressource execution
             ResultSet rs = this.connector.executeQuery();
+            if (rs.getMetaData().getColumnLabel(1).equals("ERROR")) {
+                rs.next();
+                throw new WorkflowException(rs.getString(1));
+            }
             Set ns = new Set(rs);
             rs.close();
             
@@ -180,6 +185,8 @@ public class Ressource extends HashMap<Integer,Set> implements DriverITF {
             return super.get(hc).getImage();
         } catch (SQLException e) {
             throw new DriverException(this, "Error while submiting setup.", e);
+        } catch (WorkflowException e) {
+            throw new DriverException(this, "Error during workflow execution", e);
         }
     }
     /**

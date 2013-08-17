@@ -1,6 +1,7 @@
 package drivers;
 
 import exceptions.DriverException;
+import exceptions.WorkflowException;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -141,27 +142,23 @@ public abstract class Service extends HttpServlet implements DriverITF {
         Logger.getLogger(Service.class.getName()).log(Level.SEVERE, "Driver exception !", e);
         
         // Display
-        String data =   "<model alias=\"error\">" +
-                            "<column alias=\"type\">value</column>" +
-                            "<column alias=\"origin\">value</column>" +
-                            "<column alias=\"message\">value</column>" +
-                        "</model>";
-        
+        String data = "";
         Throwable buff = e;
         do {
             if (buff instanceof DriverException) {
                 DriverException de = (DriverException) buff;
-                data += "<s>" +
-                            "<i>DRIVER EXCEPTION</i>" +
-                            "<i>" + de.getThrower().getDriverName() + "</i>" +
-                            "<i>" + de.getMessage() + "</i>" +
-                        "</s>";
+                data += "<error id=\"1\">" +
+                            "<parameter name=\"driver\">" + de.getThrower().getDriverName() + "</parameter>" +
+                            "<parameter name=\"message\">" + de.getMessage() + "</parameter>" +
+                        "</error>";
+            } else if (buff instanceof WorkflowException) {
+                data += "<error id=\"2\">" +
+                            "<parameter name=\"message\">" + buff.getMessage() + "</parameter>" +
+                        "</error>";   
             } else {
-                data += "<s>" +
-                            "<i>NATURAL EXCEPTION</i>" +
-                            "<i>?</i>" +
-                            "<i>" + buff.getMessage() + "</i>" +
-                        "</s>";
+                data += "<error id=\"3\">" +
+                            "<parameter name=\"message\">" + buff.getMessage() + "</parameter>" +
+                        "</error>";
             }
             buff = buff.getCause();
         } while (buff != null);
