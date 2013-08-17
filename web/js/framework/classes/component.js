@@ -644,7 +644,7 @@ function Component(container, descriptor) {
     });
     
     this.log("Tagging container");
-    $(this.container).addClass(this.getModelName());
+    $(this.container).addClass("cpn" + this.getModelName());
     
     this.log("Loading selectors");
     var ctx = this;
