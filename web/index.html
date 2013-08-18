@@ -38,8 +38,14 @@
                     CFG.load("data/configurations/development.xml");
                     CFG.load("data/configurations/langs/fr/interface.xml");
                     
+                    var p = {
+                        name: "id",
+                        label: "Label !",
+                        description: "Description !",
+                        value: "Value !"
+                    }
                     var v = [new Validator("MINLENGTH", {length: 1}, CFG.get("violations", "textfield.mandatory"))];
-                    var x = new cpnTextfield($("div"), "valeur !", v);
+                    var x = new cpnTextfield($("div"), p, v);
                     x.start();
                 } catch (e) {
                     ErrorManager.process(e); 

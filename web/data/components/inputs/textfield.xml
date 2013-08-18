@@ -6,6 +6,9 @@
     
     <selectors>
         <selector id="wrapper">div.wrapper</selector>
+        <selector id="header">div.wrapper > div.header</selector>
+        <selector id="label">div.wrapper > div.header > label</selector>
+        <selector id="description">div.wrapper > div.header > p</selector>
         <selector id="field">div.wrapper > input</selector>
         <selector id="info">div.wrapper > div.info</selector>
     </selectors>
@@ -13,6 +16,10 @@
         <dom>
             <![CDATA[
                 <div class="wrapper">
+                    <div class="header">
+                        <label></label>
+                        <p></p>
+                    </div>
                     <input type="textfield"></input>
                     <div class="info"></div>
                 </div> 

@@ -33,7 +33,7 @@ var Register = {
              };
              throw new Error("cpn", 16, p);
          }
-         if (typeof(Register.idx[id]) === "undefined") {
+         if (Toolkit.isNull(Register.idx[id])) {
              var p = {
                  id: id,
                  error: "Component has been cleaned"

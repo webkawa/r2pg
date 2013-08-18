@@ -63,7 +63,7 @@ var ErrorManager = {
             // Collecting informations
             var context = error.getContext();
             var catalog = ErrorManager.getCatalog(context);
-            if (typeof(catalog) === "undefined") {
+            if (Toolkit.isNull(catalog)) {
                 var p = {
                     cause: "Unable to find catalog",
                     id: error.getCode(),
@@ -86,7 +86,7 @@ var ErrorManager = {
 
             // Parameters check
             $(entry).children('param[required="true"]').each(function() {
-                if (typeof(error.getParams()[$(this).attr("id")]) === "undefined") {
+                if (Toolkit.isNull(error.getParams()[$(this).attr("id")])) {
                     var p = {
                         code: error.getCode(),
                         context: error.getContext(),
@@ -182,7 +182,7 @@ var ErrorManager = {
             if (paramspre === "") {
                 paramspre = Toolkit.repeatedString(params.length - 1, " ");
             }
-            if (typeof(error.getParams()[$(this).attr("id")]) !== "undefined") {
+            if (!Toolkit.isNull(error.getParams()[$(this).attr("id")])) {
                 params += Toolkit.cut(error.getParam($(this).attr("id")), cfg_plength).join("\n" + paramspre);
             } else {
                 params += "?";
@@ -197,7 +197,7 @@ var ErrorManager = {
         
         // Causes
         parent = error.getCause();
-        while (typeof(parent) !== "undefined") {
+        while (!Toolkit.isNull(parent)) {
             if (!(parent instanceof Error)) {
                 var p = {
                     name: parent.name,
@@ -217,14 +217,14 @@ var ErrorManager = {
             
             // Cause message
             causecatalog = ErrorManager.getCatalog(parent.getContext());
-            if (typeof(causecatalog) !== "undefined") {
+            if (!Toolkit.isNull(causecatalog)) {
                 causeentry = $(causecatalog).find('catalog > error[code="' + parent.getCode() + '"]');
             }
              
             if (causemessagepre === "") {
                 causemessagepre = Toolkit.repeatedString(prefix.length, " ");
             }
-            if (typeof(causecatalog) === "undefined" || $(causeentry).length !== 1) {
+            if (Toolkit.isNull(causecatalog) || $(causeentry).length !== 1) {
                 causemessage = "Unknow cause error";
             } else {
                 causemessage = Toolkit.cut($(causeentry).children("message").text(), cfg_clength).join("\n" + causemessagepre);
@@ -240,7 +240,7 @@ var ErrorManager = {
                 if (causeparamspre === "") {
                     causeparamspre = Toolkit.repeatedString(causeparams.length - 1, " ");
                 }
-                if (typeof(parent.getParams()[$(this).attr("id")]) !== "undefined") {
+                if (!Toolkit.isNull(parent.getParams()[$(this).attr("id")])) {
                     causeparams += Toolkit.cut(parent.getParam($(this).attr("id")), cfg_plength).join("\n" + causeparamspre);
                 } else {
                     causeparams += "?";

@@ -83,7 +83,7 @@ var Log = {
         message += Toolkit.cut(say, cfg_mlength).join("\n" + messagepre);
         
         // Complement
-        if (typeof(directout) !== "undefined") {
+        if (!Toolkit.isNull(directout)) {
             complement  = "\n";
             complement += Toolkit.leadingChars("Direct output ", cfg_plength, " ");
             complement += Toolkit.cut(directout, cfg_clength).join("\n" + messagepre);

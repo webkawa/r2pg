@@ -100,7 +100,7 @@ function Validator(type, parameters, violation) {
             } else {
                 buff = message.substring(i, j + 1);
                 console.log(this.parameters);
-                if (typeof(this.parameters[buff.replace(/\$/g, "")]) === "undefined") {
+                if (Toolkit.isNull(this.parameters[buff.replace(/\$/g, "")])) {
                     var p = {
                         variable: buff.replace(/\$/g, ""),
                         type: this.type,

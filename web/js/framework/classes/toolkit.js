@@ -94,7 +94,7 @@ var Toolkit = {
      * RETURNS : 
      *  Correctly formated date.                                                */
     formatDate: function(date, format) {
-        if (typeof(format) === "undefined") {
+        if (Toolkit.isNull(format)) {
             format = 'en';
         }
         if (format === "exacthour") {
@@ -151,7 +151,8 @@ var Toolkit = {
      *  > object        Object name.
      *  > name          Variable name.
      *  > value         Variable value.
-     *  > proto         Class prototype.                                        */
+     *  > proto         Class prototype.                                        
+     * RETURNS : N/A                                                            */
     checkClassOf: function(object, name, value, proto) {
         if (!(value instanceof proto)) {
             var p = {
@@ -162,5 +163,14 @@ var Toolkit = {
             };
             throw new Error("core", 6, p);
         }
-    }
+    },
+    
+    /* Checks if a variable is undefined.
+     * PARAMETERS :
+     *  > value         Checked value.
+     * RETURNS :
+     *  true if value is undefined, false else.                                 */
+     isNull: function(value) {
+        return typeof(value) === "undefined";
+     }
 };

@@ -10,7 +10,7 @@ function Source(name, callback, url, params) {
     Toolkit.checkTypeOf("Source", "name", name, "string");
     Toolkit.checkTypeOf("Source", "callback", callback, "string");
     Toolkit.checkTypeOf("Source", "url", url, "string");
-    if (typeof(params) !== "undefined") {
+    if (!Toolkit.isNull(params)) {
         Toolkit.checkTypeOf("Source", "params", params, "object");
     } else {
         params = {};
@@ -146,7 +146,7 @@ function Source(name, callback, url, params) {
         };
         
         // Switching to waiter
-        if (typeof(this.waiter) !== "undefined" && status === 0) {
+        if (!Toolkit.isNull(this.waiter) && status === 0) {
             state = this.getContext().getState();
             this.getContext().go(this.waiter);
         }
@@ -161,7 +161,7 @@ function Source(name, callback, url, params) {
                 data: this.params,
                 dataType: "xml",
                 cache: false,
-                async: typeof(this.waiter) !== "undefined",
+                async: !Toolkit.isNull(this.waiter),
                 timeout: 500
             }).error(function(jqXHR, status, info) {
                 var p = {
@@ -175,7 +175,7 @@ function Source(name, callback, url, params) {
                     this.data = data;
 
                     // Launching return animation
-                    if (typeof(state) !== "undefined") {
+                    if (!Toolkit.isNull(state)) {
                         this.getContext().go(state);
                     }
 

@@ -111,7 +111,7 @@ function Component(container, descriptor) {
         throw new Error("cpn", 6, p);
     };
     this.quickSelect = function(name, refresh) {
-        if (typeof(refresh) === "undefined") {
+        if (Toolkit.isNull(refresh)) {
             refresh = false;
         }
         return this.getSelector(name, refresh).getNodes();
@@ -300,7 +300,7 @@ function Component(container, descriptor) {
         var buff;
         for (var i = 0; i < this.selectors.length; i++) {
             buff = this.selectors[i];
-            if (buff.getState() === this.state || typeof(buff.getState()) === "undefined") {
+            if (buff.getState() === this.state || Toolkit.isNull(buff.getState())) {
                 buff.on();
                 buff.refresh();
             } else {
@@ -458,7 +458,7 @@ function Component(container, descriptor) {
      *  True if starting was successfull, false else.                           */
     this.start = function() {
         this.log("Starting component");
-        if (typeof(this.state) !== "undefined") {
+        if (!Toolkit.isNull(this.state)) {
             if (CFG.get("components", "allow.invalid.start")) {
                 return false;
             } else {
@@ -498,7 +498,7 @@ function Component(container, descriptor) {
             };
             throw new Error("cpn", 15, p);
         }
-        if (typeof(this.state) === "undefined" && typeof(to) === "undefined") {
+        if (Toolkit.isNull(this.state) && Toolkit.isNull(to)) {
             var p = {
                 component: this.getID(),
                 error: "Neither origin or destination defined"
@@ -510,10 +510,10 @@ function Component(container, descriptor) {
         var ctx = this;
         var node_origin;
         var node_dest;
-        if (typeof(this.state) !== "undefined") {
+        if (!Toolkit.isNull(this.state)) {
             node_origin = $(this.model).find('component > state[id="' + this.state + '"]');
         }
-        if (typeof(to) !== "undefined") {
+        if (!Toolkit.isNull(to)) {
             node_dest = $(this.model).find('component > state[id="' + to + '"]');
         }
         var seq_exit;
@@ -528,7 +528,7 @@ function Component(container, descriptor) {
             this.setStateClass(this.state, to);
             
             // Loading exit/entry sequences
-            if (typeof(node_origin) !== "undefined") {
+            if (!Toolkit.isNull(node_origin)) {
                 if ($(node_origin).children('out[to="' + to + '"]').length > 0) {
                     seq_exit = $(node_origin).children('out[to="' + to + '"]');
                 } else {
@@ -537,7 +537,7 @@ function Component(container, descriptor) {
                     }
                 }
             }
-            if (typeof(node_dest) !== "undefined") {
+            if (!Toolkit.isNull(node_dest)) {
                 if ($(node_dest).children('in[from="' + this.state + '"]').length > 0) {
                     seq_entry = $(node_dest).children('in[from="' + this.state + '"]');
                 } else {
@@ -552,7 +552,7 @@ function Component(container, descriptor) {
             
             // Executing exit sequence
             this.status = 1;
-            if (typeof(seq_exit) !== "undefined") {
+            if (!Toolkit.isNull(seq_exit)) {
                 $(seq_exit).each(function() {
                     ctx.execute(this); 
                 });
@@ -569,14 +569,14 @@ function Component(container, descriptor) {
                     
                 // Executing entry sequence
                 ctx.setStatus(2);
-                if (typeof(seq_entry) !== "undefined") {
+                if (!Toolkit.isNull(seq_entry)) {
                     $(seq_entry).each(function() {
                         ctx.execute(this);
                     });
                 }
                 $(ctx.container).find("*").promise().done(function() {
                     ctx.setStatus(0);
-                    if (typeof(to) === "undefined") {
+                    if (Toolkit.isNull(to)) {
                         // Closing component
                         ctx.clean();
                     } else {    

@@ -1,11 +1,15 @@
 /* Classic textfield.
  * PARAMETERS :
  *  > container     Component container.
- *  > value         Initial field value. 
+ *  > properties    Field initial properties as object.
+ *                   properties.name            : Field name
+ *                   properties.value           : Initial field value
+ *                   properties.label           : Field label
+ *                   properties.description     : Field description
  *  > validators    Client-side validators as array.
  *  > gatekeeper    Server-side validator source name.                          */
-function cpnTextfield(container, value, validators, gatekeeper) {
-    Toolkit.checkTypeOf("cpnTextField", "value", value, "string");
+function cpnTextfield(container, properties, validators, gatekeeper) {
+    Toolkit.checkTypeOf("cpnTextField", "properties.name", properties.name, "string");
     Toolkit.checkTypeOf("cpnTextField", "validators", validators, "object");
     for (var i = 0; i < validators.length; i++) {
         Toolkit.checkClassOf("cpnTextField", "validators[" + i + "]", validators[i], Validator);
@@ -17,7 +21,9 @@ function cpnTextfield(container, value, validators, gatekeeper) {
     
     /* Starter */
     var cpn_init = function() {
-        this.quickSelect("field").val(value);
+        if (!Toolkit.isNull(properties.value)) {
+            this.quickSelect("field").val(properties.value);
+        }
     };
     cpn.saveMethod(new Method(cpn_init, "init", true));
     
@@ -34,7 +40,7 @@ function cpnTextfield(container, value, validators, gatekeeper) {
                 return;
             }
         }
-        if (typeof(gatekeeper) !== "undefined") {
+        if (!Toolkit.isNull(properties.value)) {
             
         } else {
             this.go("OK");
