@@ -4,6 +4,7 @@ import drivers.Parameter;
 import drivers.Ressource;
 import drivers.Service;
 import exceptions.DriverException;
+import exceptions.WorkflowException;
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
 
@@ -27,6 +28,8 @@ public class DirectService extends Service {
      *          - "pN" (N: 0 to N) is a single parameter, defined as litteral
      *            type (string, integer, boolean ...) followed by the "*"
      *            character indicating a mandatory status.
+     *  An optionnal "lifetime" parameter can be set to rewrite the base ressource
+     *  lifetime.
      *      @param cfg  Servlet configuration.
      */
     @Override
@@ -38,7 +41,7 @@ public class DirectService extends Service {
             for (int i = 1; i < cut.length; i++) {
                 short type;
                 boolean mandatory = cut[i].contains("*");
-                switch (cut[i - 1].replace("*", "")) {
+                switch (cut[i].replace("*", "")) {
                     case "string": type = Parameter.STRING; break;
                     case "integer": type = Parameter.INTEGER; break;
                     case "boolean": type = Parameter.BOOLEAN; break;
@@ -46,7 +49,10 @@ public class DirectService extends Service {
                 }
                 param[i - 1] = new Parameter(type, mandatory);
             }
-            Ressource r = new Ressource(proc, param, Ressource.LIFE_SHORTEST);
+            Ressource r = new Ressource(proc, param);
+            if (cfg.getInitParameter("lifetime") != null) {
+                r.setLife(Long.parseLong(cfg.getInitParameter("lifetime")));
+            }
             
             super.pool.put("base", r);
             this.base = r;
@@ -61,12 +67,19 @@ public class DirectService extends Service {
      *      @param request  Servlet request.   
      */
     @Override
-    protected String invoke(HttpServletRequest request) throws DriverException {
+    protected String invoke(HttpServletRequest request) throws DriverException, WorkflowException {
         String params[] = new String[this.base.getModelSize()];
         for (int i = 0; i < params.length; i++) {
             params[i] = request.getParameter("p" + i);
         }
         return this.base.submit(params);
+    }
+    
+    /**
+     *  @return Direct service base.
+     */
+    protected Ressource getBase() {
+        return this.base;
     }
     /**
      *  @return Driver name.

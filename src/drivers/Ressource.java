@@ -70,6 +70,10 @@ public class Ressource extends HashMap<Integer,Set> implements DriverITF {
      *  Life duration.
      */
     private long life;
+    /**
+     *  Results template.
+     */
+    private ArrayList<String> template;
     
     /**
      *  Ressource constructor.
@@ -77,12 +81,13 @@ public class Ressource extends HashMap<Integer,Set> implements DriverITF {
      *      @param name     Ressource name.
      *      @param params   Parameters (as array).
      */
-    public Ressource(String name, Parameter[] params, long life) {
+    public Ressource(String name, Parameter[] params) {
         super();
         
         this.name = name;
         this.model = new ArrayList<>();
-        this.life = life;
+        this.life = Ressource.LIFE_NO;
+        this.template = null;
         
         this.model.addAll(Arrays.asList(params));
     }
@@ -160,6 +165,16 @@ public class Ressource extends HashMap<Integer,Set> implements DriverITF {
             if (rs.getMetaData().getColumnLabel(1).equals("ERROR")) {
                 rs.next();
                 throw new WorkflowException(rs.getString(1));
+            }
+            if (this.template != null) {
+                if (this.template.size() != rs.getMetaData().getColumnCount()) {
+                    throw new DriverException(this, "Invalid column count");
+                }
+                for (int i = 0; i <this.template.size(); i++) {
+                    if (!this.template.get(i).equals(rs.getMetaData().getColumnName(i + 1))) {
+                        throw new DriverException(this, "Invalid column name");
+                    }
+                }
             }
             Set ns = new Set(rs);
             rs.close();
@@ -258,6 +273,20 @@ public class Ressource extends HashMap<Integer,Set> implements DriverITF {
      */
     protected void setPool(Pool pool) {
         this.pool = pool;
+    }
+    /**
+     *  Defines ressource life.
+     *      @param life Ressource lifetime.
+     */
+    public void setLife(long life) {
+        this.life = life;
+    }
+    /**
+     *  Defines ressource template.
+     *      @param template Ressource template.
+     */
+    public void setTemplate(ArrayList<String> template) {
+        this.template = template;
     }
     
     /**

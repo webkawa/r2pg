@@ -81,6 +81,8 @@ public abstract class Service extends HttpServlet implements DriverITF {
             }
         } catch (DriverException e) {
             data += this.manage(e);
+        } catch (WorkflowException e) {
+            data += this.manage(new DriverException(this, "Processing error", e));
         } finally {
             data += "</data>";
             
@@ -101,7 +103,7 @@ public abstract class Service extends HttpServlet implements DriverITF {
      *  post-treatment) and returns an XML standardized content.
      *      @param request Posted request.
      */
-    protected abstract String invoke(HttpServletRequest request) throws DriverException;
+    protected abstract String invoke(HttpServletRequest request) throws DriverException, WorkflowException;
     /**
      *  Initiator.
      *  Concludes initialization by switching status.
