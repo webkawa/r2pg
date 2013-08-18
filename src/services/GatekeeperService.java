@@ -32,7 +32,7 @@ public class GatekeeperService extends DirectService {
     @Override
     protected void start(ServletConfig cfg) {
         ArrayList<String> template = new ArrayList<>();
-        template.add("Response_Value_KEY");
+        template.add("Response_Result_KEY");
         template.add("Response_Violation");
         
         super.start(cfg);

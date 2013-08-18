@@ -5,6 +5,7 @@
     
     <group id="violations">
         <string id="textfield.mandatory">Le champ doit contenir au moins $length$ caractère(s).</string>
+        <string id="textfield.server">Le serveur a refusé la valeur saisie.</string>
     </group>
     
 </configuration>

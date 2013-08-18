@@ -26,3 +26,6 @@ div.cpnInputTextfield.fromKO > div.wrapper > div.info,
 div.cpnInputTextfield.atKO > div.wrapper > div.info {
     display: block;
 }
+div.cpnInputTextfield.atWaiting > div.wrapper > input {
+    background: pink;
+}

@@ -8,7 +8,7 @@
         <selector id="wrapper">div.wrapper</selector>
         <selector id="header">div.wrapper > div.header</selector>
         <selector id="label">div.wrapper > div.header > label</selector>
-        <selector id="description">div.wrapper > div.header > p</selector>
+        <selector id="description">div.wrapper > div.header > span</selector>
         <selector id="field">div.wrapper > input</selector>
         <selector id="info">div.wrapper > div.info</selector>
     </selectors>
@@ -18,7 +18,7 @@
                 <div class="wrapper">
                     <div class="header">
                         <label></label>
-                        <p></p>
+                        <span></span>
                     </div>
                     <input type="textfield"></input>
                     <div class="info"></div>
@@ -36,8 +36,8 @@
             </action>
         </trigger>
         <in>
-            <pre call="init" />
             <target>wrapper</target>
+            <pre call="init" />
             <animation>
                 <speed>200</speed>
                 <easing>swing</easing>
@@ -95,5 +95,6 @@
             </animation>
         </out>
     </state>
+    <state id="Waiting" />
     
 </component>

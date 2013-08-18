@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
     <servlet>
-        <servlet-name>DirectService</servlet-name>
-        <servlet-class>services.DirectService</servlet-class>
+        <servlet-name>SampleGatekeeper</servlet-name>
+        <servlet-class>services.GatekeeperService</servlet-class>
         <init-param>
             <param-name>procedure</param-name>
-            <param-value>SimpleSelect</param-value>
+            <param-value>SampleGatekeeper.string*</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>
-        <servlet-name>DirectService</servlet-name>
-        <url-pattern>/SimpleSelect</url-pattern>
+        <servlet-name>SampleGatekeeper</servlet-name>
+        <url-pattern>/SampleGatekeeper</url-pattern>
     </servlet-mapping>
     <session-config> 
         <session-timeout>

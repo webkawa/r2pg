@@ -43,9 +43,9 @@
                         label: "Label !",
                         description: "Description !",
                         value: "Value !"
-                    }
+                    };
                     var v = [new Validator("MINLENGTH", {length: 1}, CFG.get("violations", "textfield.mandatory"))];
-                    var x = new cpnTextfield($("div"), p, v);
+                    var x = new cpnTextfield($("div"), p, v, "SampleGatekeeper");
                     x.start();
                 } catch (e) {
                     ErrorManager.process(e); 

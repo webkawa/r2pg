@@ -153,7 +153,10 @@ function Component(container, descriptor) {
         source.setContext(this);
         this.sources[this.sources.length] = source;
     };
-    this.accessSource = function(name) {
+    this.accessSource = function(name, parameters) {
+        if (!Toolkit.isNull(parameters)) {
+            this.getSource(name).setParams(parameters);
+        }
         this.getSource(name).access();
     };
     this.quickSource = function(name) {
@@ -166,7 +169,7 @@ function Component(container, descriptor) {
         return this.state;
     };
     this.setState = function(state) {
-        if ($(this.model).find('state[id="' + state + '"]')) {
+        if ($(this.model).find('state[id="' + state + '"]').length === 1) {
             this.state = state;
         } else {
             var p = {
@@ -505,6 +508,7 @@ function Component(container, descriptor) {
             };
             throw new Error("cpn", 15, p);
         }
+        
         
         // Used variables
         var ctx = this;

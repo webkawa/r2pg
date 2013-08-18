@@ -40,7 +40,7 @@ function Source(name, callback, url, params) {
         return this.params;
     };
     this.setParams = function(object) {
-        Toolkit.checkTypeOf("Source", "params", params, "Object");
+        Toolkit.checkTypeOf("Source", "params", params, "object");
         
         this.params = object;
     };
@@ -134,6 +134,7 @@ function Source(name, callback, url, params) {
         var errorl;
         var state;
         var status = this.getContext().getStatus();
+        var async = false;
         var ctx = this;
         
         // Checking current status
@@ -152,23 +153,24 @@ function Source(name, callback, url, params) {
         }
         
         // Proceding
+        async = !Toolkit.isNull(this.waiter);
         $(this.getContext().getContainer()).find("*").promise().done(function() {
             ctx.getContext().log("Accessing data at URL " + ctx.getUrl());
             jQuery.ajax({
                 context: ctx,
                 type: "POST",
                 url: ctx.getUrl(),
-                data: this.params,
+                data: ctx.getParams(),
                 dataType: "xml",
                 cache: false,
-                async: !Toolkit.isNull(this.waiter),
-                timeout: 500
+                async: async,
+                timeout: 5000
             }).error(function(jqXHR, status, info) {
                 var p = {
                     url: this.url,
                     info: info
                 };
-                throw new Error("cpn", 18, p);
+                ErrorManager.process(new Error("cpn", 18, p));
             }).success(function(data) {
                 try {
                     // Copying data

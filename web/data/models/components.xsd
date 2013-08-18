@@ -186,6 +186,8 @@
             <xs:enumeration value="mousedown" />
             <xs:enumeration value="mouseover" />
             <xs:enumeration value="mouseout" />
+            <xs:enumeration value="focus" />
+            <xs:enumeration value="change" />
         </xs:restriction>
     </xs:simpleType>
     <xs:complexType name="trigger">
