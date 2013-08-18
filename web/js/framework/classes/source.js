@@ -6,9 +6,8 @@
  *  > url                       Data source URL.
  *  > params                    Data source parameters as object.               */
 
-function Source(name, callback, url, params) {
+function Source(name, url, params, callback) {
     Toolkit.checkTypeOf("Source", "name", name, "string");
-    Toolkit.checkTypeOf("Source", "callback", callback, "string");
     Toolkit.checkTypeOf("Source", "url", url, "string");
     if (!Toolkit.isNull(params)) {
         Toolkit.checkTypeOf("Source", "params", params, "object");
@@ -149,90 +148,89 @@ function Source(name, callback, url, params) {
         // Switching to waiter
         if (!Toolkit.isNull(this.waiter) && status === 0) {
             state = this.getContext().getState();
-            this.getContext().go(this.waiter);
-        }
-        
-        // Proceding
-        async = !Toolkit.isNull(this.waiter);
-        $(this.getContext().getContainer()).find("*").promise().done(function() {
-            ctx.getContext().log("Accessing data at URL " + ctx.getUrl());
-            jQuery.ajax({
-                context: ctx,
-                type: "POST",
-                url: ctx.getUrl(),
-                data: ctx.getParams(),
-                dataType: "xml",
-                cache: false,
-                async: async,
-                timeout: 5000
-            }).error(function(jqXHR, status, info) {
-                var p = {
-                    url: this.url,
-                    info: info
-                };
-                ErrorManager.process(new Error("cpn", 18, p));
-            }).success(function(data) {
-                try {
-                    // Copying data
-                    this.data = data;
+            this.getContext().go(this.waiter, function() {
+                async = !Toolkit.isNull(ctx.waiter);
+                ctx.getContext().log("Accessing data at URL " + ctx.getUrl());
+                jQuery.ajax({
+                    context: ctx,
+                    type: "POST",
+                    url: ctx.getUrl(),
+                    data: ctx.getParams(),
+                    dataType: "xml",
+                    cache: false,
+                    async: async,
+                    timeout: 5000
+                }).error(function(jqXHR, status, info) {
+                    var p = {
+                        url: this.url,
+                        info: info
+                    };
+                    ErrorManager.process(new Error("cpn", 18, p));
+                }).success(function(data) {
+                    try {
+                        // Copying data
+                        this.data = data;
 
-                    // Launching return animation
-                    if (!Toolkit.isNull(state)) {
-                        this.getContext().go(state);
-                    }
+                        // Launching return animation
+                        if (!Toolkit.isNull(state)) {
+                            this.getContext().go(state);
+                        }
 
-                    // Checking for native error
-                    errorl = $(this.data).find("data > error").length;
-                    for (var i = 0; i < errorl; i++) {
-                        var id = $(this.data).find("data > error:eq(" + (errorl - i - 1) + ")").attr("id");
-                        var p = {};
-                        $(this.data).find("data > error:eq(" + (errorl - i - 1) + ") > parameter").each(function() {
-                            p[$(this).attr("name")] = $(this).text();
-                        });
-                        error = new Error("wf", parseInt(id), p, error);
-                    }
-                    if ($(this.data).find("data > error").length > 0) {
-                        p = {
-                            component: ctx.getContext().getID(),
-                            source: ctx.getName()
-                        };
-                        throw new Error("cpn", 20, p, error);
-                    }
+                        // Checking for native error
+                        errorl = $(this.data).find("data > error").length;
+                        for (var i = 0; i < errorl; i++) {
+                            var id = $(this.data).find("data > error:eq(" + (errorl - i - 1) + ")").attr("id");
+                            var p = {};
+                            $(this.data).find("data > error:eq(" + (errorl - i - 1) + ") > parameter").each(function() {
+                                p[$(this).attr("name")] = $(this).text();
+                            });
+                            error = new Error("wf", parseInt(id), p, error);
+                        }
+                        if ($(this.data).find("data > error").length > 0) {
+                            p = {
+                                component: ctx.getContext().getID(),
+                                source: ctx.getName()
+                            };
+                            throw new Error("cpn", 20, p, error);
+                        }
 
-                    // Linking 
-                    var id = 1;
-                    var buff = $(this.data).find("data:first");
-                    $(this.data).find("model").each(function() {
-                        // Selecting set
-                        buff = $(buff).children("s");
+                        // Linking 
+                        var id = 1;
+                        var buff = $(this.data).find("data:first");
+                        $(this.data).find("model").each(function() {
+                            // Selecting set
+                            buff = $(buff).children("s");
 
-                        // Linking set
-                        $(this).attr("id", id);
-                        $(buff).attr({
-                            map: id,
-                            class: $(this).attr("alias")
-                        });
-                        id++;
-
-                        // Linking items
-                        $(this).children("column").each(function(position) {
+                            // Linking set
                             $(this).attr("id", id);
-                            $(buff).find("s > i:eq(" + position + ")").attr({
+                            $(buff).attr({
                                 map: id,
                                 class: $(this).attr("alias")
                             });
                             id++;
-                        });
-                    });
 
-                    // Executing callback
-                    this.getContext().getMethod(this.callback).call();
-                    
-                    return;
-                } catch (e) {
-                    ErrorManager.process(e);
-                }
+                            // Linking items
+                            $(this).children("column").each(function(position) {
+                                $(this).attr("id", id);
+                                $(buff).find("s > i:eq(" + position + ")").attr({
+                                    map: id,
+                                    class: $(this).attr("alias")
+                                });
+                                id++;
+                            });
+                        });
+
+                        // Executing callback
+                        if (!Toolkit.isNull(this.callback)) {
+                            this.getContext().getMethod(this.callback).call();
+                        }
+
+                        return;
+                    } catch (e) {
+                        ErrorManager.process(e);
+                    }
+                });
             });
-        });
+        }
     };
 };

@@ -11,9 +11,10 @@ import javax.servlet.http.HttpServletRequest;
  *  Allows a direct, simple call to a standardized gatekeeper ressource configured 
  *  through the servlet instanciation parameters.
  *  Only accepts one unique parameter, containing a value to check, and return a
- *  two-column data set, where first column indicates the server response (as 0
- *  for KO, 1 for OK) and second column the violation message key to display in
- *  case of failure.
+ *  two-column data set, where : - "Response_Result_KEY" indicates the validation
+ *                                 result as OK or KO ;
+ *                               - "Response_Violation" gives the appropriate
+ *                                 violation key in case of failure.
  *      @author kawa
  */
 public class GatekeeperService extends DirectService {

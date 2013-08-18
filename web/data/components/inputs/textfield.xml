@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<component xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<component xmlns:xsi="http://www.w3.org/1001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="../../models/components.xsd"
          type="classic" 
          name="InputTextfield" >
@@ -9,7 +9,8 @@
         <selector id="header">div.wrapper > div.header</selector>
         <selector id="label">div.wrapper > div.header > label</selector>
         <selector id="description">div.wrapper > div.header > span</selector>
-        <selector id="field">div.wrapper > input</selector>
+        <selector id="field">div.wrapper > div.input > input</selector>
+        <selector id="icon">div.wrapper > div.input > div.icon</selector>
         <selector id="info">div.wrapper > div.info</selector>
     </selectors>
     <loader>
@@ -20,7 +21,10 @@
                         <label></label>
                         <span></span>
                     </div>
-                    <input type="textfield"></input>
+                    <div class="input">
+                        <input type="textfield" />
+                        <div class="icon" />
+                    </div>
                     <div class="info"></div>
                 </div> 
             ]]>
@@ -39,7 +43,7 @@
             <target>wrapper</target>
             <pre call="init" />
             <animation>
-                <speed>200</speed>
+                <speed>100</speed>
                 <easing>swing</easing>
                 <move>
                     <property>opacity</property>
@@ -50,10 +54,48 @@
         </in>
     </state>
     <state id="Focus">
-        <trigger bind="change">
+        <trigger bind="blur">
             <target>field</target>
             <action call="check" />
         </trigger>
+        <in>
+            <target>icon</target>
+            <animation>
+                <speed>100</speed>
+                <easing>swing</easing>
+                <move>
+                    <property>opacity</property>
+                    <from>0</from>
+                    <to>1</to>
+                </move>
+            </animation>
+            <conclude call="checkblur" />
+        </in>
+        <in from="Waiting">
+            <target>icon</target>
+            <animation>
+                <speed>100</speed>
+                <easing>swing</easing>
+                <move>
+                    <property>opacity</property>
+                    <from>0</from>
+                    <to>1</to>
+                </move>
+            </animation>
+            <conclude call="agree" /> 
+        </in>
+        <out>
+            <target>icon</target>
+            <animation>
+                <speed>100</speed>
+                <easing>swing</easing>
+                <move>
+                    <property>opacity</property>
+                    <from>1</from>
+                    <to>0</to>
+                </move>
+            </animation>
+        </out>
     </state>
     <state id="OK">
         <trigger bind="focus">
@@ -62,6 +104,30 @@
                 <parameter>Focus</parameter>
             </action>
         </trigger>
+        <in>
+            <target>icon</target>
+            <animation>
+                <speed>100</speed>
+                <easing>swing</easing>
+                <move>
+                    <property>opacity</property>
+                    <from>0</from>
+                    <to>1</to>
+                </move>
+            </animation>
+        </in>
+        <out>
+            <target>icon</target>
+            <animation>
+                <speed>100</speed>
+                <easing>swing</easing>
+                <move>
+                    <property>opacity</property>
+                    <from>1</from>
+                    <to>0</to>
+                </move>
+            </animation>
+        </out>
     </state>
     <state id="KO">
         <trigger bind="focus">
@@ -71,9 +137,21 @@
             </action>
         </trigger>
         <in>
+            <target>icon</target>
+            <animation>
+                <speed>100</speed>
+                <easing>swing</easing>
+                <move>
+                    <property>opacity</property>
+                    <from>0</from>
+                    <to>1</to>
+                </move>
+            </animation>
+        </in>
+        <in>
             <target>info</target>
             <animation>
-                <speed>200</speed>
+                <speed>100</speed>
                 <easing>swing</easing>
                 <move>
                     <property>opacity</property>
@@ -85,7 +163,19 @@
         <out>
             <target>info</target>
             <animation>
-                <speed>200</speed>
+                <speed>100</speed>
+                <easing>swing</easing>
+                <move>
+                    <property>opacity</property>
+                    <from>1</from>
+                    <to>0</to>
+                </move>
+            </animation>
+        </out>
+        <out>
+            <target>icon</target>
+            <animation>
+                <speed>100</speed>
                 <easing>swing</easing>
                 <move>
                     <property>opacity</property>
@@ -95,6 +185,31 @@
             </animation>
         </out>
     </state>
-    <state id="Waiting" />
+    <state id="Waiting">
+        <in>
+            <target>icon</target>
+            <animation>
+                <speed>100</speed>
+                <easing>swing</easing>
+                <move>
+                    <property>opacity</property>
+                    <from>0</from>
+                    <to>1</to>
+                </move>
+            </animation>
+        </in>
+        <out>
+            <target>icon</target>
+            <animation>
+                <speed>100</speed>
+                <easing>swing</easing>
+                <move>
+                    <property>opacity</property>
+                    <from>1</from>
+                    <to>0</to>
+                </move>
+            </animation>
+        </out>
+    </state>
     
 </component>

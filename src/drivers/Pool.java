@@ -14,10 +14,6 @@ import javax.sql.DataSource;
  *  @author kawa
  */
 public class Pool extends HashMap<String,Ressource> implements DriverITF {
-    /**
-     *  Ping timeout.
-     */
-    private static final int TIMEOUT = 100;
     
     /**
      *  Pool data source.
@@ -78,7 +74,7 @@ public class Pool extends HashMap<String,Ressource> implements DriverITF {
             return false;
         } else {
             try {
-                return this.connection.isValid(Pool.TIMEOUT);
+                return this.connection.isValid(0);
             } catch (SQLException e) {
                 return false;
             }

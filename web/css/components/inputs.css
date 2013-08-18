@@ -1,31 +1,97 @@
-/* Classic textfield */
+/* Component : InputTextfield
+ * --------------------------
+ *  Initial > initial state
+ *  Focus   > focused state
+ *  OK      > valid state
+ *  KO      > invalid state
+ *  Waiting > waiting state                                                     */
+
+/* Common */
 div.cpnInputTextfield {
-    width: 100%;
+    width: 480px;
 }
 div.cpnInputTextfield > div.wrapper {
-    
+    width: 100%;
 }
-div.cpnInputTextfield > div.wrapper > input {
-    border: 4px solid grey;
-    background: #ddd;
+div.cpnInputTextfield > div.wrapper > div.header > label {
+    font-size: 150%;
+    font-weight: bold;
+}
+div.cpnInputTextfield > div.wrapper > div.header > span {
+    font-size: 90%;
+}
+div.cpnInputTextfield > div.wrapper > div.input {
+    position: relative;
+    width: 320px;
+}
+div.cpnInputTextfield > div.wrapper > div.input > input {
+    width: 256px;
+    height: 32px;
+    padding: 4px 52px 4px 8px;
+    margin: 4px;
+    background-color: #eee;
+    border: 2px solid #444;
+    border-radius: 5px;
+    outline: none;
+    font-size: 110%;
+}
+div.cpnInputTextfield > div.wrapper > div.input > div.icon {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    width: 40px;
+    height: 40px;
+    background-repeat: no-repeat;
+    background-color: #aaa;
+    background-position: 4px 4px;
 }
 div.cpnInputTextfield > div.wrapper > div.info {
     display: none;
+    width: 316px;
+    padding: 2px;
+    font-style: italic;
+    font-size: 90%;
+    text-align: right;
 }
-div.cpnInputTextfield.atFocus > div.wrapper > input {
-    border: 4px solid blue;
+
+/* Initial */
+div.cpnInputTextfield.toInitial > div.wrapper > div.input > div.icon,
+div.cpnInputTextfield.atInitial > div.wrapper > div.input > div.icon {
+    display: none;
 }
-div.cpnInputTextfield.atOK > div.wrapper > input {
-    border: 4px solid green;
+
+/* Focus */
+div.cpnInputTextfield.toFocus.inState > div.wrapper > div.input > div.icon,
+div.cpnInputTextfield.atFocus > div.wrapper > div.input > div.icon,
+div.cpnInputTextfield.fromFocus.outState > div.wrapper > div.input > div.icon {
+    background-image: url('../visuals/arrow_sans_left_32.png');
 }
-div.cpnInputTextfield.atKO > div.wrapper > input {
-    border: 4px solid red;
+
+/* OK */
+div.cpnInputTextfield.toOK.inState > div.wrapper > div.input > div.icon,
+div.cpnInputTextfield.atOK > div.wrapper > div.input > div.icon,
+div.cpnInputTextfield.fromOK.outState > div.wrapper > div.input > div.icon {
+    background-image: url('../visuals/accept_32.png');
+}
+
+/* KO */
+div.cpnInputTextfield.toKO.inState > div.wrapper > div.input > div.icon,
+div.cpnInputTextfield.atKO > div.wrapper > div.input > div.icon,
+div.cpnInputTextfield.fromKO.outState > div.wrapper > div.input > div.icon {
+    background-image: url('../visuals/cancel_32.png');
+}
+div.cpnInputTextfield.toKO > div.wrapper > div.info {
+    opacity: 0;
 }
 div.cpnInputTextfield.toKO > div.wrapper > div.info,
-div.cpnInputTextfield.fromKO > div.wrapper > div.info,
-div.cpnInputTextfield.atKO > div.wrapper > div.info {
+div.cpnInputTextfield.atKO > div.wrapper > div.info,
+div.cpnInputTextfield.fromKO > div.wrapper > div.info {
     display: block;
 }
-div.cpnInputTextfield.atWaiting > div.wrapper > input {
-    background: pink;
+
+/* Waiting */
+div.cpnInputTextfield.toWaiting.inState > div.wrapper > div.input > div.icon,
+div.cpnInputTextfield.atWaiting > div.wrapper > div.input > div.icon,
+div.cpnInputTextfield.fromWaiting.outState > div.wrapper > div.input > div.icon {
+    background-image: url('../visuals/refresh_32.png');
 }

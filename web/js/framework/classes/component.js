@@ -209,6 +209,19 @@ function Component(container, descriptor) {
             $(this.container).addClass(keyfrom + from + " " + keyto + to);
         }
     };
+    this.setSwitchClass = function(mode) {
+        var o = CFG.get("components", "css.class.out");
+        var i = CFG.get("components", "css.class.in");
+        
+        if (mode === -1) {
+            $(this.container).addClass(o);
+        } else if (mode === 0) {
+            $(this.container).removeClass(i);
+        } else {
+            $(this.container).removeClass(o);
+            $(this.container).addClass(i);
+        }
+    };
     
     /* Current status 
      *  0 > Ready
@@ -324,7 +337,7 @@ function Component(container, descriptor) {
             params[params.length] = $(this).text();
         });
         var delay = 0;
-        if ($(this).is("[delay]")) {
+        if ($(this).is('[delay]')) {
             delay = parseInt($(this).attr("delay"));
         }
         
@@ -492,8 +505,9 @@ function Component(container, descriptor) {
     /* Manages transition from current state to another state.
      * PARAMETERS :
      *  to                      Destination state.
+     *  complement              Complementary callback function.
      * RETURN : N/A                                                             */
-    this.go = function(to) {
+    this.go = function(to, complement) {
         if (this.status !== 0) {
             var p = {
                 component: this.getID(),
@@ -509,7 +523,6 @@ function Component(container, descriptor) {
             throw new Error("cpn", 15, p);
         }
         
-        
         // Used variables
         var ctx = this;
         var node_origin;
@@ -523,6 +536,7 @@ function Component(container, descriptor) {
         var seq_exit;
         var seq_entry;
         var drt = CFG.get("components", "css.class.removal");
+        var conclude;
         
         try {
             // Cleaning delayed tasks
@@ -530,6 +544,7 @@ function Component(container, descriptor) {
             
             // Setting classes
             this.setStateClass(this.state, to);
+            this.setSwitchClass(-1);
             
             // Loading exit/entry sequences
             if (!Toolkit.isNull(node_origin)) {
@@ -558,7 +573,7 @@ function Component(container, descriptor) {
             this.status = 1;
             if (!Toolkit.isNull(seq_exit)) {
                 $(seq_exit).each(function() {
-                    ctx.execute(this); 
+                    ctx.execute(this);
                 });
             }
             $(this.container).find("*").promise().done(function() {
@@ -567,6 +582,9 @@ function Component(container, descriptor) {
                 
                 // Switching state
                 ctx.setState(to);
+                
+                // Setting classes
+                ctx.setSwitchClass(1);
                        
                 // Revalidating selectors
                 ctx.reselect();
@@ -592,6 +610,24 @@ function Component(container, descriptor) {
 
                         // Setting classes
                         ctx.setStateClass(ctx.state, to);
+                        ctx.setSwitchClass(0);
+                        
+                        // Executes complementary callback
+                        if (!Toolkit.isNull(complement)) {
+                            complement.apply(ctx);
+                        }
+                        
+                        // Executes conclusion methods
+                        conclude = $();
+                        if (!Toolkit.isNull(seq_exit)) {
+                            conclude = $(conclude).add($(seq_exit).find("conclude"));
+                        }
+                        if (!Toolkit.isNull(seq_entry)) {
+                            conclude = $(conclude).add($(seq_entry).find("conclude"));
+                        }
+                        $(conclude).each(function() {
+                            ctx.call.apply(this, [ctx]);
+                        });
                     }
                 });
             });

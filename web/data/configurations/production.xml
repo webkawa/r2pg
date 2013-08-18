@@ -26,6 +26,8 @@
         <string id="css.prefix.to">to</string>
         <string id="css.prefix.from">from</string>
         <string id="css.prefix.at">at</string>
+        <string id="css.class.in">inState</string>
+        <string id="css.class.out">outState</string>
         <string id="css.class.removal">removeAfterDelay</string>
         <boolean id="allow.invalid.start">false</boolean>
         <boolean id="allow.inactive.selectors">false</boolean>

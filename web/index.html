@@ -39,10 +39,9 @@
                     CFG.load("data/configurations/langs/fr/interface.xml");
                     
                     var p = {
-                        name: "id",
-                        label: "Label !",
-                        description: "Description !",
-                        value: "Value !"
+                        name: "login",
+                        label: "Login",
+                        description: "Entrez votre login ici."
                     };
                     var v = [new Validator("MINLENGTH", {length: 1}, CFG.get("violations", "textfield.mandatory"))];
                     var x = new cpnTextfield($("div"), p, v, "SampleGatekeeper");

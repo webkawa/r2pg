@@ -18,7 +18,7 @@ function cpnTextfield(container, properties, validators, gatekeeper) {
     /* Construction */
     var cpn = new Component(container, "data/components/inputs/textfield.xml");
     if (!Toolkit.isNull(gatekeeper)) {
-        cpn.saveSource(new Source("gatekeeper", "agree", gatekeeper));
+        cpn.saveSource(new Source("gatekeeper", gatekeeper));
     }
     
     /* Starter */
@@ -72,6 +72,14 @@ function cpnTextfield(container, properties, validators, gatekeeper) {
         }
     };
     cpn.saveMethod(new Method(cpn_agree, "agree", false));
+    
+    /* Blur check */
+    var cpn_checkblur = function() {
+        if (this.getState() === "Focus" && !this.quickSelect("field").is($(":focus"))) {
+            this.quickSelect("field").trigger("blur");
+        }
+    };
+    cpn.saveMethod(new Method(cpn_checkblur, "checkblur", false));
     
     return cpn;
 }

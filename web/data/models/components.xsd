@@ -161,6 +161,10 @@
                         type="sequence"
                         minOccurs="0"
                         maxOccurs="unbounded" />
+            <xs:element name="conclude" 
+                        type="call"
+                        minOccurs="0"
+                        maxOccurs="1" />
         </xs:sequence>
     </xs:complexType>
     
