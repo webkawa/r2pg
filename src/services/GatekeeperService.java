@@ -2,6 +2,7 @@ package services;
 
 import exceptions.DriverException;
 import exceptions.WorkflowException;
+import java.util.ArrayList;
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
 
@@ -30,10 +31,15 @@ public class GatekeeperService extends DirectService {
      */
     @Override
     protected void start(ServletConfig cfg) {
+        ArrayList<String> template = new ArrayList<>();
+        template.add("Response_Value_KEY");
+        template.add("Response_Violation");
+        
         super.start(cfg);
         if (super.getBase().getModelSize() != 1) {
             super.manage(new DriverException(this, "Invalid gatekeeper model size"));
         }
+        super.getBase().setTemplate(template);
     }
     /**
      *  Invoker.
