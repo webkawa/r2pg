@@ -1,0 +1,28 @@
+/* Classic textfield */
+div.cpnInputTextfield {
+    width: 100%;
+}
+div.cpnInputTextfield > div.wrapper {
+    
+}
+div.cpnInputTextfield > div.wrapper > input {
+    border: 4px solid grey;
+    background: #ddd;
+}
+div.cpnInputTextfield > div.wrapper > div.info {
+    display: none;
+}
+div.cpnInputTextfield.atFocus > div.wrapper > input {
+    border: 4px solid blue;
+}
+div.cpnInputTextfield.atOK > div.wrapper > input {
+    border: 4px solid green;
+}
+div.cpnInputTextfield.atKO > div.wrapper > input {
+    border: 4px solid red;
+}
+div.cpnInputTextfield.toKO > div.wrapper > div.info,
+div.cpnInputTextfield.fromKO > div.wrapper > div.info,
+div.cpnInputTextfield.atKO > div.wrapper > div.info {
+    display: block;
+}

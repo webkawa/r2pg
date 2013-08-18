@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:noNamespaceSchemaLocation="../../../../data/models/configurations.xsd" 
+               level="1" >
+    
+    <group id="violations">
+        <string id="textfield.mandatory">Le champ doit contenir au moins $length$ caractère(s).</string>
+    </group>
+    
+</configuration>

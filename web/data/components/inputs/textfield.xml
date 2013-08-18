@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="../../models/components.xsd"
+         type="classic" 
+         name="InputTextfield" >
+    
+    <selectors>
+        <selector id="wrapper">div.wrapper</selector>
+        <selector id="field">div.wrapper > input</selector>
+        <selector id="info">div.wrapper > div.info</selector>
+    </selectors>
+    <loader>
+        <dom>
+            <![CDATA[
+                <div class="wrapper">
+                    <input type="textfield"></input>
+                    <div class="info"></div>
+                </div> 
+            ]]>
+        </dom>
+        <to>Initial</to>
+    </loader>
+    <waiter>Waiting</waiter>
+    <state id="Initial">
+        <trigger bind="focus">
+            <target>field</target>
+            <action call="go">
+                <parameter>Focus</parameter>
+            </action>
+        </trigger>
+        <in>
+            <pre call="init" />
+            <target>wrapper</target>
+            <animation>
+                <speed>200</speed>
+                <easing>swing</easing>
+                <move>
+                    <property>opacity</property>
+                    <from>0</from>
+                    <to>1</to>
+                </move>
+            </animation>
+        </in>
+    </state>
+    <state id="Focus">
+        <trigger bind="change">
+            <target>field</target>
+            <action call="check" />
+        </trigger>
+    </state>
+    <state id="OK">
+        <trigger bind="focus">
+            <target>field</target>
+            <action call="go">
+                <parameter>Focus</parameter>
+            </action>
+        </trigger>
+    </state>
+    <state id="KO">
+        <trigger bind="focus">
+            <target>field</target>
+            <action call="go">
+                <parameter>Focus</parameter>
+            </action>
+        </trigger>
+        <in>
+            <target>info</target>
+            <animation>
+                <speed>200</speed>
+                <easing>swing</easing>
+                <move>
+                    <property>opacity</property>
+                    <from>0</from>
+                    <to>1</to>
+                </move>
+            </animation>
+        </in>
+        <out>
+            <target>info</target>
+            <animation>
+                <speed>200</speed>
+                <easing>swing</easing>
+                <move>
+                    <property>opacity</property>
+                    <from>1</from>
+                    <to>0</to>
+                </move>
+            </animation>
+        </out>
+    </state>
+    
+</component>
