@@ -1,9 +1,10 @@
 /* Framework component datasource.
  * Manages loading, update and exploitation of an XML data source.
  * PARAMETERS :
- *  name                        Data source name.
- *  url                         Data source URL.
- *  params                      Data source parameters as object.               */
+ *  > name                      Data source name.
+ *  > callback                  Data load callback.
+ *  > url                       Data source URL.
+ *  > params                    Data source parameters as object.               */
 
 function Source(name, callback, url, params) {
     Toolkit.checkTypeOf("Source", "name", name, "string");
