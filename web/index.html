@@ -4,6 +4,7 @@
         <title></title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <script type="text/javascript" src="js/libs/jquery-2.0.3.min.js"></script>
+        <script type="text/javascript" src="js/libs/jquery-ui.js"></script>
         <script type="text/javascript" src="js/libs/stacktrace-min-0.4.js"></script>
         <script type="text/javascript" src="js/framework/classes/toolkit.js"></script>
         <script type="text/javascript" src="js/framework/classes/error.js"></script>
@@ -19,11 +20,11 @@
         <script type="text/javascript" src="js/framework/classes/component.js"></script>
         <script type="text/javascript" src="js/framework/classes/register.js"></script>
         <script type="text/javascript" src="js/framework/classes/logwriter.js"></script>
-        <script type="text/javascript" src="js/framework/components/inputs/textfield.js"></script>
-        <link rel="stylesheet" type="text/css" href="css/components/inputs.css" /> 
     </head>
     <body>
-        <div></div>
+        <div class="A"></div>
+        <div class="B"></div>
+        <div class="C"></div>
         <script>
             $(document).ready(function() {
                 try {
@@ -38,14 +39,6 @@
                     CFG.load("data/configurations/development.xml");
                     CFG.load("data/configurations/langs/fr/interface.xml");
                     
-                    var p = {
-                        name: "login",
-                        label: "Login",
-                        description: "Entrez votre login ici."
-                    };
-                    var v = [new Validator("MINLENGTH", {length: 1}, CFG.get("violations", "textfield.mandatory"))];
-                    var x = new cpnTextfield($("div"), p, v, "SampleGatekeeper");
-                    x.start();
                 } catch (e) {
                     ErrorManager.process(e); 
                 }

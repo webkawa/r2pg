@@ -111,15 +111,49 @@
     </xs:complexType>
     <xs:complexType name="animation">
         <xs:sequence>
+            <xs:element name="trajectory"
+                        type="string" 
+                        minOccurs="1"
+                        maxOccurs="1" />
             <xs:element name="speed"
+                        maxOccurs="1"
                         type="xs:decimal" />
             <xs:element name="easing"
+                        maxOccurs="1"
                         type="easing" />
             <xs:element name="progress"
                         type="call"
-                        minOccurs="0" />
+                        maxOccurs="1" />
+            <xs:element name="move"
+                        type="move" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="trajectory">
+        <xs:sequence>
+            <xs:element name="speed"
+                        minOccurs="1"
+                        maxOccurs="1"
+                        type="xs:decimal" />
+            <xs:element name="easing"
+                        minOccurs="1"
+                        maxOccurs="1"
+                        type="easing" />
+            <xs:element name="progress"
+                        type="call"
+                        maxOccurs="1" />
             <xs:element name="move"
                         type="move"
+                        minOccurs="1" />
+        </xs:sequence>
+        <xs:attribute name="name"
+                      type="string"
+                      use="optional" />
+    </xs:complexType>
+    <xs:complexType name="trajectories">
+        <xs:sequence>
+            <xs:element name="trajectory"
+                        type="trajectory"
+                        minOccurs="1"
                         maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
@@ -161,10 +195,6 @@
                         type="sequence"
                         minOccurs="0"
                         maxOccurs="unbounded" />
-            <xs:element name="conclude" 
-                        type="call"
-                        minOccurs="0"
-                        maxOccurs="1" />
         </xs:sequence>
     </xs:complexType>
     
@@ -192,6 +222,7 @@
             <xs:enumeration value="mouseout" />
             <xs:enumeration value="focus" />
             <xs:enumeration value="change" />
+            <xs:enumeration value="blur" />
         </xs:restriction>
     </xs:simpleType>
     <xs:complexType name="trigger">
@@ -239,9 +270,17 @@
                         type="entry"
                         minOccurs="0"
                         maxOccurs="unbounded" />
+            <xs:element name="begin" 
+                        type="call"
+                        minOccurs="0"
+                        maxOccurs="unbounded" />
             <xs:element name="out"
                         type="exit"
                         minOccurs="0" 
+                        maxOccurs="unbounded" />
+            <xs:element name="conclude" 
+                        type="call"
+                        minOccurs="0"
                         maxOccurs="unbounded" />
         </xs:sequence>
         <xs:attribute name="id"
@@ -261,6 +300,9 @@
             <xs:sequence>
                 <xs:element name="selectors"
                             type="selectors"
+                            minOccurs="0" />
+                <xs:element name="trajectories"
+                            type="trajectories"
                             minOccurs="0" />
                 <xs:element name="trigger"
                             type="trigger"

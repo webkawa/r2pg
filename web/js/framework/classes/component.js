@@ -376,12 +376,32 @@ function Component(container, descriptor) {
      *  postback.sequences      Postback sequences nodes as list.
      * RETURNS : N/A                                                            */
     this.animate = function(animation, targets, postback) {
+        var trajectory = $();
         var from = {};
         var to = {};
         var b1, b2;
         var ctx = this;
         
+        // Trajectory loading
+        trajectory = $(this.model).find('trajectories > trajectory[name="' + $(animation).children("trajectory").text() + '"]');
+        if ($(trajectory).length === 0) {
+            var p = {
+                component: this.getID(),
+                trajectory: trajectory
+            };
+            throw new Error("cpn", 26, p);
+        }
+        
         // Initialization
+        $(trajectory).children("move").each(function() {
+            b1 = $(this).children("property").text();
+            
+            b2 = $(this).children("from");
+            if ($(b2).length > 0) {
+                from[b1] = $(b2).text();
+            }
+            to[b1] = $(this).children("to").text();
+        });
         $(animation).children("move").each(function() {
             b1 = $(this).children("property").text();
             
@@ -397,8 +417,14 @@ function Component(container, descriptor) {
         
         // Execution
         var params = {
-            duration: parseInt($(animation).children("speed").text()),
-            easing: $(animation).children("easing").text(),
+            duration: 
+                $(animation).children("speed").length === 1 ?
+                    parseInt($(animation).children("speed").text()) :
+                    parseInt($(trajectory).children("speed").text()),
+            easing: 
+                $(animation).children("easing").length === 1 ?
+                    $(animation).children("easing").text() :
+                    $(trajectory).children("easing").text(),
             fail: function() {
                 throw new Error("cpn", 13);
             }, done: function() {
@@ -536,7 +562,6 @@ function Component(container, descriptor) {
         var seq_exit;
         var seq_entry;
         var drt = CFG.get("components", "css.class.removal");
-        var conclude;
         
         try {
             // Cleaning delayed tasks
@@ -618,16 +643,18 @@ function Component(container, descriptor) {
                         }
                         
                         // Executes conclusion methods
-                        conclude = $();
-                        if (!Toolkit.isNull(seq_exit)) {
-                            conclude = $(conclude).add($(seq_exit).find("conclude"));
+                        if (!Toolkit.isNull(node_origin)) {
+                            $(node_origin).find("conclude").each(function() {
+                                ctx.call.apply(this, [ctx]);
+                            });
                         }
-                        if (!Toolkit.isNull(seq_entry)) {
-                            conclude = $(conclude).add($(seq_entry).find("conclude"));
+                        
+                        // Executes conclusion starters
+                        if (!Toolkit.isNull(node_dest)) {
+                            $(node_dest).find("begin").each(function() {
+                                ctx.call.apply(this, [ctx]);
+                            });
                         }
-                        $(conclude).each(function() {
-                            ctx.call.apply(this, [ctx]);
-                        });
                     }
                 });
             });
@@ -659,6 +686,15 @@ function Component(container, descriptor) {
     /* Quick log */
     this.log = function(message, add) {
         Log.print(this, message, add);
+    };
+    
+    /* Manual triggering.
+     * PARAMETERS :
+     *  > target        Target selector.
+     *  > trigger       Trigger.
+     * RETURN : N/A                                                             */
+    this.trigger = function(target, trigger) {
+        this.quickSelect(target).trigger(trigger);
     };
         
     /* Initialize */
@@ -710,4 +746,5 @@ function Component(container, descriptor) {
     this.saveMethod(new Method(this.go, "go", false));
     this.saveMethod(new Method(this.accessSource, "access", false));
     this.saveMethod(new Method(this.log, "log", true));
+    this.saveMethod(new Method(this.trigger, "trigger", false));
 };

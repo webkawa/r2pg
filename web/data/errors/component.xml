@@ -127,5 +127,10 @@
         <param id="type">Type</param>
         <param required="true" id="message">Message</param>
     </error>
+    <error code="26">
+        <message>Invalid trajectory</message>
+        <param required="true" id="component">Component ID</param>
+        <param required="true" id="trajectory">Trajectory</param>
+    </error>
     
 </catalog>
