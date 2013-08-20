@@ -39,7 +39,8 @@
         <xs:simpleContent>
             <xs:extension base="string">
                 <xs:attribute name="id" 
-                              type="string" />
+                              type="string"
+                              use="required" />
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
@@ -111,22 +112,26 @@
     </xs:complexType>
     <xs:complexType name="animation">
         <xs:sequence>
-            <xs:element name="trajectory"
-                        type="string" 
-                        minOccurs="1"
-                        maxOccurs="1" />
             <xs:element name="speed"
+                        minOccurs="0"
                         maxOccurs="1"
                         type="xs:decimal" />
             <xs:element name="easing"
+                        minOccurs="0"
                         maxOccurs="1"
                         type="easing" />
             <xs:element name="progress"
                         type="call"
+                        minOccurs="0"
                         maxOccurs="1" />
             <xs:element name="move"
-                        type="move" />
+                        type="move"
+                        minOccurs="0"
+                        maxOccurs="unbounded" />
         </xs:sequence>
+        <xs:attribute name="base"
+                      type="string"
+                      use="required" />
     </xs:complexType>
     <xs:complexType name="trajectory">
         <xs:sequence>
@@ -140,14 +145,16 @@
                         type="easing" />
             <xs:element name="progress"
                         type="call"
+                        minOccurs="0"
                         maxOccurs="1" />
             <xs:element name="move"
                         type="move"
-                        minOccurs="1" />
+                        minOccurs="1"
+                        maxOccurs="unbounded" />
         </xs:sequence>
         <xs:attribute name="name"
                       type="string"
-                      use="optional" />
+                      use="required" />
     </xs:complexType>
     <xs:complexType name="trajectories">
         <xs:sequence>
@@ -284,7 +291,8 @@
                         maxOccurs="unbounded" />
         </xs:sequence>
         <xs:attribute name="id"
-                      type="upperfstring" />
+                      type="upperfstring"
+                      use="required" />
     </xs:complexType>
     
     <!-- Main component -->
@@ -309,9 +317,6 @@
                             minOccurs="0" />
                 <xs:element name="loader"
                             type="loader" />
-                <xs:element name="waiter"
-                            type="string"
-                            minOccurs="0" />
                 <xs:element name="state" 
                             type="state" 
                             maxOccurs="unbounded" />

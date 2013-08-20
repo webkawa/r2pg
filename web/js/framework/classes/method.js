@@ -24,7 +24,7 @@ function Method(ref, name, rw) {
     };
     
     /* Context */
-    this.context = null;
+    this.context;
     this.getContext = function() {
         return this.context;
     };
@@ -43,7 +43,6 @@ function Method(ref, name, rw) {
     
     /* Method call.
      * PARAMETERS :
-     *  > context               Context object.
      *  > params                Parameters as array.
      * RETURNS :
      *  Implemented function result.                                            */

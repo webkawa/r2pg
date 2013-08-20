@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="../../models/components.xsd"
+         name="InputTextfieldBlock" 
+         type="classic" >
+    
+    <selectors>
+        <selector id="wrapper">div.wrapper</selector>
+        <selector id="head">div.wrapper > div.head</selector>
+        <selector id="label">div.wrapper > div.head > label</selector>
+        <selector id="description">div.wrapper > div.head > div</selector>
+        <selector id="input">div.wrapper > div.input</selector>
+        <selector id="field">div.wrapper > div.input > input</selector>
+        <selector id="icons">div.wrapper > div.input > div.icon</selector>
+        <selector id="ok">div.wrapper > div.input > div.icon.ok</selector>
+        <selector id="ko">div.wrapper > div.input > div.icon.ko</selector>
+        <selector id="focus">div.wrapper > div.input > div.icon.focus</selector>
+        <selector id="loading">div.wrapper > div.input > div.icon.loading</selector>
+        <selector id="foot">div.wrapper > div.foot</selector>
+    </selectors>
+    <trajectories>
+        <trajectory name="fadein">
+            <speed>200</speed>
+            <easing>swing</easing>
+            <move>
+                <property>opacity</property>
+                <from>0</from>
+                <to>1</to>
+            </move>
+        </trajectory>
+        <trajectory name="fadeout">
+            <speed>500</speed>
+            <easing>swing</easing>
+            <move>
+                <property>easeInCirc</property>
+                <from>1</from>
+                <to>0</to>
+            </move>
+        </trajectory>
+        <trajectory name="flag">
+            <speed>500</speed>
+            <easing>easeOutQuart</easing>
+            <move>
+                <property>opacity</property>
+                <from>0</from>
+                <to>1</to>
+            </move>
+            <move>
+                <property>right</property>
+                <from>64px</from>
+                <to>32px</to>
+            </move>
+        </trajectory>
+        <trajectory name="unflag">
+            <speed>500</speed>
+            <easing>easeOutQuart</easing>
+            <move>
+                <property>opacity</property>
+                <from>1</from>
+                <to>0</to>
+            </move>
+            <move>
+                <property>right</property>
+                <from>32px</from>
+                <to>0px</to>
+            </move>
+        </trajectory>
+    </trajectories>
+    <loader>
+        <dom>
+            <![CDATA[
+                <div class="wrapper">
+                    <div class="head">
+                        <label />
+                        <div />
+                    </div>
+                    <div class="input">
+                        <input type="textfield" />
+                        <div class="icon focus" />
+                        <div class="icon ok" />
+                        <div class="icon ko" />
+                        <div class="icon loading" />
+                    </div>
+                    <div class="foot" />
+                </div>
+            ]]>
+        </dom>
+        <to>Blank</to>
+    </loader>
+    <state id="Blank">
+        <trigger bind="focus">
+            <target>field</target>
+            <action call="go">
+                <parameter>Focus</parameter>
+            </action>
+        </trigger>
+        <in>
+            <target>wrapper</target>
+            <pre call="width">
+                <parameter>field</parameter>
+                <parameter>-16</parameter>
+            </pre>
+            <pre call="center">
+                <parameter>field</parameter>
+            </pre>
+            <pre call="center">
+                <parameter>icons</parameter>
+            </pre>
+            <animation base="fadein" />
+        </in>
+    </state>
+    <state id="Focus">
+        <trigger bind="blur">
+            <target>field</target>
+            <action call="validate" />
+        </trigger>
+        <in from="Ok">
+            <target>ok</target>
+            <animation base="unflag" />
+        </in>
+        <in from="Ko">
+            <target>ko</target>
+            <animation base="unflag" />
+        </in>
+        <in>
+            <target>focus</target>
+            <animation base="flag" />
+        </in>
+        <begin call="refocus" />
+        <out>
+            <target>focus</target>
+            <animation base="unflag" />
+        </out>
+        <out to="Ok">
+            <target>ok</target>
+            <animation base="flag" />
+        </out>
+        <out to="Ko">
+            <target>ko</target>
+            <animation base="flag" />
+        </out>
+        <out to="Checking">
+            <target>loading</target>
+            <animation base="flag" />
+        </out>
+    </state>
+    <state id="Ok">
+        <trigger bind="focus">
+            <target>field</target>
+            <action call="go">
+                <parameter>Focus</parameter>
+            </action>
+        </trigger>
+        <begin call="refocus" />
+    </state>
+    <state id="Ko">
+        <trigger bind="focus">
+            <target>field</target>
+            <action call="go">
+                <parameter>Focus</parameter>
+            </action>
+        </trigger>
+        <begin call="refocus" />
+    </state>
+    <state id="Checking">
+        <begin call="check" />
+        <out>
+            <target>loading</target>
+            <animation base="unflag" />
+        </out>
+        <out to="Ok">
+            <target>ok</target>
+            <animation base="flag" />
+        </out>
+        <out to="Ko">
+            <target>ko</target>
+            <animation base="flag" />
+        </out>
+    </state>
+</component>

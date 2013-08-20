@@ -13,12 +13,13 @@
  *  > violation         Violation message, including wildcards ($param$).       */
 
 function Validator(type, parameters, violation) {
+    console.log(parameters.min);
     switch (type) {
         case "MINLENGTH": 
-            Toolkit.checkTypeOf("Validator", "parameters.min", parameters.length, "number");
+            Toolkit.checkTypeOf("Validator", "parameters.min", parameters.min, "number");
             break;
         case "MAXLENGTH": 
-            Toolkit.checkTypeOf("Validator", "parameters.max", parameters.length, "number");
+            Toolkit.checkTypeOf("Validator", "parameters.max", parameters.max, "number");
             break;
         case "INTLENGTH":
             Toolkit.checkTypeOf("Validator", "parameters.min", parameters.min, "number");
@@ -63,9 +64,9 @@ function Validator(type, parameters, violation) {
         try {
             switch (this.type) {
                 case "MINLENGTH": 
-                    return value.length >= this.parameters.length;
+                    return value.length >= this.parameters.min;
                 case "MAXLENGTH": 
-                    return value.length <= this.parameters.length;
+                    return value.length <= this.parameters.max;
                 case "INTLENGTH":
                     return value.length >= this.parameters.min && value.length <= this.parameters.max;
                 case "ALPHA":

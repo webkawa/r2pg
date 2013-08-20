@@ -170,7 +170,51 @@ var Toolkit = {
      *  > value         Checked value.
      * RETURNS :
      *  true if value is undefined, false else.                                 */
-     isNull: function(value) {
+    isNull: function(value) {
         return typeof(value) === "undefined";
-     }
+     },
+     
+    /* Executes a vertical resizing on a element.
+     * PARAMETERS :
+     *  > target        Target element.
+     *  > difference    Target difference height (add/remove).
+     * RETURNS : N/A                                                           */
+    realHeight: function(target, difference) {
+        var height;
+        if (Toolkit.isNull(difference)) {
+            height = $(target).parent().height();
+        } else {
+            height = $(target).parent().height() + parseInt(difference);
+        }
+        var padding = $(target).outerHeight(true) - $(target).height();
+        $(target).height(height - padding);
+    },
+             
+    /* Executes a vertical resizing on a element.
+     * PARAMETERS :
+     *  > target        Target element.
+     *  > difference    Target difference width (add/remove).
+     * RETURNS : N/A                                                            */
+    realWidth: function(target, difference) {
+        var width;
+        if (Toolkit.isNull(difference)) {
+            width = $(target).parent().width();
+        } else {
+            width = $(target).parent().width() + parseInt(difference);
+        }
+        var padding = $(target).outerWidth(true) - $(target).width();
+        $(target).width(width - padding);
+    },
+    
+    /* Executes a vertical centering on a element.
+     * PARAMETERS :
+     *  > target         Target element.
+     * RETURNS : N/A                                                            */
+    center: function(target) {
+        $(target).css({
+            "margin-top": "auto",
+            "margin-bottom": "auto"
+        });
+        $(target).css("margin-top", (($(target).parent().height() - $(target).outerHeight(false)) / 2) + "px");
+    }
 };

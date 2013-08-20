@@ -4,8 +4,8 @@
                level="1" >
     
     <group id="violations">
-        <string id="textfield.mandatory">Le champ doit contenir au moins $length$ caractère(s).</string>
-        <string id="textfield.server">Le serveur a refusé la valeur saisie.</string>
+        <string id="textfield.default.minlength">Le champ doit contenir au moins $min$ caractère(s).</string>
+        <string id="textfield.default.server">Le serveur a refusé la valeur saisie.</string>
     </group>
     
 </configuration>

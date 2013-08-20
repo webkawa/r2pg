@@ -20,11 +20,13 @@
         <script type="text/javascript" src="js/framework/classes/component.js"></script>
         <script type="text/javascript" src="js/framework/classes/register.js"></script>
         <script type="text/javascript" src="js/framework/classes/logwriter.js"></script>
+        <script type="text/javascript" src="js/framework/modules/directUI/inputs/textfield-block.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/modules/directUI/inputs/textfield-block.css" />
     </head>
     <body>
         <div class="A"></div>
         <div class="B"></div>
-        <div class="C"></div>
+        <div class="C"></div> 
         <script>
             $(document).ready(function() {
                 try {
@@ -37,8 +39,16 @@
                     
                     CFG.load("data/configurations/production.xml");
                     CFG.load("data/configurations/development.xml");
-                    CFG.load("data/configurations/langs/fr/interface.xml");
+                    CFG.load("data/modules/directUI/langs/fr/interface.xml");
                     
+                    var p, v;
+                    p = {
+                        id: "myID"
+                    };
+                    v = [
+                        new Validator("MINLENGTH", {min: 3}, CFG.get("violations", "textfield.default.minlength"))
+                    ];
+                    new cpnInputTextfieldBlock($("div.A"), p, v, "SampleGatekeeper").start();
                 } catch (e) {
                     ErrorManager.process(e); 
                 }

@@ -29,9 +29,6 @@ function Component(container, descriptor) {
     this.getModelType = function() {
         return $(this.model).find("component").attr("type");
     };
-    this.getModelWaiter = function() {
-        return $(this.model).find("component > waiter").text();
-    };
     
     /* Methods */
     this.methods = [];
@@ -139,6 +136,9 @@ function Component(container, descriptor) {
         };
         throw new Error("cpn", 19, p);
     };
+    this.getSourceData = function(name, selector) {
+        return $(this.getSource(name).getData()).find(selector);
+    };
     this.saveSource = function(source) {
         Toolkit.checkTypeOf("Component.saveSource", "source", source, "object");
         Toolkit.checkClassOf("Component.saveSource", "source", source, Source);
@@ -150,17 +150,8 @@ function Component(container, descriptor) {
             };
             throw new Error("cpn", 3, p);
         }
-        source.setContext(this);
+        source.setOwner(this);
         this.sources[this.sources.length] = source;
-    };
-    this.accessSource = function(name, parameters) {
-        if (!Toolkit.isNull(parameters)) {
-            this.getSource(name).setParams(parameters);
-        }
-        this.getSource(name).access();
-    };
-    this.quickSource = function(name) {
-        return this.getSource(name).getData();
     };
     
     /* Current state */
@@ -325,6 +316,15 @@ function Component(container, descriptor) {
         }
     };
     
+    /* Data source accessor.
+     * PARAMETERS :
+     *  > name          Data source name.
+     *  > params        Load parameters.
+     * RETURNS : N/A                                                            */
+    this.access = function(name, params) {
+        this.getSource(name).load(params);
+    }
+    
     /* Call a pre-saved method.
      * PARAMETERS :
      *  context                     Binding context.
@@ -379,17 +379,18 @@ function Component(container, descriptor) {
         var trajectory = $();
         var from = {};
         var to = {};
+        var back = {};
         var b1, b2;
         var ctx = this;
         
         // Trajectory loading
-        trajectory = $(this.model).find('trajectories > trajectory[name="' + $(animation).children("trajectory").text() + '"]');
+        trajectory = $(this.model).find('trajectories > trajectory[name="' + $(animation).attr("base") + '"]');
         if ($(trajectory).length === 0) {
             var p = {
                 component: this.getID(),
                 trajectory: trajectory
             };
-            throw new Error("cpn", 26, p);
+            throw new Error("cpn", 22, p);
         }
         
         // Initialization
@@ -401,6 +402,7 @@ function Component(container, descriptor) {
                 from[b1] = $(b2).text();
             }
             to[b1] = $(this).children("to").text();
+            back[b1] = "";
         });
         $(animation).children("move").each(function() {
             b1 = $(this).children("property").text();
@@ -410,6 +412,7 @@ function Component(container, descriptor) {
                 from[b1] = $(b2).text();
             }
             to[b1] = $(this).children("to").text();
+            back[b1] = "";
         });
         
         // Setup
@@ -435,6 +438,8 @@ function Component(container, descriptor) {
                 $(postback.sequences).each(function() {
                     ctx.execute(this);
                 });
+            }, always: function() {
+                $(targets).css(back);
             }
         };
         if ($(animation).children("progress").length === 1) {
@@ -559,8 +564,8 @@ function Component(container, descriptor) {
         if (!Toolkit.isNull(to)) {
             node_dest = $(this.model).find('component > state[id="' + to + '"]');
         }
-        var seq_exit;
-        var seq_entry;
+        var seq_exit = $();
+        var seq_entry = $();
         var drt = CFG.get("components", "css.class.removal");
         
         try {
@@ -574,20 +579,18 @@ function Component(container, descriptor) {
             // Loading exit/entry sequences
             if (!Toolkit.isNull(node_origin)) {
                 if ($(node_origin).children('out[to="' + to + '"]').length > 0) {
-                    seq_exit = $(node_origin).children('out[to="' + to + '"]');
-                } else {
-                    if ($(node_origin).children('out:not([to])').length > 0) {
-                        seq_exit = $(node_origin).children('out:not([to])');
-                    }
+                    seq_exit = $(seq_exit).add($(node_origin).children('out[to="' + to + '"]'));
+                }
+                if ($(node_origin).children('out:not([to])').length > 0) {
+                    seq_exit = $(seq_exit).add($(node_origin).children('out:not([to])'));
                 }
             }
             if (!Toolkit.isNull(node_dest)) {
                 if ($(node_dest).children('in[from="' + this.state + '"]').length > 0) {
-                    seq_entry = $(node_dest).children('in[from="' + this.state + '"]');
-                } else {
-                    if ($(node_dest).children('in:not([from])').length > 0) {
-                        seq_entry = $(node_dest).children('in:not([from])');
-                    }
+                    seq_entry = $(seq_entry).add($(node_dest).children('in[from="' + this.state + '"]'));
+                } 
+                if ($(node_dest).children('in:not([from])').length > 0) {
+                    seq_entry = $(seq_entry).add($(node_dest).children('in:not([from])'));
                 }
             }
             
@@ -693,8 +696,31 @@ function Component(container, descriptor) {
      *  > target        Target selector.
      *  > trigger       Trigger.
      * RETURN : N/A                                                             */
-    this.trigger = function(target, trigger) {
+    this.shortcutTrigger = function(target, trigger) {
         this.quickSelect(target).trigger(trigger);
+    };
+    /* Manual vertical re-sizing.
+     * PARAMETERS :
+     *  > target        Target selector.
+     *  > difference    Target difference width (add/remove).
+     * RETURNS : N/A                                                            */
+    this.shortcutRealHeight = function(target, difference) {
+        Toolkit.realHeight(this.quickSelect(target), difference);
+    };
+    /* Manual horizontal re-sizing.
+     * PARAMETERS :
+     *  > target        Target selector.
+     *  > difference    Target difference width (add/remove).
+     * RETURNS : N/A                                                            */
+    this.shortcutRealWidth = function(target, difference) {
+        Toolkit.realWidth(this.quickSelect(target), difference);
+    };
+    /* Executes a vertical centering on a element.
+     * PARAMETERS :
+     *  > target         Target element.
+     * RETURNS : N/A                                                            */
+    this.shortcutCenter = function(target) {
+        Toolkit.center(this.quickSelect(target));
     };
         
     /* Initialize */
@@ -742,9 +768,11 @@ function Component(container, descriptor) {
         }
     });
     
-    this.log("Saving default methods");
+    this.log("Saving initial methods");
     this.saveMethod(new Method(this.go, "go", false));
-    this.saveMethod(new Method(this.accessSource, "access", false));
     this.saveMethod(new Method(this.log, "log", true));
-    this.saveMethod(new Method(this.trigger, "trigger", false));
+    this.saveMethod(new Method(this.shortcutTrigger, "trigger", false));
+    this.saveMethod(new Method(this.shortcutRealHeight, "height", false));
+    this.saveMethod(new Method(this.shortcutRealWidth, "width", false));
+    this.saveMethod(new Method(this.shortcutCenter, "center", false));
 };

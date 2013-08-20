@@ -108,9 +108,9 @@
         <param required="true" id="status">Component status</param>
     </error>
     <error code="22">
-        <message>Try to access data source while starting</message>
+        <message>Invalid trajectory</message>
         <param required="true" id="component">Component ID</param>
-        <param required="true" id="source">Source name</param>
+        <param required="true" id="trajectory">Trajectory</param>
     </error>
     <error code="23">
         <message>Catch error during delayed method call</message>
@@ -128,9 +128,9 @@
         <param required="true" id="message">Message</param>
     </error>
     <error code="26">
-        <message>Invalid trajectory</message>
-        <param required="true" id="component">Component ID</param>
-        <param required="true" id="trajectory">Trajectory</param>
+        <message>Try to access non-loaded data</message>
+        <param required="true" id="source">Source</param>
+        <param required="true" id="component">Component</param>
     </error>
     
 </catalog>
