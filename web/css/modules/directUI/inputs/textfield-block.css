@@ -56,6 +56,13 @@ div.cpnInputTextfieldBlock > div.wrapper > div.input > input {
     outline: none;
     font-size: 105%;
 }
+div.cpnInputTextfieldBlock > div.wrapper > div.foot {
+    opacity: 0;
+    padding: 0px 16px 2px 2px;
+    font-size: 90%;
+    font-style: italic;
+    text-align: right;
+}
 
 /* State : Blank */
 div.cpnInputTextfieldBlock.toBlank > div.wrapper > div.input > input,
@@ -73,6 +80,9 @@ div.cpnInputTextfieldBlock.atOk > div.wrapper > div.input > div.icon.ok {
 }
 /* State : Ko*/
 div.cpnInputTextfieldBlock.atKo > div.wrapper > div.input > div.icon.ko {
+    opacity: 1;
+}
+div.cpnInputTextfieldBlock.atKo > div.wrapper > div.foot {
     opacity: 1;
 }
 /* State : Checking */

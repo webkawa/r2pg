@@ -406,7 +406,6 @@ function Component(container, descriptor) {
         var trajectory = $();
         var from = {};
         var to = {};
-        var back = {};
         var b1, b2;
         var ctx = this;
         
@@ -429,7 +428,6 @@ function Component(container, descriptor) {
                 from[b1] = $(b2).text();
             }
             to[b1] = $(this).children("to").text();
-            back[b1] = "";
         });
         $(animation).children("move").each(function() {
             b1 = $(this).children("property").text();
@@ -439,7 +437,6 @@ function Component(container, descriptor) {
                 from[b1] = $(b2).text();
             }
             to[b1] = $(this).children("to").text();
-            back[b1] = "";
         });
         
         // Setup
@@ -459,8 +456,6 @@ function Component(container, descriptor) {
                 throw new Error("cpn", 13);
             }, done: function() {
                 ctx.postback(postback);
-            }, always: function() {
-                $(targets).css(back);
             }
         };
         if ($(animation).children("progress").length === 1) {
@@ -742,10 +737,18 @@ function Component(container, descriptor) {
     };
     /* Executes a vertical centering on a element.
      * PARAMETERS :
-     *  > target         Target element.
+     *  > target        Target element.
      * RETURNS : N/A                                                            */
     this.shortcutCenter = function(target) {
         Toolkit.center(this.quickSelect(target));
+    };
+    /* Executes cleaning on a given element style/
+     * PARAMETERS :
+     *  > target        Target element.
+     *  > property      CSS property.
+     * RETURNS : N/A                                                            */
+    this.shortcutClean = function(target, property) {
+        this.quickSelect(target).css(property, "");
     };
         
     /* Initialize */
@@ -800,4 +803,5 @@ function Component(container, descriptor) {
     this.saveMethod(new Method(this.shortcutRealHeight, "height", false));
     this.saveMethod(new Method(this.shortcutRealWidth, "width", false));
     this.saveMethod(new Method(this.shortcutCenter, "center", false));
+    this.saveMethod(new Method(this.shortcutClean, "clean", false));
 };

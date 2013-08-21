@@ -20,7 +20,7 @@
     </selectors>
     <trajectories>
         <trajectory name="fadein">
-            <speed>200</speed>
+            <speed>750</speed>
             <easing>swing</easing>
             <move>
                 <property>opacity</property>
@@ -32,7 +32,7 @@
             <speed>500</speed>
             <easing>swing</easing>
             <move>
-                <property>easeInCirc</property>
+                <property>opacity</property>
                 <from>1</from>
                 <to>0</to>
             </move>
@@ -124,6 +124,14 @@
             <target>ko</target>
             <animation base="unflag" />
         </in>
+        <in from="Ko">
+            <target>foot</target>
+            <animation base="fadeout" />
+            <post call="clean">
+                <parameter>foot</parameter>
+                <parameter>opacity</parameter>
+            </post>
+        </in>
         <in>
             <target>focus</target>
             <animation base="flag" />
@@ -140,6 +148,10 @@
         <out to="Ko">
             <target>ko</target>
             <animation base="flag" />
+        </out>
+        <out to="Ko">
+            <target>foot</target>
+            <animation base="fadein" />
         </out>
         <out to="Checking">
             <target>loading</target>
@@ -177,6 +189,10 @@
         <out to="Ko">
             <target>ko</target>
             <animation base="flag" />
+        </out>
+        <out to="Ko">
+            <target>foot</target>
+            <animation base="fadein" />
         </out>
     </state>
 </component>

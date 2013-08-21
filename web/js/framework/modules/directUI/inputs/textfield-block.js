@@ -28,7 +28,7 @@ function cpnInputTextfieldBlock(container, properties, validators, gatekeeper) {
     if (!Toolkit.isNull(gatekeeper)) {
         Toolkit.checkTypeOf("cpnInputTextfieldBlock", "gatekeeper", gatekeeper, "string");
         
-        var source = new Source("gatekeeper", gatekeeper, ["agree"]);
+        var source = new Source("gatekeeper", gatekeeper, "Ko", ["agree"]);
         cpn.saveSource(source);
     }
     
@@ -71,6 +71,8 @@ function cpnInputTextfieldBlock(container, properties, validators, gatekeeper) {
         var value = this.quickSelect("field").val();
         for (var i = 0; i < validators.length; i++) {
             if (!validators[i].validate(value)) {
+                this.quickSelect("foot").text(validators[i].getMessage());
+                
                 this.go("Ko");
                 return;
             }
@@ -91,7 +93,7 @@ function cpnInputTextfieldBlock(container, properties, validators, gatekeeper) {
      */
     var cpn_check = function() {
         var p = {
-            value: this.quickSelect("field").text()
+            value: this.quickSelect("field").val()
         };
         this.access("gatekeeper", p);
     };
@@ -105,6 +107,9 @@ function cpnInputTextfieldBlock(container, properties, validators, gatekeeper) {
             this.go("Ok");
             return;
         } else {
+            var v = this.getSourceData("gatekeeper", 'i[class="message"]').text();
+            
+            this.quickSelect("foot").text(CFG.get("violations", v));
             this.go("Ko");
             return;
         }

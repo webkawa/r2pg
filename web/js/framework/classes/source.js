@@ -3,12 +3,14 @@
  * PARAMETERS :
  *  > owner             Owning component.
  *  > name              Data source name.
- *  > service           Service URL.                                            
+ *  > service           Service URL.     
+ *  > backup            Backup state.                                       
  *  > callbacks         Callbacks as array.                                     */
 
-function Source(name, service, callbacks) {
+function Source(name, service, backup, callbacks) {
     Toolkit.checkTypeOf("Source", "name", name, "string");
     Toolkit.checkTypeOf("Source", "service", service, "string");
+    Toolkit.checkTypeOf("Source", "backup", backup, "string");
     if (!Toolkit.isNull(callbacks)) {
         Toolkit.checkTypeOf("Source", "callbacks", callbacks, "object");
     }
@@ -29,6 +31,12 @@ function Source(name, service, callbacks) {
     this.name = name;
     this.getName = function() {
         return this.name;
+    };
+    
+    /* Backup */
+    this.backup = backup;
+    this.getBackup = function() {
+        return this.backup;
     };
     
     /* Service */
@@ -132,16 +140,17 @@ function Source(name, service, callbacks) {
                         $(buff).find("s > i:eq(" + position + ")").attr("class", $(this).attr("alias").toLowerCase());
                     });
                 });
+            
+                // Executes callbacks.
+                for (var i = 0; i < this.callbacks.length; i++) {
+                    method = this.getOwner().getMethod(this.callbacks[i]);
+                    method.call.apply(method, []);
+                }
 
                 return;
             } catch (e) {
                 ErrorManager.process(e);
-            }
-        }).always(function() {
-            // Executes callbacks.
-            for (var i = 0; i < this.callbacks.length; i++) {
-                method = this.getOwner().getMethod(this.callbacks[i]);
-                method.call.apply(method, [])
+                this.owner.go(this.backup);
             }
         });
     };
