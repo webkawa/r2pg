@@ -276,7 +276,6 @@ function Component(container, descriptor) {
     this.retrigger = function() {
         var nodes = $([]);
         var targets;
-        var item;
         var bind;
         var prevent;
         var ctx = this;
@@ -286,15 +285,8 @@ function Component(container, descriptor) {
         nodes = $(nodes).add($(this.model).find('component > trigger'));
         nodes = $(nodes).add($(this.model).find('component > state[id="' + this.state + '"] > trigger'));
 
-        $(nodes).each(function() {
-            item = this;
-            
-            // Checking prevent
-            prevent = false;
-            if ($(this).attr("prevent") === "true") {
-                prevent = true;
-            }
-            
+        var i = 0;
+        $(nodes).each(function(i, item) {
             // Parsing
             targets = $([]);
             $(this).children("target").each(function() {
@@ -305,7 +297,7 @@ function Component(container, descriptor) {
             // Binding
             $(targets).on(bind, function(event) {
                 // Preventing
-                if (prevent) {
+                if ($(item).attr("prevent") === "true") {
                     event.preventDefault();
                 }
                 

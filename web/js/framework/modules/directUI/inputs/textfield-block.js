@@ -12,10 +12,6 @@
  *                               0/undefined    None
  *                               1              Erase
  *                               2              Select
- *  > properties.always         Standard select behavior as :
- *                               0/undefined    None
- *                               1              Erase
- *                               2              Select
  *  > validators                Validators as array.
  *  > gatekeeper                Gatekeeper service.                             */
 
@@ -60,13 +56,9 @@ function cpnInputTextfieldBlock(container, properties, validators, gatekeeper) {
      *  Full focus.
      */
     var cpn_select = function() {
-        var behavior;
-        if (this.getState() === "Blank")        behavior = properties.initial;
-        else                                    behavior = properties.always;
-        
-        if (behavior === 1) {
+        if (properties.initial === 1) {
             this.quickSelect("field").val("");
-        } else if (behavior === 2) {
+        } else if (properties.initial === 2) {
             this.quickSelect("field").select();
         } 
     };

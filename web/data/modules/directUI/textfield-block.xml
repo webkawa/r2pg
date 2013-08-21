@@ -89,7 +89,7 @@
         <to>Blank</to>
     </loader>
     <state id="Blank">
-        <trigger bind="focus" prevent="true" >
+        <trigger bind="focus">
             <target>field</target>
             <action call="select" />
             <action call="go">
@@ -149,7 +149,6 @@
     <state id="Ok">
         <trigger bind="focus">
             <target>field</target>
-            <action call="select" />
             <action call="go">
                 <parameter>Focus</parameter>
             </action>
@@ -159,7 +158,6 @@
     <state id="Ko">
         <trigger bind="focus">
             <target>field</target>
-            <action call="select" />
             <action call="go">
                 <parameter>Focus</parameter>
             </action>
