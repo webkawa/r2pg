@@ -171,8 +171,10 @@ public class Ressource extends HashMap<Integer,Set> implements DriverITF {
                     throw new DriverException(this, "Invalid column count");
                 }
                 for (int i = 0; i <this.template.size(); i++) {
-                    if (!this.template.get(i).equals(rs.getMetaData().getColumnName(i + 1))) {
-                        throw new DriverException(this, "Invalid column name");
+                    System.out.print("A" + this.template.get(i));
+                    System.out.print("B" + rs.getMetaData().getColumnLabel(i + 1));
+                    if (!this.template.get(i).equals(rs.getMetaData().getColumnLabel(i + 1))) {
+                        throw new DriverException(this, "Invalid column name ");
                     }
                 }
             }

@@ -33,8 +33,9 @@ public class GatekeeperService extends DirectService {
     @Override
     protected void start(ServletConfig cfg) {
         ArrayList<String> template = new ArrayList<>();
-        template.add("Response_Result_KEY");
-        template.add("Response_Violation");
+        template.add("Response_Date_KEY");
+        template.add("Response_Result");
+        template.add("Response_Message");
         
         super.start(cfg);
         if (super.getBase().getModelSize() != 1) {
