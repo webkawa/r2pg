@@ -12,6 +12,7 @@
         <selector id="input">div.wrapper > div.input</selector>
         <selector id="field">div.wrapper > div.input > input</selector>
         <selector id="icons">div.wrapper > div.input > div.icon</selector>
+        <selector id="locked">div.wrapper > div.input > div.icon.locked</selector>
         <selector id="ok">div.wrapper > div.input > div.icon.ok</selector>
         <selector id="ko">div.wrapper > div.input > div.icon.ko</selector>
         <selector id="focus">div.wrapper > div.input > div.icon.focus</selector>
@@ -20,7 +21,7 @@
     </selectors>
     <trajectories>
         <trajectory name="fadein">
-            <speed>750</speed>
+            <speed>500</speed>
             <easing>swing</easing>
             <move>
                 <property>opacity</property>
@@ -65,6 +66,30 @@
                 <to>0px</to>
             </move>
         </trajectory>
+        <trajectory name="lock">
+            <speed>200</speed>
+            <easing>swing</easing>
+            <move>
+                <property>background-color</property>
+                <to>#444</to>
+            </move>
+            <move>
+                <property>color</property>
+                <to>#eee</to>
+            </move>
+        </trajectory>
+        <trajectory name="unlock">
+            <speed>200</speed>
+            <easing>swing</easing>
+            <move>
+                <property>background-color</property>
+                <to>#eee</to>
+            </move>
+            <move>
+                <property>color</property>
+                <to>#444</to>
+            </move>
+        </trajectory>
     </trajectories>
     <loader>
         <dom>
@@ -76,6 +101,7 @@
                     </div>
                     <div class="input">
                         <input type="textfield" />
+                        <div class="icon locked" />
                         <div class="icon focus" />
                         <div class="icon ok" />
                         <div class="icon ko" />
@@ -110,6 +136,7 @@
             </pre>
             <animation base="fadein" />
         </in>
+        <begin call="refocus" />
     </state>
     <state id="Focus">
         <trigger bind="blur">
@@ -157,6 +184,10 @@
             <target>loading</target>
             <animation base="flag" />
         </out>
+        <out to="Locked">
+            <target>focus</target>
+            <animation base="unflag" />
+        </out>
     </state>
     <state id="Ok">
         <trigger bind="focus">
@@ -166,6 +197,10 @@
             </action>
         </trigger>
         <begin call="refocus" />
+        <out to="Locked">
+            <target>ok</target>
+            <animation base="unflag" />
+        </out>
     </state>
     <state id="Ko">
         <trigger bind="focus">
@@ -175,6 +210,10 @@
             </action>
         </trigger>
         <begin call="refocus" />
+        <out to="Locked">
+            <target>ko</target>
+            <animation base="unflag" />
+        </out>
     </state>
     <state id="Checking">
         <begin call="check" />
@@ -194,5 +233,33 @@
             <target>foot</target>
             <animation base="fadein" />
         </out>
+    </state>
+    <state id="Locked">
+        <in>
+            <target>field</target>
+            <animation base="lock" />
+        </in>
+        <in>
+            <target>foot</target>
+            <animation base="fadeout" />
+        </in>
+        <in>
+            <target>locked</target>
+            <animation base="fadein" />
+        </in>
+        <begin call="lock">
+            <parameter>true</parameter>
+        </begin>
+        <out>
+            <target>field</target>
+            <animation base="unlock" />
+        </out>
+        <out>
+            <target>locked</target>
+            <animation base="fadeout" />
+        </out>
+        <conclude call="lock">
+            <parameter>false</parameter>
+        </conclude>
     </state>
 </component>

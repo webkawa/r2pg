@@ -132,6 +132,16 @@ function cpnInputTextfieldBlock(container, properties, validators, gatekeeper) {
     };
     cpn.saveMethod(new Method(cpn_refocus, "refocus", false));
     
+    /* Locker */
+    var cpn_lock = function(b) {
+        if (b === "true") {
+            this.quickSelect("field").attr("disabled", "disabled");
+        } else {
+            this.quickSelect("field").removeAttr("disabled");
+        }
+    };
+    cpn.saveMethod(new Method(cpn_lock, "lock", false));
+    
     /*
      *  Return
      */
