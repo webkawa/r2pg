@@ -95,7 +95,7 @@ function Source(name, service, callbacks) {
                 info: info
             };
             ErrorManager.process(new Error("cpn", 18, p));
-        }).success(function(data) {
+        }).done(function(data) {
             try {
                 // Copying data
                 this.data = data;
@@ -133,15 +133,15 @@ function Source(name, service, callbacks) {
                     });
                 });
 
-                // Executes callbacks.
-                for (var i = 0; i < this.callbacks.length; i++) {
-                    method = this.getOwner().getMethod(this.callbacks[i]);
-                    method.call.apply(method, [])
-                }
-
                 return;
             } catch (e) {
                 ErrorManager.process(e);
+            }
+        }).always(function() {
+            // Executes callbacks.
+            for (var i = 0; i < this.callbacks.length; i++) {
+                method = this.getOwner().getMethod(this.callbacks[i]);
+                method.call.apply(method, [])
             }
         });
     };

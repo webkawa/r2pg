@@ -364,6 +364,8 @@ function Component(container, descriptor) {
                             method: name
                         };
                         ErrorManager.process(new Error("cpn", 23, p, e));
+                        context.stop();
+                        context.start();
                     }
                 }, delay);
                 context.addDelayedTask(t);
@@ -375,6 +377,8 @@ function Component(container, descriptor) {
                 name: name
             };
             ErrorManager.process(new Error("cpn", 12, p, e));
+            context.stop();
+            context.start();
         }
     };
     
@@ -554,6 +558,23 @@ function Component(container, descriptor) {
         }
     };
     
+    /* Component deallocation.
+     * PARAMETERS : N/A
+     * RETURNS : N/A                                                            */
+    this.stop = function() {
+        this.log("Cleaning component");
+        
+        // Removing DOM
+        this.setStateClass();
+        $(this.container).removeClass(this.getModelName());
+        $(this.container).empty();
+        
+        // Cleaning references (TO IMPROVE)
+        this.methods = [];
+        this.selectors = [];
+        Register.remove(this.getID());
+    };
+    
     /* Manages transition from current state to another state.
      * PARAMETERS :
      *  to                      Destination state.
@@ -690,23 +711,6 @@ function Component(container, descriptor) {
         }
     };
         
-    /* Component de-allocation.
-     * PARAMETERS : N/A
-     * RETURNS : N/A                                                            */
-    this.clean = function() {
-        this.log("Cleaning component");
-        
-        // Removing DOM
-        this.setStateClass();
-        $(this.container).removeClass(this.getModelName());
-        $(this.container).empty();
-        
-        // Cleaning references (TO IMPROVE)
-        this.methods = [];
-        this.selectors = [];
-        Register.remove(this.getID());
-    };
-    
     /* Quick log */
     this.log = function(message, add) {
         Log.print(this, message, add);
