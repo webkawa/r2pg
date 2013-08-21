@@ -427,7 +427,15 @@ function Component(container, descriptor) {
             if ($(b2).length > 0) {
                 from[b1] = $(b2).text();
             }
-            to[b1] = $(this).children("to").text();
+            
+            var b3;
+            $(this).children("goal").each(function () {
+                b3 = ctx.call.apply(this, [ctx]);
+            });
+            
+            Toolkit.isNull(b3) ?
+                to[b1] = $(this).children("to").text() :
+                to[b1] = b3;
         });
         $(animation).children("move").each(function() {
             b1 = $(this).children("property").text();
@@ -436,7 +444,15 @@ function Component(container, descriptor) {
             if ($(b2).length > 0) {
                 from[b1] = $(b2).text();
             }
-            to[b1] = $(this).children("to").text();
+            
+            var b3;
+            $(this).children("goal").each(function () {
+                b3 = ctx.call.apply(this, [ctx]);
+            });
+            
+            Toolkit.isNull(b3) ?
+                to[b1] = $(this).children("to").text() :
+                to[b1] = b3;
         });
         
         // Setup

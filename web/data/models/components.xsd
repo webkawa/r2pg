@@ -108,6 +108,9 @@
                         minOccurs="0" />
             <xs:element name="to"
                         type="string" />
+            <xs:element name="goal"
+                        type="call"
+                        minOccurs="0" />
         </xs:all>
     </xs:complexType>
     <xs:complexType name="animation">
