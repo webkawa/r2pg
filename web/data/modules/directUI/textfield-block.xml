@@ -8,7 +8,7 @@
         <selector id="wrapper">div.wrapper</selector>
         <selector id="head">div.wrapper > div.head</selector>
         <selector id="label">div.wrapper > div.head > label</selector>
-        <selector id="description">div.wrapper > div.head > div</selector>
+        <selector id="description">div.wrapper > div.head > span</selector>
         <selector id="input">div.wrapper > div.input</selector>
         <selector id="field">div.wrapper > div.input > input</selector>
         <selector id="icons">div.wrapper > div.input > div.icon</selector>
@@ -72,7 +72,7 @@
                 <div class="wrapper">
                     <div class="head">
                         <label />
-                        <div />
+                        <span />
                     </div>
                     <div class="input">
                         <input type="textfield" />
@@ -85,11 +85,13 @@
                 </div>
             ]]>
         </dom>
+        <action call="init" />
         <to>Blank</to>
     </loader>
     <state id="Blank">
-        <trigger bind="focus">
+        <trigger bind="focus" prevent="true" >
             <target>field</target>
+            <action call="select" />
             <action call="go">
                 <parameter>Focus</parameter>
             </action>
@@ -147,6 +149,7 @@
     <state id="Ok">
         <trigger bind="focus">
             <target>field</target>
+            <action call="select" />
             <action call="go">
                 <parameter>Focus</parameter>
             </action>
@@ -156,6 +159,7 @@
     <state id="Ko">
         <trigger bind="focus">
             <target>field</target>
+            <action call="select" />
             <action call="go">
                 <parameter>Focus</parameter>
             </action>

@@ -11,6 +11,10 @@
 div.cpnInputTextfieldBlock > div.wrapper {
     width: 380px;
 }
+div.cpnInputTextfieldBlock > div.wrapper > div.head > label {
+    font-size: 150%;
+    font-weight: bold;
+}
 div.cpnInputTextfieldBlock > div.wrapper > div.input {
     position: relative;
     height: 48px;
@@ -50,10 +54,15 @@ div.cpnInputTextfieldBlock > div.wrapper > div.input > input {
     border-radius: 8px 0px 0px 8px;
     background-color: #eee;
     outline: none;
-    font-size: 16px;
+    font-size: 105%;
 }
 
 /* State : Blank */
+div.cpnInputTextfieldBlock.toBlank > div.wrapper > div.input > input,
+div.cpnInputTextfieldBlock.atBlank > div.wrapper > div.input > input {
+    color: #555;
+    font-style: italic;
+}
 /* State : Focus */
 div.cpnInputTextfieldBlock.atFocus > div.wrapper > div.input > div.icon.focus {
     opacity: 1;

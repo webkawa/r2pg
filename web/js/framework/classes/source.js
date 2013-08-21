@@ -112,7 +112,7 @@ function Source(name, service, callbacks) {
                 }
                 if ($(this.data).find("data > error").length > 0) {
                     p = {
-                        component: ctx.getContext().getID(),
+                        component: ctx.getOwner().getID(),
                         source: ctx.getName()
                     };
                     throw new Error("cpn", 20, p, error);

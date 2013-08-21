@@ -43,7 +43,12 @@
                     
                     var p, v;
                     p = {
-                        id: "myID"
+                        id: "myID",
+                        label: "Nom",
+                        description: "Merci d'entrer votre nom.",
+                        value: "Mon nom",
+                        initial: 1,
+                        always: 2
                     };
                     v = [
                         new Validator("MINLENGTH", {min: 3}, CFG.get("violations", "textfield.default.minlength"))

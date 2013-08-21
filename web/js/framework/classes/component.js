@@ -275,9 +275,11 @@ function Component(container, descriptor) {
      * RETURNS : N/A                                                            */
     this.retrigger = function() {
         var nodes = $([]);
-        var ctx = this;
         var targets;
+        var item;
         var bind;
+        var prevent;
+        var ctx = this;
         
         $(this.container).find("*").unbind();
         
@@ -285,6 +287,14 @@ function Component(container, descriptor) {
         nodes = $(nodes).add($(this.model).find('component > state[id="' + this.state + '"] > trigger'));
 
         $(nodes).each(function() {
+            item = this;
+            
+            // Checking prevent
+            prevent = false;
+            if ($(this).attr("prevent") === "true") {
+                prevent = true;
+            }
+            
             // Parsing
             targets = $([]);
             $(this).children("target").each(function() {
@@ -293,8 +303,16 @@ function Component(container, descriptor) {
             bind = $(this).attr("bind");
             
             // Binding
-            $(this).children("action").each(function() {
-                $(targets).on(bind, $.proxy(ctx.call, this, ctx));
+            $(targets).on(bind, function(event) {
+                // Preventing
+                if (prevent) {
+                    event.preventDefault();
+                }
+                
+                // Executing
+                $(item).children("action").each(function() {
+                    ctx.call.apply(this, [ctx]);
+                });
             });
         });
     };
@@ -368,12 +386,25 @@ function Component(container, descriptor) {
         }
     };
     
+    /* Executes pre-formated animation postback.
+     * PARAMETERS :
+     *  > postback.methods      Postback methods nodes as list.
+     *  > postback.sequences    Postback sequences nodes as list.
+     * RETURNS : N/A                                                            */
+    this.postback = function(postback) {
+        var ctx = this;
+        $(postback.methods).each(function() {
+            ctx.call.apply(this, [ctx]);
+        });
+        $(postback.sequences).each(function() {
+            ctx.execute(this);
+        });
+    }
     /* Executes a pre-saved animation.
      * PARAMETERS :
-     *  animation               Descripting animation node.
-     *  targets                 Targets list.
-     *  postback.methods        Postback methods nodes as list.
-     *  postback.sequences      Postback sequences nodes as list.
+     *  > animation             Descripting animation node.
+     *  > targets               Targets list.
+     *  > postback              Postbacks.
      * RETURNS : N/A                                                            */
     this.animate = function(animation, targets, postback) {
         var trajectory = $();
@@ -431,13 +462,7 @@ function Component(container, descriptor) {
             fail: function() {
                 throw new Error("cpn", 13);
             }, done: function() {
-                // Standard postbacks
-                $(postback.methods).each(function() {
-                    ctx.call.apply(this, [ctx]);
-                });
-                $(postback.sequences).each(function() {
-                    ctx.execute(this);
-                });
+                ctx.postback(postback);
             }, always: function() {
                 $(targets).css(back);
             }
@@ -496,7 +521,11 @@ function Component(container, descriptor) {
         postback.sequences = $(sequence).children("queue");
         
         // Launching
-        this.animate(animation, targets, postback);
+        if ($(animation).length > 0) {
+            this.animate(animation, targets, postback);
+        } else {
+            this.postback(postback);
+        }
     };
     
     /* Starts component to initial state.
@@ -518,14 +547,14 @@ function Component(container, descriptor) {
             // Writing initial DOM
             this.rewrite($(this.model).find("component > loader > dom").text());
             
+            // Loading global selectors
+            this.reselect();
+            
             // Launching start actions
             var ctx = this;
             $(this.model).find("component > loader > action").each(function() {
                 ctx.call.apply(this, [ctx]);
             });
-            
-            // Loading global selectors
-            this.reselect();
             
             // Migrating to initial state
             this.setStatus(0);

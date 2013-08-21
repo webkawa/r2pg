@@ -1,7 +1,23 @@
-/*  InputTextfieldBlock
- *  -------------------
- *  Simple textfield block. Includes input zone, label, description, notification
- *  area. Executes real-time controls during typing.                            */
+/* InputTextfieldBlock
+ * -------------------
+ * Simple textfield block. Includes input zone, label, description, notification
+ * area. Executes real-time controls during typing.                            
+ * PARAMETERS :
+ *  > container                 Textfield container.
+ *  > properties.id             Textfield ID (mandatory).
+ *  > properties.value          Textfield default value. 
+ *  > properties.label          Textfield label.
+ *  > properties.description    Textfield description.
+ *  > properties.initial        Initial select behavior as :
+ *                               0/undefined    None
+ *                               1              Erase
+ *                               2              Select
+ *  > properties.always         Standard select behavior as :
+ *                               0/undefined    None
+ *                               1              Erase
+ *                               2              Select
+ *  > validators                Validators as array.
+ *  > gatekeeper                Gatekeeper service.                             */
 
 function cpnInputTextfieldBlock(container, properties, validators, gatekeeper) {
     /*
@@ -19,6 +35,42 @@ function cpnInputTextfieldBlock(container, properties, validators, gatekeeper) {
         var source = new Source("gatekeeper", gatekeeper, ["agree"]);
         cpn.saveSource(source);
     }
+    
+    /*
+     *  Initialization.
+     */
+    var cpn_init = function() {
+        this.quickSelect("label").attr("for", properties.id);
+        this.quickSelect("field").attr("id", properties.id);
+        
+        if (!Toolkit.isNull(properties.value)) {
+            this.quickSelect("field").text(properties.value);
+            this.quickSelect("field").attr("value", properties.value);
+        }
+        
+        if (!Toolkit.isNull(properties.label))          this.quickSelect("label").text(properties.label);
+        else                                            this.quickSelect("label").remove();
+        
+        if (!Toolkit.isNull(properties.description))    this.quickSelect("description").text(properties.description);
+        else                                            this.quickSelect("description").remove();
+    };
+    cpn.saveMethod(new Method(cpn_init, "init", false));
+    
+    /*
+     *  Full focus.
+     */
+    var cpn_select = function() {
+        var behavior;
+        if (this.getState() === "Blank")        behavior = properties.initial;
+        else                                    behavior = properties.always;
+        
+        if (behavior === 1) {
+            this.quickSelect("field").val("");
+        } else if (behavior === 2) {
+            this.quickSelect("field").select();
+        } 
+    };
+    cpn.saveMethod(new Method(cpn_select, "select", false));
     
     /*
      *  Client validator.
@@ -57,7 +109,6 @@ function cpnInputTextfieldBlock(container, properties, validators, gatekeeper) {
      *  Agregator.
      */
     var cpn_agree = function() {
-        console.log(this.getSourceData("gatekeeper", 'i[class="result"]'));
         if (this.getSourceData("gatekeeper", 'i[class="result"]').text() === "OK") {
             this.go("Ok");
             return;

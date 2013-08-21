@@ -13,7 +13,6 @@
  *  > violation         Violation message, including wildcards ($param$).       */
 
 function Validator(type, parameters, violation) {
-    console.log(parameters.min);
     switch (type) {
         case "MINLENGTH": 
             Toolkit.checkTypeOf("Validator", "parameters.min", parameters.min, "number");
