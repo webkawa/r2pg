@@ -1,0 +1,97 @@
+/* InputTextAreaBlock
+ * ------------------
+ *  Initial     > Initial state
+ *  Focus       > Focused state
+ *  Ok          > Valid state
+ *  Ko          > Invalid state
+ *  Checking    > Checking state
+ *  Locked      > Locked state                                                  */
+
+/* Standard */
+div.cpnInputTextareaBlock > div.wrapper {
+    width: 380px;
+}
+div.cpnInputTextareaBlock > div.wrapper > div.head {
+    padding: 8px 0px;
+}
+div.cpnInputTextareaBlock > div.wrapper > div.head > label {
+    font-size: 150%;
+    font-weight: bold;
+}
+div.cpnInputTextareaBlock > div.wrapper > div.input {
+    padding: 4px 0px 0px 0px;
+    position: relative;
+}
+div.cpnInputTextareaBlock > div.wrapper > div.input > div.icon {
+    position: absolute;
+    opacity: 0;
+    width: 32px;
+    height: 32px;
+    bottom: -16px;
+    padding: 2px;
+    background-color: #bbb;
+    background-position: center center;
+    background-repeat: no-repeat;
+    border: 1px solid #444;
+    border-radius: 4px;
+}
+div.cpnInputTextareaBlock > div.wrapper > div.input > div.icon.locked {
+    background-image: url('../visuals/security_closed_32.png');
+}
+div.cpnInputTextareaBlock > div.wrapper > div.input > div.icon.focus {
+    background-image: url('../visuals/arrow_sans_right_32.png');
+}
+div.cpnInputTextareaBlock > div.wrapper > div.input > div.icon.ok {
+    background-image: url('../visuals/accept_32.png');
+    background-color: #009900;
+}
+div.cpnInputTextareaBlock > div.wrapper > div.input > div.icon.ko {
+    background-image: url('../visuals/cancel_32.png');
+    background-color: #cc0000;
+}
+div.cpnInputTextareaBlock > div.wrapper > div.input > div.icon.loading {
+    background-image: url('../visuals/refresh_32.png');
+}
+div.cpnInputTextareaBlock > div.wrapper > div.input > textarea {
+    height: 96px;
+    padding: 8px 12px 8px 12px;
+    color: #444;
+    border: 1px solid #444;
+    border-radius: 8px 0px 0px 8px;
+    background-color: #eee;
+    outline: none;
+    font-size: 105%;
+}
+div.cpnInputTextareaBlock > div.wrapper > div.foot {
+    opacity: 0;
+    padding: 0px 16px 2px 72px;
+    font-size: 90%;
+    font-style: italic;
+    text-align: right;
+}
+
+/* State : Initial */
+div.cpnInputTextareaBlock.toInitial > div.wrapper > div.input > textarea,
+div.cpnInputTextareaBlock.atInitial > div.wrapper > div.input > textarea {
+    color: #555;
+    font-style: italic;
+}
+/* State : Focus */
+div.cpnInputTextareaBlock.atFocus > div.wrapper > div.input > div.icon.focus {
+    opacity: 1;
+}
+/* State : Ok */
+div.cpnInputTextareaBlock.atOk > div.wrapper > div.input > div.icon.ok {
+    opacity: 1;
+}
+/* State : Ko*/
+div.cpnInputTextareaBlock.atKo > div.wrapper > div.input > div.icon.ko {
+    opacity: 1;
+}
+div.cpnInputTextareaBlock.atKo > div.wrapper > div.foot {
+    opacity: 1;
+}
+/* State : Checking */
+div.cpnInputTextareaBlock.atChecking > div.wrapper > div.input > div.icon.loading {
+    opacity: 1;
+}

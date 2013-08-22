@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="../../models/components.xsd"
-         name="InputTextfieldBlock" 
+         name="InputTextareaBlock" 
          type="classic" >
     
     <selectors>
@@ -10,12 +10,11 @@
         <selector id="label">div.wrapper > div.head > label</selector>
         <selector id="description">div.wrapper > div.head > span</selector>
         <selector id="input">div.wrapper > div.input</selector>
-        <selector id="field">div.wrapper > div.input > input</selector>
+        <selector id="field">div.wrapper > div.input > textarea</selector>
         <selector id="icons">div.wrapper > div.input > div.icon</selector>
         <selector id="locked">div.wrapper > div.input > div.icon.locked</selector>
         <selector id="ok">div.wrapper > div.input > div.icon.ok</selector>
         <selector id="ko">div.wrapper > div.input > div.icon.ko</selector>
-        <selector id="focus">div.wrapper > div.input > div.icon.focus</selector>
         <selector id="loading">div.wrapper > div.input > div.icon.loading</selector>
         <selector id="foot">div.wrapper > div.foot</selector>
     </selectors>
@@ -47,9 +46,9 @@
                 <to>1</to>
             </move>
             <move>
-                <property>right</property>
-                <from>96px</from>
-                <to>32px</to>
+                <property>left</property>
+                <from>0px</from>
+                <to>24px</to>
             </move>
         </trajectory>
         <trajectory name="unflag">
@@ -61,9 +60,9 @@
                 <to>0</to>
             </move>
             <move>
-                <property>right</property>
-                <from>32px</from>
-                <to>0px</to>
+                <property>left</property>
+                <from>24px</from>
+                <to>84px</to>
             </move>
         </trajectory>
         <trajectory name="lock">
@@ -100,8 +99,7 @@
                         <span />
                     </div>
                     <div class="input">
-                        <input type="textfield" />
-                        <div class="icon focus" />
+                        <textarea />
                         <div class="icon ok" />
                         <div class="icon ko" />
                         <div class="icon loading" />
@@ -131,9 +129,6 @@
             <pre call="center">
                 <parameter>field</parameter>
             </pre>
-            <pre call="center">
-                <parameter>icons</parameter>
-            </pre>
             <pre call="attribute">
                 <parameter>field</parameter>
                 <parameter>disabled</parameter>
@@ -155,15 +150,7 @@
             <target>field</target>
             <action call="validate" />
         </trigger>
-        <in>
-            <target>focus</target>
-            <animation base="flag" />
-        </in>
         <begin call="refocus" />
-        <out>
-            <target>focus</target>
-            <animation base="unflag" />
-        </out>
     </state>
     <state id="Ok">
         <trigger bind="focus">

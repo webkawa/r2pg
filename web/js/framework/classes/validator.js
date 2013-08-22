@@ -1,14 +1,16 @@
 /* Framework validator.
  * PARAMETERS :
  *  > type              Validator type based on the following list.
- *                       MINLENGTH      : Minimum string length [int length]
- *                       MAXLENGTH      : Maximum string length [int length]
+ *                       MINLENGTH      : Minimum string length [int min]
+ *                       MAXLENGTH      : Maximum string length [int max]
  *                       INTLENGTH      : Intermediate string length [int min, int max]
  *                       ALPHA          : Only alphabetic characters []
  *                       ALPHANUMERIC   : Only alphabetic and numeric characters []
  *                       ALPHAEXTENDED  : Only alphabetic, numeric and ponctuation characters []
  *                       NUMERIC        : Numeric string []
- *                       NUMERICPOS     : Positive numeric string [].                                              
+ *                       NUMERICPOS     : Positive numeric string []  
+ *                       NUMERICMIN     : Numeric minimum [int min]   
+ *                       NUMERICMAX     : Numeric maximum [int max]                                      
  *  > parameters        Validator parameters.                                   
  *  > violation         Violation message, including wildcards ($param$).       */
 
@@ -29,6 +31,12 @@ function Validator(type, parameters, violation) {
         case "ALPHAEXTENDED": break;
         case "NUMERIC": break;
         case "NUMERICPOS": break;
+        case "NUMERICMIN": 
+            Toolkit.checkTypeOf("Validator", "parameters.min", parameters.min, "number");
+            break;
+        case "NUMERICMAX": 
+            Toolkit.checkTypeOf("Validator", "parameters.max", parameters.max, "number");
+            break;
         default: 
             var p = {
                 type: type
@@ -77,7 +85,11 @@ function Validator(type, parameters, violation) {
                 case "NUMERIC":
                     return parseInt(value).toString() !== "NaN";
                 case "NUMERICPOS":
-                    return parseInt(value).toString() !== "NaN" && value > 0;
+                    return parseInt(value).toString() !== "NaN" && parseInt(value) > 0;
+                case "NUMERICMIN":
+                    return parseInt(value).toString() !== "NaN" && parseInt(value) >= parameters.min;
+                case "NUMERICMAX":
+                    return parseInt(value).toString() !== "NaN" && parseInt(value) <= parameters.max;
             };
         } catch (e) {
             return false;

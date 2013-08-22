@@ -3,20 +3,20 @@
  * Simple textfield block. Includes input zone, label, description, notification
  * area. Executes real-time controls during typing.                            
  * PARAMETERS :
- *  > container                 Textfield container.
- *  > properties.id             Textfield ID (mandatory).
- *  > properties.value          Textfield default value. 
- *  > properties.label          Textfield label.
- *  > properties.description    Textfield description.
+ *  > container                 Textarea container.
+ *  > properties.id             Textarea ID (mandatory).
+ *  > properties.value          Textarea default value. 
+ *  > properties.label          Textarea label.
+ *  > properties.description    Textarea description.
  *  > properties.erase          Initial select erasing (true/false).
  *  > validators                Validators as array.
  *  > gatekeeper                Gatekeeper service.                             */
 
-function cpnInputTextfieldBlock(container, properties, validators, gatekeeper) {
+function cpnInputTextareaBlock(container, properties, validators, gatekeeper) {
     /*
      *  Validations.
      */
-    var cpn = new Component(container, "data/modules/directUI/textfield-block.xml");
+    var cpn = new Component(container, "data/modules/directUI/textarea-block.xml");
     Toolkit.checkTypeOf("cpnInputTextfieldBlock", "properties", properties, "object");
     Toolkit.checkTypeOf("cpnInputTextfieldBlock", "properties.id", properties.id, "string");
     if (!Toolkit.isNull(validators)) {
@@ -115,7 +115,7 @@ function cpnInputTextfieldBlock(container, properties, validators, gatekeeper) {
      *  Focus security.
      */
     var cpn_refocus = function() {
-        var focused = $("input:focus");
+        var focused = $("textarea:focus()");
         if (this.getState() === "Focus" && !this.quickSelect("field").is(focused)) {
             this.quickSelect("field").trigger("blur");
             return;

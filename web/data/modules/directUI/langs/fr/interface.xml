@@ -5,6 +5,9 @@
     
     <group id="violations">
         <string id="textfield.default.minlength">Le champ doit contenir au moins $min$ caractère(s).</string>
+        <string id="textfield.default.numeric">Le champ ne peut contenir que des chiffres.</string>
+        <string id="textfield.default.numericmin">La valeur indiquée doit être supérieure ou égale à $min$.</string>
+        <string id="textfield.default.numericmax">La valeur indiquée doit être inférieure ou égale à $max$.</string>
         <string id="textfield.default.server">Le serveur a refusé la valeur saisie.</string>
     </group>
     

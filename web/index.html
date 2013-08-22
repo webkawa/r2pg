@@ -21,7 +21,9 @@
         <script type="text/javascript" src="js/framework/classes/register.js"></script>
         <script type="text/javascript" src="js/framework/classes/logwriter.js"></script>
         <script type="text/javascript" src="js/framework/modules/directUI/inputs/textfield-block.js"></script>
+        <script type="text/javascript" src="js/framework/modules/directUI/inputs/textarea-block.js"></script>
         <link rel="stylesheet" type="text/css" href="css/modules/directUI/inputs/textfield-block.css" />
+        <link rel="stylesheet" type="text/css" href="css/modules/directUI/inputs/textarea-block.css" />
     </head>
     <body>
         <div class="A"></div>
@@ -47,13 +49,34 @@
                         label: "Nom",
                         description: "Merci d'entrer votre nom.",
                         value: "Mon nom",
-                        initial: 1,
-                        always: 2
+                        erase: true
                     };
                     v = [
                         new Validator("MINLENGTH", {min: 3}, CFG.get("violations", "textfield.default.minlength"))
                     ];
                     new cpnInputTextfieldBlock($("div.A"), p, v, "SampleGatekeeper").start();
+                    
+                    p = {
+                        id: "myID2",
+                        label: "Age",
+                        description: "Merci d'entrer votre age, entre 18 et 110 ans (sinon ça ne fonctionne pas)."
+                    };
+                    v = [
+                        new Validator("NUMERIC", {}, CFG.get("violations", "textfield.default.numeric")),
+                        new Validator("NUMERICMIN", {min: 18}, CFG.get("violations", "textfield.default.numericmin")),
+                        new Validator("NUMERICMAX", {max: 110}, CFG.get("violations", "textfield.default.numericmax"))
+                    ];
+                    new cpnInputTextfieldBlock($("div.B"), p, v).start();
+                    
+                    p = {
+                        id: "myID3",
+                        label: "Commentaire",
+                        description: "Entrez ici votre commentaire"
+                    };
+                    v = [
+                        new Validator("MINLENGTH", {min: 3}, CFG.get("violations", "textfield.default.minlength"))
+                    ];
+                    new cpnInputTextareaBlock($("div.C"), p, v).start();
                 } catch (e) {
                     ErrorManager.process(e); 
                 }

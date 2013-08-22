@@ -11,6 +11,9 @@
 div.cpnInputTextfieldBlock > div.wrapper {
     width: 380px;
 }
+div.cpnInputTextfieldBlock > div.wrapper > div.head {
+    padding: 4px 0px;
+}
 div.cpnInputTextfieldBlock > div.wrapper > div.head > label {
     font-size: 150%;
     font-weight: bold;
@@ -25,7 +28,6 @@ div.cpnInputTextfieldBlock > div.wrapper > div.input > div.icon {
     width: 32px;
     height: 32px;
     top: 0px;
-    right: 32px;
     padding: 2px;
     background-color: #bbb;
     background-position: center center;
@@ -93,4 +95,3 @@ div.cpnInputTextfieldBlock.atKo > div.wrapper > div.foot {
 div.cpnInputTextfieldBlock.atChecking > div.wrapper > div.input > div.icon.loading {
     opacity: 1;
 }
-/* State : Locked */
