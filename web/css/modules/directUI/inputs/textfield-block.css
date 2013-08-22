@@ -69,8 +69,8 @@ div.cpnInputTextfieldBlock > div.wrapper > div.foot {
 }
 
 /* State : Blank */
-div.cpnInputTextfieldBlock.toBlank > div.wrapper > div.input > input,
-div.cpnInputTextfieldBlock.atBlank > div.wrapper > div.input > input {
+div.cpnInputTextfieldBlock.toInitial > div.wrapper > div.input > input,
+div.cpnInputTextfieldBlock.atInitial > div.wrapper > div.input > input {
     color: #555;
     font-style: italic;
 }

@@ -21,8 +21,8 @@
     </selectors>
     <trajectories>
         <trajectory name="fadein">
-            <speed>500</speed>
-            <easing>swing</easing>
+            <speed>320</speed>
+            <easing>easeInQuart</easing>
             <move>
                 <property>opacity</property>
                 <from>0</from>
@@ -30,8 +30,8 @@
             </move>
         </trajectory>
         <trajectory name="fadeout">
-            <speed>500</speed>
-            <easing>swing</easing>
+            <speed>320</speed>
+            <easing>easeOutQuart</easing>
             <move>
                 <property>opacity</property>
                 <from>1</from>
@@ -39,8 +39,8 @@
             </move>
         </trajectory>
         <trajectory name="flag">
-            <speed>500</speed>
-            <easing>easeOutQuart</easing>
+            <speed>240</speed>
+            <easing>easeOutQuint</easing>
             <move>
                 <property>opacity</property>
                 <from>0</from>
@@ -48,13 +48,13 @@
             </move>
             <move>
                 <property>right</property>
-                <from>64px</from>
+                <from>96px</from>
                 <to>32px</to>
             </move>
         </trajectory>
         <trajectory name="unflag">
-            <speed>500</speed>
-            <easing>easeOutQuart</easing>
+            <speed>160</speed>
+            <easing>easeInQuint</easing>
             <move>
                 <property>opacity</property>
                 <from>1</from>
@@ -71,7 +71,7 @@
             <easing>swing</easing>
             <move>
                 <property>background-color</property>
-                <to>#444</to>
+                <to>#666</to>
             </move>
             <move>
                 <property>color</property>
@@ -87,7 +87,7 @@
             </move>
             <move>
                 <property>color</property>
-                <to>#444</to>
+                <to>#666</to>
             </move>
         </trajectory>
     </trajectories>
@@ -101,20 +101,20 @@
                     </div>
                     <div class="input">
                         <input type="textfield" />
-                        <div class="icon locked" />
                         <div class="icon focus" />
                         <div class="icon ok" />
                         <div class="icon ko" />
                         <div class="icon loading" />
+                        <div class="icon locked" />
                     </div>
                     <div class="foot" />
                 </div>
             ]]>
         </dom>
         <action call="init" />
-        <to>Blank</to>
+        <to>Initial</to>
     </loader>
-    <state id="Blank">
+    <state id="Initial">
         <trigger bind="focus">
             <target>field</target>
             <action call="select" />
@@ -134,57 +134,33 @@
             <pre call="center">
                 <parameter>icons</parameter>
             </pre>
+            <pre call="attribute">
+                <parameter>field</parameter>
+                <parameter>disabled</parameter>
+                <parameter>disabled</parameter>
+            </pre>
             <animation base="fadein" />
+            <post call="attribute">
+                <parameter>field</parameter>
+                <parameter>disabled</parameter>
+            </post>
         </in>
         <begin call="refocus" />
+    </state>
+    <state id="Empty">
+        <begin call="check" />
     </state>
     <state id="Focus">
         <trigger bind="blur">
             <target>field</target>
             <action call="validate" />
         </trigger>
-        <in from="Ok">
-            <target>ok</target>
-            <animation base="unflag" />
-        </in>
-        <in from="Ko">
-            <target>ko</target>
-            <animation base="unflag" />
-        </in>
-        <in from="Ko">
-            <target>foot</target>
-            <animation base="fadeout" />
-            <post call="clean">
-                <parameter>foot</parameter>
-                <parameter>opacity</parameter>
-            </post>
-        </in>
         <in>
             <target>focus</target>
             <animation base="flag" />
         </in>
         <begin call="refocus" />
         <out>
-            <target>focus</target>
-            <animation base="unflag" />
-        </out>
-        <out to="Ok">
-            <target>ok</target>
-            <animation base="flag" />
-        </out>
-        <out to="Ko">
-            <target>ko</target>
-            <animation base="flag" />
-        </out>
-        <out to="Ko">
-            <target>foot</target>
-            <animation base="fadein" />
-        </out>
-        <out to="Checking">
-            <target>loading</target>
-            <animation base="flag" />
-        </out>
-        <out to="Locked">
             <target>focus</target>
             <animation base="unflag" />
         </out>
@@ -196,8 +172,12 @@
                 <parameter>Focus</parameter>
             </action>
         </trigger>
+        <in>
+            <target>ok</target>
+            <animation base="flag" />
+        </in>
         <begin call="refocus" />
-        <out to="Locked">
+        <out>
             <target>ok</target>
             <animation base="unflag" />
         </out>
@@ -209,57 +189,51 @@
                 <parameter>Focus</parameter>
             </action>
         </trigger>
+        <in>
+            <target>ko</target>
+            <animation base="flag" />
+        </in>
+        <in>
+            <target>foot</target>
+            <animation base="fadein" />
+        </in>
         <begin call="refocus" />
-        <out to="Locked">
+        <out>
             <target>ko</target>
             <animation base="unflag" />
         </out>
+        <out>
+            <target>foot</target>
+            <animation base="fadeout" />
+        </out>
     </state>
     <state id="Checking">
+        <in>
+            <target>loading</target>
+            <animation base="flag" />
+        </in>
         <begin call="check" />
         <out>
             <target>loading</target>
             <animation base="unflag" />
         </out>
-        <out to="Ok">
-            <target>ok</target>
-            <animation base="flag" />
-        </out>
-        <out to="Ko">
-            <target>ko</target>
-            <animation base="flag" />
-        </out>
-        <out to="Ko">
-            <target>foot</target>
-            <animation base="fadein" />
-        </out>
     </state>
     <state id="Locked">
+        <in>
+            <target>locked</target>
+            <animation base="flag" />
+        </in>
         <in>
             <target>field</target>
             <animation base="lock" />
         </in>
-        <in>
-            <target>foot</target>
-            <animation base="fadeout" />
-        </in>
-        <in>
-            <target>locked</target>
-            <animation base="fadein" />
-        </in>
-        <begin call="lock">
-            <parameter>true</parameter>
-        </begin>
         <out>
             <target>field</target>
             <animation base="unlock" />
         </out>
         <out>
             <target>locked</target>
-            <animation base="fadeout" />
+            <animation base="unflag" />
         </out>
-        <conclude call="lock">
-            <parameter>false</parameter>
-        </conclude>
     </state>
 </component>
