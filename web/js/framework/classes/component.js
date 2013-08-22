@@ -396,6 +396,7 @@ function Component(container, descriptor) {
             ctx.execute(this);
         });
     }
+    
     /* Executes a pre-saved animation.
      * PARAMETERS :
      *  > animation             Descripting animation node.
@@ -535,56 +536,6 @@ function Component(container, descriptor) {
         }
     };
     
-    /* Starts component to initial state.
-     * PARAMETERS : N/A
-     * RETURNS :
-     *  True if starting was successfull, false else.                           */
-    this.start = function() {
-        this.log("Starting component");
-        if (!Toolkit.isNull(this.state)) {
-            if (CFG.get("components", "allow.invalid.start")) {
-                return false;
-            } else {
-                var p = {
-                    component: this.getID()
-                };
-                throw new Error("cpn", 10, p);
-            }
-        } else {
-            // Writing initial DOM
-            this.rewrite($(this.model).find("component > loader > dom").text());
-            
-            // Loading global selectors
-            this.reselect();
-            
-            // Launching start actions
-            var ctx = this;
-            $(this.model).find("component > loader > action").each(function() {
-                ctx.call.apply(this, [ctx]);
-            });
-            
-            // Migrating to initial state
-            this.setStatus(0);
-            this.go($(this.model).find("component > loader > to").text());
-        }
-    };
-    
-    /* Component deallocation.
-     * PARAMETERS : N/A
-     * RETURNS : N/A                                                            */
-    this.stop = function() {
-        this.log("Cleaning component");
-        
-        // Removing DOM
-        this.setStateClass();
-        $(this.container).removeClass(this.getModelName());
-        $(this.container).empty();
-        
-        // Cleaning references (TO IMPROVE)
-        this.methods = [];
-        this.selectors = [];
-        Register.remove(this.getID());
-    };
     
     /* Manages transition from current state to another state.
      * PARAMETERS :
@@ -620,6 +571,7 @@ function Component(container, descriptor) {
         var seq_exit = $();
         var seq_entry = $();
         var drt = CFG.get("components", "css.class.removal");
+        var buff;
         
         try {
             // Cleaning delayed tasks
@@ -721,7 +673,58 @@ function Component(container, descriptor) {
             throw new Error("cpn", 14, p, e);
         }
     };
+    
+    /* Starts component to initial state.
+     * PARAMETERS : N/A
+     * RETURNS :
+     *  True if starting was successfull, false else.                           */
+    this.start = function() {
+        this.log("Starting component");
+        if (!Toolkit.isNull(this.state)) {
+            if (CFG.get("components", "allow.invalid.start")) {
+                return false;
+            } else {
+                var p = {
+                    component: this.getID()
+                };
+                throw new Error("cpn", 10, p);
+            }
+        } else {
+            // Writing initial DOM
+            this.rewrite($(this.model).find("component > loader > dom").text());
+            
+            // Loading global selectors
+            this.reselect();
+            
+            // Launching start actions
+            var ctx = this;
+            $(this.model).find("component > loader > action").each(function() {
+                ctx.call.apply(this, [ctx]);
+            });
+            
+            // Migrating to initial state
+            this.setStatus(0);
+            this.go($(this.model).find("component > loader > to").text());
+        }
+    };
+    
+    /* Component deallocation.
+     * PARAMETERS : N/A
+     * RETURNS : N/A                                                            */
+    this.stop = function() {
+        this.log("Cleaning component");
         
+        // Removing DOM
+        this.setStateClass();
+        $(this.container).removeClass(this.getModelName());
+        $(this.container).empty();
+        
+        // Cleaning references (TO IMPROVE)
+        this.methods = [];
+        this.selectors = [];
+        Register.remove(this.getID());
+    };
+      
     /* Quick log */
     this.log = function(message, add) {
         Log.print(this, message, add);
@@ -758,13 +761,26 @@ function Component(container, descriptor) {
     this.shortcutCenter = function(target) {
         Toolkit.center(this.quickSelect(target));
     };
-    /* Executes cleaning on a given element style/
+    /* Executes cleaning on a given element style.
      * PARAMETERS :
      *  > target        Target element.
      *  > property      CSS property.
      * RETURNS : N/A                                                            */
     this.shortcutClean = function(target, property) {
         this.quickSelect(target).css(property, "");
+    };
+    /* Push or remove HTML attribut on a given target.
+     * PARAMETERS :
+     *  > target        Target element.
+     *  > attribute     Attribute name.
+     *  > value         Value (if null, delete attribute.
+     * RETURNS : N/A                                                            */
+    this.shortcutAttribute = function(target, attribute, value) {
+        if (Toolkit.isNull(value)) {
+            this.quickSelect(target).removeAttr(attribute);
+        } else {
+            this.quickSelect(target).attr(attribute, value);
+        }
     };
         
     /* Initialize */
@@ -820,4 +836,5 @@ function Component(container, descriptor) {
     this.saveMethod(new Method(this.shortcutRealWidth, "width", false));
     this.saveMethod(new Method(this.shortcutCenter, "center", false));
     this.saveMethod(new Method(this.shortcutClean, "clean", false));
+    this.saveMethod(new Method(this.shortcutAttribute, "attribute", false));
 };
