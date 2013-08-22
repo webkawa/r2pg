@@ -155,7 +155,7 @@ function Component(container, descriptor) {
     };
     
     /* Current state */
-    this.state;
+    this.state = -1;
     this.getState = function() {
         return this.state;
     };
@@ -364,8 +364,7 @@ function Component(container, descriptor) {
                             method: name
                         };
                         ErrorManager.process(new Error("cpn", 23, p, e));
-                        context.stop();
-                        context.start();
+                        context.restart();
                     }
                 }, delay);
                 context.addDelayedTask(t);
@@ -377,8 +376,7 @@ function Component(container, descriptor) {
                 name: name
             };
             ErrorManager.process(new Error("cpn", 12, p, e));
-            context.stop();
-            context.start();
+            context.restart();
         }
     };
     
@@ -571,7 +569,6 @@ function Component(container, descriptor) {
         var seq_exit = $();
         var seq_entry = $();
         var drt = CFG.get("components", "css.class.removal");
-        var buff;
         
         try {
             // Cleaning delayed tasks
@@ -680,7 +677,7 @@ function Component(container, descriptor) {
      *  True if starting was successfull, false else.                           */
     this.start = function() {
         this.log("Starting component");
-        if (!Toolkit.isNull(this.state)) {
+        if (this.state !== -1) {
             if (CFG.get("components", "allow.invalid.start")) {
                 return false;
             } else {
@@ -719,12 +716,19 @@ function Component(container, descriptor) {
         $(this.container).removeClass(this.getModelName());
         $(this.container).empty();
         
-        // Cleaning references (TO IMPROVE)
-        this.methods = [];
-        this.selectors = [];
+        // Cleaning references
         Register.remove(this.getID());
     };
-      
+    
+    /* Component restart.
+     * PARAMETERS : N/A
+     * RETURNS : N/A                                                            */
+    this.restart = function() {
+        this.stop();
+        this.state = -1;
+        this.start();
+    };
+    
     /* Quick log */
     this.log = function(message, add) {
         Log.print(this, message, add);
