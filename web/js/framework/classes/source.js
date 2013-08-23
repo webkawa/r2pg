@@ -103,6 +103,7 @@ function Source(name, service, backup, callbacks) {
                 info: info
             };
             ErrorManager.process(new Error("cpn", 18, p));
+            this.owner.go(this.backup);
         }).done(function(data) {
             try {
                 // Copying data

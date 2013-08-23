@@ -73,6 +73,12 @@ function Component(container, descriptor) {
         }
         this.methods[this.methods.length] = method;
     };
+    this.saveInterface = function(interface, parameters) {
+        Toolkit.checkTypeOf("Component.saveInterface", "interface", interface, "function");
+        Toolkit.checkTypeOf("Component.saveInterface", "parameters", parameters, "object");
+        
+        interface.apply(this, [parameters]);
+    };
     
     /* Selectors */
     this.selectors = [];
@@ -175,8 +181,6 @@ function Component(container, descriptor) {
         var keyfrom = CFG.get("components", "css.prefix.from");
         var keyto = CFG.get("components", "css.prefix.to");
         var keyat = CFG.get("components", "css.prefix.at");
-        var tofrom = typeof(from);
-        var toto = typeof(to);
         var ctx = this;
         
         // Pre-clean
@@ -188,13 +192,13 @@ function Component(container, descriptor) {
         });
         
         // Adding classes
-        if (tofrom === "undefined" && toto === "undefined") {
+        if (from === -1 && Toolkit.isNull(to)) {
             return;
         } else if (from === to) {
             $(this.container).addClass(keyat + from);
-        } else if (toto === "undefined") {
+        } else if (Toolkit.isNull(to)) {
             $(this.container).addClass(keyfrom + from);
-        } else if (tofrom === "undefined") {
+        } else if (from === -1) {
             $(this.container).addClass(keyto + to);
         } else {
             $(this.container).addClass(keyfrom + from + " " + keyto + to);
@@ -333,7 +337,7 @@ function Component(container, descriptor) {
      * RETURNS : N/A                                                            */
     this.access = function(name, params) {
         this.getSource(name).load(params);
-    }
+    };
     
     /* Call a pre-saved method.
      * PARAMETERS :
@@ -717,6 +721,7 @@ function Component(container, descriptor) {
         $(this.container).empty();
         
         // Cleaning references
+        this.sources = [];
         Register.remove(this.getID());
     };
     

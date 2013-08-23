@@ -1,6 +1,6 @@
 /* InputTextfieldBlock
  * -------------------
- *  Blank       > Initial state
+ *  Initial     > Initial state
  *  Focus       > Focused state
  *  Ok          > Valid state
  *  Ko          > Invalid state
@@ -70,28 +70,9 @@ div.cpnInputTextfieldBlock > div.wrapper > div.foot {
     text-align: right;
 }
 
-/* State : Blank */
+/* State : Initial */
 div.cpnInputTextfieldBlock.toInitial > div.wrapper > div.input > input,
 div.cpnInputTextfieldBlock.atInitial > div.wrapper > div.input > input {
     color: #555;
     font-style: italic;
-}
-/* State : Focus */
-div.cpnInputTextfieldBlock.atFocus > div.wrapper > div.input > div.icon.focus {
-    opacity: 1;
-}
-/* State : Ok */
-div.cpnInputTextfieldBlock.atOk > div.wrapper > div.input > div.icon.ok {
-    opacity: 1;
-}
-/* State : Ko*/
-div.cpnInputTextfieldBlock.atKo > div.wrapper > div.input > div.icon.ko {
-    opacity: 1;
-}
-div.cpnInputTextfieldBlock.atKo > div.wrapper > div.foot {
-    opacity: 1;
-}
-/* State : Checking */
-div.cpnInputTextfieldBlock.atChecking > div.wrapper > div.input > div.icon.loading {
-    opacity: 1;
 }
